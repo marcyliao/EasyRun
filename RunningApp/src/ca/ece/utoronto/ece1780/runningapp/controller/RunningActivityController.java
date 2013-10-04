@@ -15,9 +15,9 @@ import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 public class RunningActivityController implements LocationListener {
 	
-	private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 5000;
+	private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 2000;
 
-	// Time interval to update the timmer thread. Unit: ms
+	// Time interval to update the timer thread. Unit: ms
 	private static final long MIN_TIME_INTERVAL_FOR_UPDATE = 300;
 
 	// The context to get system services like gps
@@ -102,8 +102,6 @@ public class RunningActivityController implements LocationListener {
 		
 		// Add the first point to the location list. 
 		addTheFirstLocation();
-		
-		this.lastUpdateTime = new Date();
 		
 		// Start timer
 		refreshTask = new RefreshTask();
@@ -246,6 +244,8 @@ public class RunningActivityController implements LocationListener {
 		 
         @Override
         protected Object doInBackground(Object... params) {
+    		lastUpdateTime = new Date();
+    		
             while(isActivityGoing() && !finish) {
                 try {
                     Thread.sleep(MIN_TIME_INTERVAL_FOR_UPDATE);

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RunningExerciseActivity extends Activity {
 	
@@ -31,8 +32,10 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				if(screenLock)
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
 					return;
+				}
 		        
 				// Pause activity by pause the controller
 				RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
@@ -117,8 +120,10 @@ public class RunningExerciseActivity extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		
-		if(screenLock)
-			 return super.onOptionsItemSelected(item);
+		if(screenLock) {
+			Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+			return super.onOptionsItemSelected(item);
+		}
 		
 	    // Users select other modes.
 		Intent i;
