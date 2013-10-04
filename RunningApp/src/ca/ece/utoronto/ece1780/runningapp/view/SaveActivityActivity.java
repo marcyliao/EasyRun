@@ -20,5 +20,4 @@ public class SaveActivityActivity extends Activity  {
 		getMenuInflater().inflate(R.menu.save_activity, menu);
 		return true;
 	}
-
 }

@@ -8,18 +8,18 @@
     <string name="title_activities">activities</string>
     <string name="default_distance">Try It Out</string>
     <string name="button_start">Start</string>
-    <string name="unit_speed">mi/h</string>
+    <string name="unit_speed">km/h</string>
     <string name="avg_speed">AVG SPEED</string>
     <string name="calories">CALORIES</string>
     <string name="runs">RUNS</string>
-    <string name="unit_distance">mi</string>
+    <string name="unit_distance">km</string>
     <string name="centigrade">°C</string>
     <string name="sunny_advice">Let\'s Run Today!</string>
     <string name="title_activity_running_exercise">RunningExerciseActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="unit_time_min">min</string>
     <string name="time">TIME</string>
-    <string name="mile">MILE</string>
+    <string name="mile">KM</string>
     <string name="map">map</string>
     <string name="gesture">gesture</string>
     <string name="title_activity_gesture_mode">GestureModeActivity</string>
@@ -30,5 +30,12 @@
     <string name="button_save">Save</string>
     <string name="note">Note</string>
     <string name="trash">Trash</string>
+    <string name="enable_gps">Enable GPS</string>
+    <string name="gps_low_dialog_title">GPS accuracy is low</string>
+    <string name="gps_low_dialog_info">GPS accuracy is low. You can continue but your activity may not be accurate.</string>
+    
+    <string name="yes">Yes</string>
+    
+    <string name="no">no</string>
 
 </resources>

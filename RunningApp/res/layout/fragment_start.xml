@@ -15,11 +15,22 @@
         android:paddingTop="30dp" >
 
         <RelativeLayout
+            android:id="@+id/relativeLayout2"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/xml_background_gray_radius" >
+
+            <ImageView
+                android:id="@+id/imageViewGpsSignal"
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/icon_signal_0" />
+
         </RelativeLayout>
 
         <TextView
@@ -199,7 +210,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeLayout1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp" >
+            android:layout_marginTop="15dp" >
 
             <ImageView
                 android:id="@+id/imageViewWeather"
@@ -238,6 +249,7 @@
                 android:text="@string/sunny_advice"
                 android:textColor="#FFF" />
         </RelativeLayout>
+
     </RelativeLayout>
 
     <Button

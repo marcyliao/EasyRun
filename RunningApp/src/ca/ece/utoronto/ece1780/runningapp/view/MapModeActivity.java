@@ -18,5 +18,4 @@ public class MapModeActivity extends Activity {
 		getMenuInflater().inflate(R.menu.map, menu);
 		return true;
 	}
-
 }

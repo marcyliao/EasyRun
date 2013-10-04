@@ -57,6 +57,33 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/xml_button_basic"
             android:src="@drawable/icon_pause" />
+        
+        <LinearLayout  
+            android:id="@+id/layoutAfterPause"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible">
+
+            <ImageButton
+                android:id="@+id/buttonStop"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:background="@drawable/xml_button_basic"
+                android:src="@drawable/icon_stop" />
+
+            <ImageButton
+                android:id="@+id/buttonResume"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:background="@drawable/xml_button_basic"
+                android:src="@drawable/icon_resume" 
+            	android:layout_marginLeft="1dp" />t
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout1"
@@ -97,9 +124,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="15"
+                            android:text="0.0"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/TextView05"
@@ -152,17 +179,19 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_speed" />
+                            android:src="@drawable/icon_speed" 
+                            android:layout_marginRight="3dp"/>
 
                         <TextView
                             android:id="@+id/TextViewTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="15"
+                            android:text="00:00"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
-
+                            android:textSize="17sp" />
+                        
+						<!-- 
                         <TextView
                             android:id="@+id/textView2"
                             android:layout_width="wrap_content"
@@ -171,6 +200,7 @@
                             android:text="@string/unit_time_min"
                             android:textColor="#FFF"
                             android:textSize="15sp" />
+                         -->
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -222,9 +252,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="150"
+                            android:text="0"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -278,7 +308,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="200.0"
+                    android:text="0.00"
                     android:textColor="#FFF"
                     android:layout_marginTop="10dp"
                     android:textSize="90sp" />
