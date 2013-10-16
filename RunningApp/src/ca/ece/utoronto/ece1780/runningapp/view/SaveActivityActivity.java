@@ -12,7 +12,9 @@ import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.location.Location;
@@ -112,11 +114,24 @@ public class SaveActivityActivity extends Activity  {
 		RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
 		ActivityRecord record = controller.getCurrentRecord();
 		
-	    // Move the camera instantly to hamburg with a zoom of 15.
 		if (record.getLocationPoints().size() >= 1) {
 			int last = record.getLocationPoints().size()-1;
-			Location originalLocation = record.getLocationPoints().get(last);
-		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(originalLocation.getLatitude(), originalLocation.getLongitude()), 15));
+			Location lastLocation = record.getLocationPoints().get(last);
+			Location startLocation = record.getLocationPoints().get(0);
+
+			// add the start marker
+			map.addMarker(new MarkerOptions()
+	        .position(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()))
+	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+			
+
+			// add the end marker
+			map.addMarker(new MarkerOptions()
+	        .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+			
+			 // Move the camera instantly to hamburg with a zoom of 15.
+		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 15));
 		}
 		
 		// make sure that there are at least two points on the map
@@ -138,7 +153,6 @@ public class SaveActivityActivity extends Activity  {
 				startLocation = endLocation;
 			}
 			map.addPolyline(options);
-
 		}
 	}
 
@@ -208,21 +222,4 @@ public class SaveActivityActivity extends Activity  {
 	    }
 	}
 	
-	private RunningDataChangeListener getRecordChangeListener() {
-		return new RunningDataChangeListener(){
-
-			@Override
-			public void onDataChange(ActivityRecord currentRecord) {
-				((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(currentRecord.getTimeLength()/1000)));
-				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
-				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",currentRecord.getAvgSpeed()));
-				((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(currentRecord.getCalories()));
-			}
-
-			@Override
-			public void onLocationAdded(ActivityRecord record) {
-				// do nothing
-			}
-		};
-	}
 }

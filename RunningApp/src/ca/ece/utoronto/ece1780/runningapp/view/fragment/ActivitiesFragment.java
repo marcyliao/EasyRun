@@ -73,7 +73,6 @@ public class ActivitiesFragment extends Fragment {
 		
 		@Override
 		public int getCount() {
-			// TODO Auto-generated method stub
 			if(records != null)
 				return records.size();
 			return 0;
@@ -81,13 +80,11 @@ public class ActivitiesFragment extends Fragment {
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 
 		@Override
 		public long getItemId(int position) {
-			// TODO Auto-generated method stub
 			return position;
 		}
 	}

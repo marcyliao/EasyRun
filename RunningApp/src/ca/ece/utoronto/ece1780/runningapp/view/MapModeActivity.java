@@ -3,7 +3,10 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
@@ -21,6 +24,7 @@ public class MapModeActivity extends Activity {
 
 	// controller
 	private RunningActivityController controller;
+	private Marker endMarker;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +48,23 @@ public class MapModeActivity extends Activity {
 
 		// Move the camera instantly to hamburg with a zoom of 15.
 		if (record.getLocationPoints().size() >= 1) {
-			int last = record.getLocationPoints().size() - 1;
-			Location originalLocation = record.getLocationPoints().get(last);
-			map.moveCamera(CameraUpdateFactory.newLatLngZoom(
-					new LatLng(originalLocation.getLatitude(), originalLocation
-							.getLongitude()), 15));
+			int last = record.getLocationPoints().size()-1;
+			Location lastLocation = record.getLocationPoints().get(last);
+			Location startLocation = record.getLocationPoints().get(0);
+
+			// add the start marker
+			map.addMarker(new MarkerOptions()
+	        .position(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()))
+	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+			
+
+			// add the end marker
+			endMarker = map.addMarker(new MarkerOptions()
+	        .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+			
+			// Move the camera instantly to hamburg with a zoom of 15.
+		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 15));
 		}
 
 		// make sure that there are at least two points on the map
@@ -104,6 +120,8 @@ public class MapModeActivity extends Activity {
 					.width(5).color(Color.RED);	
 				
 				map.addPolyline(options);
+				
+				endMarker.setPosition(new LatLng(l2.getLatitude(),l2.getLongitude()));
 			}
 		};
 	}
