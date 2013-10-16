@@ -20,17 +20,17 @@
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
-        android:layout_height="70dp"
+        android:layout_height="80dp"
         android:layout_above="@+id/buttonSave" >
 
         <Spinner
             android:id="@+id/spinnerMood"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dp"
-            android:background="#666" />
+            android:background="#333" />
 
         <EditText
             android:id="@+id/editTextNote"
@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_alignBottom="@+id/spinnerMood"
             android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/spinnerMood"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
             android:layout_toRightOf="@+id/spinnerMood"
@@ -49,10 +50,12 @@
         </EditText>
     </RelativeLayout>
 
+    
+
     <LinearLayout
         android:id="@+id/linearLayout1"
         android:layout_width="100dp"
-        android:layout_height="65dp"
+        android:layout_height="55dp"
         android:layout_above="@+id/relativeLayout1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true" 
@@ -79,8 +82,9 @@
                     android:layout_centerHorizontal="true" >
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight = "3dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/icon_run" />
 
@@ -89,9 +93,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="15"
+                        android:text="0.0"
                         android:textColor="#FFF"
-                        android:textSize="20sp" />
+                        android:textSize="17sp" />
 
                     <TextView
                         android:id="@+id/TextView05"
@@ -141,8 +145,9 @@
                     android:layout_centerHorizontal="true" >
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight = "3dp"
                         android:layout_gravity="center"
                         android:src="@drawable/icon_speed" />
 
@@ -151,18 +156,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="15"
+                        android:text="0:00:00"
                         android:textColor="#FFF"
-                        android:textSize="20sp" />
+                        android:textSize="17sp" />
 
-                    <TextView
-                        android:id="@+id/TextView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="@string/unit_time_min"
-                        android:textColor="#FFF"
-                        android:textSize="15sp" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -204,8 +201,9 @@
                     android:layout_centerHorizontal="true" >
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_marginRight = "3dp"
                         android:layout_gravity="center_vertical"
                         android:src="@drawable/icon_calories" />
 
@@ -216,7 +214,7 @@
                         android:layout_gravity="center_vertical"
                         android:text="150"
                         android:textColor="#FFF"
-                        android:textSize="20sp" />
+                        android:textSize="17sp" />
                 </LinearLayout>
             </RelativeLayout>
 
@@ -251,6 +249,36 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.MapFragment" />
+
+    </RelativeLayout>
+    
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#CC505050">
+
+        <TextView
+            android:id="@+id/TextViewDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"
+            android:text="1.25"
+            android:textColor="#FFF"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/TextViewDistance"
+            android:layout_alignBottom="@+id/TextViewDistance"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/TextViewDistance"
+            android:text="@string/unit_distance"
+            android:textColor="#FFF"
+            android:textSize="15sp" />
+
     </RelativeLayout>
 
 </RelativeLayout>

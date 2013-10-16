@@ -34,9 +34,15 @@
     <string name="gps_low_dialog_title">GPS accuracy is low</string>
     <string name="gps_low_dialog_info">GPS accuracy is low. You can continue but your activity may not be accurate.</string>
     
-    <string name="yes">Yes</string>
+    <string name="dump_activity_dialog_title">Dump the Activity</string>
+    <string name="dump_activity_dialog_info">Are you sure?</string>
     
-    <string name="no">no</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    
+    <string name="activity_save">Activity Saved</string>
+    <string name="activity_dump">Activity Canceled</string>
+    
     <string name="screen_is_locked">Screen is locked.</string>
 
 </resources>

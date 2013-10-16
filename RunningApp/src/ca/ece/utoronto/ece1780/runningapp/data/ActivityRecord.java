@@ -14,13 +14,13 @@ public class ActivityRecord {
 	private Long time;
 
 	// Total distance (current distance while recording). Unit: km
-	private double distance;
+	private Double distance;
 	
 	// Average speed. Unit: km/h
-	private float avgSpeed;
+	private Float avgSpeed;
 	
 	// Total calories (burned calories so far while recording).
-	private int calories;
+	private Integer calories;
 
 	// All the location points of the route of the activity. Record a point every 5 s
 	private ArrayList<Location> locationPoints;
@@ -37,25 +37,37 @@ public class ActivityRecord {
 	private String locationPointsTimeStr;
 	
 	// Weather of the day
-	private int weather;
+	private Integer weather;
 	
 	// Temperature of the day. Unit: degree centigrade
-	private int temperature;
+	private Integer temperature;
 	
 	// Time length since the start of the activity
 	private Long timeLength;
+	
+	// Heart rate
+	private Integer heartRate;
 
+	// Mood
+	private Integer mood;
+	
+	// Note
+	private String note;
+	
 	public ActivityRecord() {
 		id = 0L;
 		time = new Date().getTime();
-		distance = 0;
-		avgSpeed = 0;
+		distance = 0D;
+		avgSpeed = 0F;
 		calories = 0;
 		locationPoints = new ArrayList<Location>();
 		locationPointsTime = new ArrayList<Date>();
 		weather = Weather.NONSET;
-		temperature = 0;
+		temperature = null;
 		timeLength = 0L;
+		heartRate = null;
+		mood = Mood.NONSET;
+		note = null;
 	}
 	
 	public Long getId() {
@@ -90,11 +102,11 @@ public class ActivityRecord {
 		this.avgSpeed = avgSpeed;
 	}
 
-	public int getCalories() {
+	public Integer getCalories() {
 		return calories;
 	}
 
-	public void setCalories(int calories) {
+	public void setCalories(Integer calories) {
 		this.calories = calories;
 	}
 
@@ -114,19 +126,19 @@ public class ActivityRecord {
 		this.locationPointsStr = locationPointsStr;
 	}
 
-	public int getWeather() {
+	public Integer getWeather() {
 		return weather;
 	}
 
-	public void setWeather(int weather) {
+	public void setWeather(Integer weather) {
 		this.weather = weather;
 	}
 
-	public int getTemperature() {
+	public Integer getTemperature() {
 		return temperature;
 	}
 
-	public void setTemperature(int temperature) {
+	public void setTemperature(Integer temperature) {
 		this.temperature = temperature;
 	}
 
@@ -142,6 +154,11 @@ public class ActivityRecord {
 		return locationPointsTimeStr;
 	}
 
+	public void setLocationPointsTimeStr(String locationPointsTimeStr) {
+		this.locationPointsTimeStr = locationPointsTimeStr;
+	}
+
+	
 	public void setSpeedsStr(String locationPointsTimeStr) {
 		this.locationPointsTimeStr = locationPointsTimeStr;
 	}
@@ -152,5 +169,62 @@ public class ActivityRecord {
 
 	public void setTimeLength(Long timeLength) {
 		this.timeLength = timeLength;
+	}
+
+	public Integer getHeartRate() {
+		return heartRate;
+	}
+
+	public void setHeartRate(Integer heartRate) {
+		this.heartRate = heartRate;
+	}
+
+	public Integer getMood() {
+		return mood;
+	}
+
+	public void setMood(Integer mood) {
+		this.mood = mood;
+	}
+
+	public String getNote() {
+		return note;
+	}
+
+	public void setNote(String note) {
+		this.note = note;
+	}
+
+	public void prepareToSave() {
+		// convert location points array to string
+		StringBuilder builder = new StringBuilder();
+		if (locationPoints.size() > 0) {
+			Location value = locationPoints.get(0);
+			builder.append(value.getLatitude());
+			builder.append(",");
+			builder.append(value.getLongitude());
+			
+			for (Integer i=1; i<locationPoints.size(); i++) {
+				builder.append(",");
+				builder.append(locationPoints.get(i).getLatitude());
+				builder.append(",");
+				builder.append(locationPoints.get(i).getLongitude());
+			}
+		}
+		locationPointsStr = builder.toString();
+		
+		// convert time point array to string
+		builder = new StringBuilder();
+		if (locationPointsTime.size() > 0) {
+			Date value = locationPointsTime.get(0);
+			builder.append(value.getTime());
+			
+			for (Integer i=1; i<locationPointsTime.size(); i++) {
+				builder.append(",");
+				builder.append(locationPointsTime.get(i).getTime());
+			}
+		}
+		locationPointsTimeStr = builder.toString();
+		
 	}
 }

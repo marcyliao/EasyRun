@@ -7,7 +7,6 @@ import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class RunningExerciseActivity extends Activity {
+	
+	public final static int SAVE_RECORD_REQUEST = 239;
 	
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
@@ -54,7 +55,7 @@ public class RunningExerciseActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 		         Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
-		         startActivityForResult(i,0);
+		         startActivityForResult(i,SAVE_RECORD_REQUEST);
 			}
 		});
 		
@@ -111,6 +112,21 @@ public class RunningExerciseActivity extends Activity {
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(requestCode == SAVE_RECORD_REQUEST) {
+			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
+				setResult(SaveActivityActivity.RESULT_SAVE);
+				finish();
+			}
+			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
+				setResult(SaveActivityActivity.RESULT_DUMP);
+				finish();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.running_exercise, menu);
@@ -145,5 +161,10 @@ public class RunningExerciseActivity extends Activity {
 	public void onDestroy() {
 		super.onDestroy();
     	RunningActivityController.getInstance(getApplicationContext()).stopActivity();
+	}
+	
+	@Override
+	public void onBackPressed() {
+	    // do nothing.
 	}
 }

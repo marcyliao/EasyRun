@@ -1,5 +1,6 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
+import ca.ece.utoronto.ece1780.runningapp.setting.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import android.support.v4.app.Fragment;
@@ -7,8 +8,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -21,9 +20,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class StartFragment extends Fragment implements LocationListener {
 
+	public final static int START_ACTIVITY_REQUEST = 87;
+	
 	// Different levels of GPS accuracy
 	private static final int GPS_SIGNAL_VERY_LOW_LEVEL = 50;
 	private static final int GPS_SIGNAL_LOW_LEVEL = 30;
@@ -56,9 +58,21 @@ public class StartFragment extends Fragment implements LocationListener {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
 		}
 		
-		initStartButton(rootView);
+		initWidgets();
 		
 		return rootView;
+	}
+
+	public void initWidgets() {
+		UserSetting setting = new UserSetting(getActivity());
+		
+		((TextView)rootView.findViewById(R.id.TextViewTotalDistance)).setText(String.format("%.1f",Double.valueOf(setting.getDistance())/1000));
+		double avgSpeed = setting.getDistance() == 0?0:(setting.getDistance()*3600)/(setting.getTotalTime());
+		((TextView)rootView.findViewById(R.id.TextViewAverageSpeed)).setText(String.format("%.1f",Double.valueOf(avgSpeed)));
+		((TextView)rootView.findViewById(R.id.TextViewRuns)).setText(String.valueOf(setting.getRuns()));
+		((TextView)rootView.findViewById(R.id.TextViewCalories)).setText(String.valueOf(setting.getCalories()));
+		
+		initStartButton(rootView);
 	}
 
 	// Initialize button according to whether gps is enabled or not
@@ -88,7 +102,7 @@ public class StartFragment extends Fragment implements LocationListener {
 									public void onClick( DialogInterface dialog, int which) {
 
 										Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
-									    startActivityForResult(i,0);
+										getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
 									}
 								})
 								
@@ -96,7 +110,7 @@ public class StartFragment extends Fragment implements LocationListener {
 
 					} else {
 						Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
-				        startActivityForResult(i,0);
+				        getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
 					}
 				}
 				

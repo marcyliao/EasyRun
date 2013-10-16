@@ -1,13 +1,13 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
 import java.util.Locale;
-
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -18,6 +18,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.TabListener, LocationListener {
@@ -69,6 +70,25 @@ public class HomeActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		
+		
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+		if(requestCode == StartFragment.START_ACTIVITY_REQUEST) {
+			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
+				
+				// force updating data in different fragments.
+				mSectionsPagerAdapter.startFragment.initWidgets();
+				mSectionsPagerAdapter.activityFragment.updateList();
+				
+				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_LONG).show();
+			}
+			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -91,8 +111,7 @@ public class HomeActivity extends FragmentActivity implements
 		// Start tracking location when start fragment is on, otherwise stop it
 		// to save battery
 		if(0 == tab.getPosition()) {
-			mSectionsPagerAdapter.startFragment.startUpateLocation();
-			
+			mSectionsPagerAdapter.startFragment.startUpateLocation();	
 		}
 		else {
 			mSectionsPagerAdapter.startFragment.stopUpateLocation();

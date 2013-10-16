@@ -40,12 +40,11 @@
             android:layout_above="@+id/relativeLayout1"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
-            android:text="200.0"
+            android:text="0.0"
             android:textColor="#FFF"
             android:textSize="80sp" />
 
         <TextView
-            android:id="@+id/TextViewCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/TextViewTotalDistance"
@@ -95,7 +94,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toRightOf="@+id/imageView1"
-                            android:text="20"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
                     </RelativeLayout>
@@ -128,13 +127,14 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:text="15"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:layout_width="25dp"
                             android:layout_height="25dp"
+                            android:layout_marginRight="3dp"
                             android:layout_alignBottom="@+id/TextViewAverageSpeed"
                             android:layout_alignParentTop="true"
                             android:layout_toLeftOf="@+id/TextViewAverageSpeed"
@@ -189,7 +189,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toRightOf="@+id/imageView2"
-                            android:text="1600"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
                     </RelativeLayout>

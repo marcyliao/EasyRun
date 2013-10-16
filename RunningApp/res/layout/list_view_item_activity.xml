@@ -1,0 +1,53 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:padding="6dip" 
+    android:background="#000">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="70dp"
+        android:layout_height="fill_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="TODO"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/TextViewTime"
+        android:layout_width="fill_parent"
+        android:layout_height="23dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/icon"
+        android:singleLine="true"
+        android:text="Description"
+        android:textSize="15sp" 
+        android:textColor="#999"/>
+
+    <TextView
+        android:id="@+id/TextViewDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/TextViewTime"
+        android:layout_alignParentTop="true"
+        android:layout_alignWithParentIfMissing="true"
+        android:layout_toRightOf="@id/icon"
+        android:gravity="center_vertical"
+        android:text="0"
+        android:textColor="#FFF"
+        android:textSize="23sp" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/TextViewTime"
+        android:layout_toRightOf="@+id/TextViewDistance"
+        android:gravity="center_vertical"
+        android:text="@string/unit_distance"
+        android:textColor="#FFF"
+        android:layout_marginLeft="4dp"
+        android:textSize="23sp" />
+
+</RelativeLayout> 

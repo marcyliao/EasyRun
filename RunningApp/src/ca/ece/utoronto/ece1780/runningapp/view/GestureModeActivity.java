@@ -18,5 +18,4 @@ public class GestureModeActivity extends Activity {
 		getMenuInflater().inflate(R.menu.gesture_mode, menu);
 		return true;
 	}
-
 }
