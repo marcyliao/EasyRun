@@ -15,31 +15,41 @@
         android:paddingTop="30dp" >
 
         <RelativeLayout
+            android:id="@+id/relativeLayout2"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:background="@drawable/xml_background_gray_radius" >
+
+            <ImageView
+                android:id="@+id/imageViewGpsSignal"
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/icon_signal_0" />
+
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/TextViewTotalDistance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_above="@+id/relativeLayout1"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="10dp"
-            android:text="200.0"
+            android:text="0.0"
             android:textColor="#FFF"
             android:textSize="80sp" />
 
         <TextView
-            android:id="@+id/TextViewCalories"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBaseline="@+id/textView3"
-            android:layout_alignBottom="@+id/textView3"
-            android:layout_toRightOf="@+id/textView3"
+            android:layout_alignBaseline="@+id/TextViewTotalDistance"
+            android:layout_alignBottom="@+id/TextViewTotalDistance"
+            android:layout_toRightOf="@+id/TextViewTotalDistance"
             android:text="@string/unit_distance"
             android:textColor="#FFF"
             android:textSize="15sp" />
@@ -73,18 +83,18 @@
                             android:id="@+id/imageView1"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:layout_alignBottom="@+id/textViewRuns"
+                            android:layout_alignBottom="@+id/TextViewRuns"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
                             android:src="@drawable/icon_run" />
 
                         <TextView
-                            android:id="@+id/textViewRuns"
+                            android:id="@+id/TextViewRuns"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toRightOf="@+id/imageView1"
-                            android:text="20"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
                     </RelativeLayout>
@@ -112,37 +122,38 @@
                         android:layout_alignParentTop="true" >
 
                         <TextView
-                            android:id="@+id/textViewAvgSpeed"
+                            android:id="@+id/TextViewAverageSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
-                            android:text="15"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
 
                         <ImageView
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:layout_alignBottom="@+id/textViewAvgSpeed"
+                            android:layout_marginRight="3dp"
+                            android:layout_alignBottom="@+id/TextViewAverageSpeed"
                             android:layout_alignParentTop="true"
-                            android:layout_toLeftOf="@+id/textViewAvgSpeed"
+                            android:layout_toLeftOf="@+id/TextViewAverageSpeed"
                             android:src="@drawable/icon_speed" />
 
                         <TextView
-                            android:id="@+id/textView2"
+                            android:id="@+id/TextView2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignBaseline="@+id/textViewAvgSpeed"
-                            android:layout_alignBottom="@+id/textViewAvgSpeed"
-                            android:layout_toRightOf="@+id/textViewAvgSpeed"
+                            android:layout_alignBaseline="@+id/TextViewAverageSpeed"
+                            android:layout_alignBottom="@+id/TextViewAverageSpeed"
+                            android:layout_toRightOf="@+id/TextViewAverageSpeed"
                             android:text="@string/unit_speed"
                             android:textColor="#FFF"
                             android:textSize="15sp" />
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/textView1"
+                        android:id="@+id/TextView1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/holder2"
@@ -167,18 +178,18 @@
                             android:id="@+id/imageView2"
                             android:layout_width="25dp"
                             android:layout_height="25dp"
-                            android:layout_alignBottom="@+id/textViewCalories"
+                            android:layout_alignBottom="@+id/TextViewCalories"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
                             android:src="@drawable/icon_calories" />
 
                         <TextView
-                            android:id="@+id/textViewCalories"
+                            android:id="@+id/TextViewCalories"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
                             android:layout_toRightOf="@+id/imageView2"
-                            android:text="1600"
+                            android:text="0"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
                     </RelativeLayout>
@@ -199,18 +210,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/relativeLayout1"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="25dp" >
+            android:layout_marginTop="15dp" >
 
             <ImageView
                 android:id="@+id/imageViewWeather"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:layout_alignBottom="@+id/TextViewtemperature"
-                android:layout_toLeftOf="@+id/TextViewtemperature"
+                android:layout_alignBottom="@+id/TextViewTemperature"
+                android:layout_toLeftOf="@+id/TextViewTemperature"
                 android:src="@drawable/icon_weather_sunny" />
 
             <TextView
-                android:id="@+id/TextViewtemperature"
+                android:id="@+id/TextViewTemperature"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -220,24 +231,25 @@
                 android:textSize="35sp" />
 
             <TextView
-                android:id="@+id/textView5"
+                android:id="@+id/TextView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/TextViewtemperature"
-                android:layout_toRightOf="@+id/TextViewtemperature"
+                android:layout_alignBottom="@+id/TextViewTemperature"
+                android:layout_toRightOf="@+id/TextViewTemperature"
                 android:text="@string/centigrade"
                 android:textColor="#FFF"
                 android:textSize="25sp" />
 
             <TextView
-                android:id="@+id/textViewWeatherAdvice"
+                android:id="@+id/TextViewWeatherAdvice"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/TextViewtemperature"
+                android:layout_below="@+id/TextViewTemperature"
                 android:layout_centerHorizontal="true"
                 android:text="@string/sunny_advice"
                 android:textColor="#FFF" />
         </RelativeLayout>
+
     </RelativeLayout>
 
     <Button

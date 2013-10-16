@@ -1,44 +1,40 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
 import java.util.Locale;
-
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 public class HomeActivity extends FragmentActivity implements
-		ActionBar.TabListener {
-
-	/**
-	 * The {@link android.support.v4.view.PagerAdapter} that will provide
-	 * fragments for each of the sections. We use a
-	 * {@link android.support.v4.app.FragmentPagerAdapter} derivative, which
-	 * will keep every loaded fragment in memory. If this becomes too memory
-	 * intensive, it may be best to switch to a
-	 * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-	 */
-	SectionsPagerAdapter mSectionsPagerAdapter;
-
-	/**
-	 * The {@link ViewPager} that will host the section contents.
-	 */
-	ViewPager mViewPager;
-
+		ActionBar.TabListener, LocationListener {
+	
+	// Page view control
+	private SectionsPagerAdapter mSectionsPagerAdapter;
+	private ViewPager mViewPager;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 
+		Log.v("runners","runners - home activity on create");
+		
+	    // Set up UI components
 		// Set up the action bar.
 		final ActionBar actionBar = getActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
@@ -73,6 +69,26 @@ public class HomeActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
+		
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode,Intent data) {
+		if(requestCode == StartFragment.START_ACTIVITY_REQUEST) {
+			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
+				
+				// force updating data in different fragments.
+				mSectionsPagerAdapter.startFragment.initWidgets();
+				mSectionsPagerAdapter.activityFragment.updateList();
+				
+				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_LONG).show();
+			}
+			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	@Override
@@ -85,9 +101,21 @@ public class HomeActivity extends FragmentActivity implements
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		
+		Log.v("runners", tab.getPosition() + "is selected");
+		
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
+		
+		// Start tracking location when start fragment is on, otherwise stop it
+		// to save battery
+		if(0 == tab.getPosition()) {
+			mSectionsPagerAdapter.startFragment.startUpateLocation();	
+		}
+		else {
+			mSectionsPagerAdapter.startFragment.stopUpateLocation();
+		}
 	}
 
 	@Override
@@ -106,6 +134,10 @@ public class HomeActivity extends FragmentActivity implements
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
+		StartFragment startFragment = new StartFragment();
+		MusicFragment musicFragment = new MusicFragment();
+		ActivitiesFragment activityFragment = new ActivitiesFragment();
+		
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
 		}
@@ -114,11 +146,11 @@ public class HomeActivity extends FragmentActivity implements
 		public Fragment getItem(int position) {
 			switch (position) {
 			case 0:
-				return new StartFragment();
+				return startFragment;
 			case 1:
-				return new MusicFragment();
+				return musicFragment;
 			case 2:
-				return new ActivitiesFragment();
+				return activityFragment;
 			}
 			return null;
 		}
@@ -142,6 +174,28 @@ public class HomeActivity extends FragmentActivity implements
 			}
 			return null;
 		}
+	}
+
+	@Override
+	public void onLocationChanged(Location loc) {
+	}
+
+	@Override
+	public void onProviderDisabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onProviderEnabled(String arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

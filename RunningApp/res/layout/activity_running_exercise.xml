@@ -11,7 +11,7 @@
         android:layout_height="70dp" >
 
         <Button
-            android:id="@+id/button2"
+            android:id="@+id/ButtonMusic"
             style="@drawable/icon_music"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -20,21 +20,21 @@
             android:background="@drawable/icon_music" />
 
         <Button
-            android:id="@+id/Button01"
+            android:id="@+id/ButtonNextSong"
             android:layout_width="40dp"
             android:layout_height="30dp"
-            android:layout_alignBaseline="@+id/button2"
-            android:layout_alignBottom="@+id/button2"
-            android:layout_toRightOf="@+id/button2"
+            android:layout_alignBaseline="@+id/ButtonMusic"
+            android:layout_alignBottom="@+id/ButtonMusic"
+            android:layout_toRightOf="@+id/ButtonMusic"
             android:background="@drawable/icon_next" />
 
         <Button
-            android:id="@+id/Button02"
+            android:id="@+id/ButtonPrevSong"
             android:layout_width="40dp"
             android:layout_height="30dp"
-            android:layout_alignBaseline="@+id/button2"
-            android:layout_alignBottom="@+id/button2"
-            android:layout_toLeftOf="@+id/button2"
+            android:layout_alignBaseline="@+id/ButtonMusic"
+            android:layout_alignBottom="@+id/ButtonMusic"
+            android:layout_toLeftOf="@+id/ButtonMusic"
             android:background="@drawable/icon_previous" />
     </RelativeLayout>
 
@@ -42,7 +42,7 @@
         android:id="@+id/relativeLayout2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/buttonPause"
+        android:layout_above="@+id/buttonLock"
         android:layout_below="@+id/relativeLayout1"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
@@ -57,6 +57,33 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/xml_button_basic"
             android:src="@drawable/icon_pause" />
+        
+        <LinearLayout  
+            android:id="@+id/layoutAfterPause"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:visibility="invisible">
+
+            <ImageButton
+                android:id="@+id/buttonStop"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:background="@drawable/xml_button_basic"
+                android:src="@drawable/icon_stop" />
+
+            <ImageButton
+                android:id="@+id/buttonResume"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="60dp"
+                android:background="@drawable/xml_button_basic"
+                android:src="@drawable/icon_resume" 
+            	android:layout_marginLeft="1dp" />t
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearLayout1"
@@ -97,9 +124,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="15"
+                            android:text="0.0"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
+                            android:textSize="17sp" />
 
                         <TextView
                             android:id="@+id/TextView05"
@@ -152,17 +179,19 @@
                             android:layout_width="25dp"
                             android:layout_height="25dp"
                             android:layout_gravity="center"
-                            android:src="@drawable/icon_speed" />
+                            android:src="@drawable/icon_speed" 
+                            android:layout_marginRight="3dp"/>
 
                         <TextView
-                            android:id="@+id/textViewAvgSpeed"
+                            android:id="@+id/TextViewTime"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="15"
+                            android:text="00:00"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
-
+                            android:textSize="17sp" />
+                        
+						<!-- 
                         <TextView
                             android:id="@+id/textView2"
                             android:layout_width="wrap_content"
@@ -171,6 +200,7 @@
                             android:text="@string/unit_time_min"
                             android:textColor="#FFF"
                             android:textSize="15sp" />
+                         -->
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -222,9 +252,9 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="150"
+                            android:text="0"
                             android:textColor="#FFF"
-                            android:textSize="20sp" />
+                            android:textSize="17sp" />
                     </LinearLayout>
                 </RelativeLayout>
 
@@ -267,18 +297,18 @@
                     android:id="@+id/TextView02"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/textDistance"
+                    android:layout_below="@+id/TextViewDistance"
                     android:text="@string/mile"
                     android:layout_centerHorizontal="true"
                     android:textColor="#FFF"
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/textDistance"
+                    android:id="@+id/TextViewDistance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:text="200.0"
+                    android:text="0.00"
                     android:textColor="#FFF"
                     android:layout_marginTop="10dp"
                     android:textSize="90sp" />
@@ -305,7 +335,7 @@
     </RelativeLayout>
 
     <ImageButton
-        android:id="@+id/buttonPause"
+        android:id="@+id/buttonLock"
         android:layout_width="wrap_content"
         android:layout_height="75dp"
         android:layout_alignParentBottom="true"
