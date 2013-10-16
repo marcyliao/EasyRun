@@ -110,17 +110,17 @@ public class RunningActivityController implements LocationListener {
 
 	private void addTheFirstLocation() {
 		Date currentTime = new Date();
+		lastRecordFrameTime = currentTime;
+		
 		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if(location != null) {
 			currentRecord.getLocationPoints().add(location);
 			currentRecord.getLocationPointsTime().add(currentTime);
-			lastRecordFrameTime = currentTime;
 			
 			Log.v("runners", "runners - location point added: " + location.getLatitude() + "," + location.getLatitude());
 			Log.v("runners", "runners - time: " + currentTime);
 		}
 	}
-	
 	
 	// Logic of updating record
 	public void updateCurrentRecord(){
@@ -162,9 +162,17 @@ public class RunningActivityController implements LocationListener {
 						Log.v("runners", "avg speed: " + avgSpeed + " = " + currentRecord.getDistance()+"/"+currentRecord.getTimeLength()/3600);
 						currentRecord.setAvgSpeed((float)avgSpeed);
 					}
+					
+					if(listener != null)
+						listener.onLocationAdded(currentRecord);
 				}
 			}
+			
 		}
+		
+		// Notify listener
+		if(listener != null)
+			listener.onDataChange(currentRecord);
 	}
 
 	@Override
@@ -237,9 +245,6 @@ public class RunningActivityController implements LocationListener {
 			// Update record
 			updateCurrentRecord();
 			
-			// Notify listener
-			if(listener != null)
-				listener.onDataChange(currentRecord);
 		}
 		 
         @Override

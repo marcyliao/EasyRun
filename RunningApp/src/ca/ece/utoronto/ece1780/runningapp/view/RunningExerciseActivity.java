@@ -22,6 +22,9 @@ public class RunningExerciseActivity extends Activity {
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
 	
+	// controller
+	private RunningActivityController controller;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,10 +96,17 @@ public class RunningExerciseActivity extends Activity {
 		});
 		
 		// Start recording running exercise activity
-		RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
+		controller = RunningActivityController.getInstance(getApplicationContext());
 		
 		// Bind listener to controller to update UI when record is updated
-		controller.bindListener(new RunningDataChangeListener(){
+		controller.bindListener(getRecordChangeListener());
+		
+		// Start activity
+		controller.startActivity();
+	}
+
+	private RunningDataChangeListener getRecordChangeListener() {
+		return new RunningDataChangeListener(){
 
 			@Override
 			public void onDataChange(ActivityRecord currentRecord) {
@@ -105,10 +115,12 @@ public class RunningExerciseActivity extends Activity {
 				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",currentRecord.getAvgSpeed()));
 				((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(currentRecord.getCalories()));
 			}
-		});
-		
-		// Start activity
-		controller.startActivity();
+
+			@Override
+			public void onLocationAdded(ActivityRecord record) {
+				// do nothing
+			}
+		};
 	}
 
 	@Override
@@ -166,5 +178,11 @@ public class RunningExerciseActivity extends Activity {
 	@Override
 	public void onBackPressed() {
 	    // do nothing.
+	}
+	
+	@Override
+	public void onResume() {
+		controller.bindListener(getRecordChangeListener());
+		super.onResume();
 	}
 }
