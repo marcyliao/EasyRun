@@ -38,7 +38,9 @@ public class ActivitiesFragment extends Fragment {
 
 
 	public void updateList() {
-        mListAdapter.notifyDataSetChanged();
+		if(mListAdapter != null) {
+			mListAdapter.notifyDataSetChanged();
+		}
 	}
 	
 	private class ActivityRecordArrayAdapter extends BaseAdapter {
