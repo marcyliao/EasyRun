@@ -98,7 +98,7 @@
                 android:layout_height="fill_parent"
                 android:layout_marginRight="1dp"
                 android:layout_weight="1"
-                android:background="#555"
+                android:background="@drawable/texture_background2"
                 android:orientation="vertical" >
 
                 <RelativeLayout
@@ -160,7 +160,7 @@
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
-                android:background="#555"
+                android:background="@drawable/texture_background2"
                 android:orientation="vertical" >
 
                 <RelativeLayout
@@ -226,7 +226,7 @@
                 android:layout_height="fill_parent"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:background="#555"
+                android:background="@drawable/texture_background2"
                 android:orientation="vertical" >
 
                 <RelativeLayout
@@ -285,23 +285,13 @@
             android:layout_below="@+id/linearLayout1"
             android:layout_marginBottom="1dp"
             android:layout_marginTop="1dp"
-            android:background="#555"
+            android:background="@drawable/texture_background2"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="5" >
-
-                <TextView
-                    android:id="@+id/TextView02"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/TextViewDistance"
-                    android:text="@string/mile"
-                    android:layout_centerHorizontal="true"
-                    android:textColor="#FFF"
-                    android:textSize="15sp" />
 
                 <TextView
                     android:id="@+id/TextViewDistance"
@@ -311,7 +301,19 @@
                     android:text="0.00"
                     android:textColor="#FFF"
                     android:layout_marginTop="10dp"
-                    android:textSize="90sp" />
+            		android:textSize="100sp" 
+            		android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/TextView02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBaseline="@+id/TextViewDistance"
+                    android:layout_alignBottom="@+id/TextViewDistance"
+                    android:layout_toRightOf="@+id/TextViewDistance"
+                    android:text="@string/unit_distance"
+                    android:textColor="#FFF"
+                    android:textSize="15sp" />
 
             </RelativeLayout>
 

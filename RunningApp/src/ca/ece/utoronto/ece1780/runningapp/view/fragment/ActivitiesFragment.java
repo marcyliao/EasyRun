@@ -4,22 +4,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
+import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import android.support.v4.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class ActivitiesFragment extends Fragment {
 
+	public static final int RECORD_DETAIL_REQUEST = 389;
 	private ActivityRecordArrayAdapter mListAdapter;
 
 	public ActivitiesFragment() {
@@ -33,6 +37,23 @@ public class ActivitiesFragment extends Fragment {
 	    ListView l = (ListView) rootView.findViewById(R.id.listViewActivities);
 	    mListAdapter = new ActivityRecordArrayAdapter(getActivity());
 	    l.setAdapter(mListAdapter);
+	    
+	    l.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				ActivityRecord record = mListAdapter.getRecords().get(position);
+				Bundle b = new Bundle();
+				if (record != null)
+					b.putLong("id", record.getId());
+				Intent i = new Intent(getActivity(), ActivityRecordActivity.class);
+				i.putExtras(b);
+
+				getActivity().startActivityForResult(i, RECORD_DETAIL_REQUEST);
+			}
+	    });
+	    
 		return rootView;
 	}
 
@@ -45,7 +66,13 @@ public class ActivitiesFragment extends Fragment {
 	
 	private class ActivityRecordArrayAdapter extends BaseAdapter {
 		private final Context context;
-		private final List<ActivityRecord> records;
+		private List<ActivityRecord> records;
+
+		@Override
+		public void notifyDataSetChanged() {
+			records = new ActivityRecordDAO(context).getAllRecords();
+			super.notifyDataSetChanged();
+		}
 
 		public ActivityRecordArrayAdapter(Context context) {
 			super();
@@ -62,9 +89,9 @@ public class ActivitiesFragment extends Fragment {
 			TextView textViewDistance = (TextView) rowView.findViewById(R.id.TextViewDistance);
 			TextView textViewTime = (TextView) rowView.findViewById(R.id.TextViewTime);
 			
-			textViewDistance.setText(String.format("%.2f", records.get(position).getDistance()/1000));
+			textViewDistance.setText(String.format("%.2f", getRecords().get(position).getDistance()/1000));
 			
-			Date date = new Date(records.get(position).getTime());
+			Date date = new Date(getRecords().get(position).getTime());
 			SimpleDateFormat dateformatYYYYMMDD = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
 			textViewTime.setText(dateformatYYYYMMDD.format(date));
 
@@ -73,8 +100,8 @@ public class ActivitiesFragment extends Fragment {
 		
 		@Override
 		public int getCount() {
-			if(records != null)
-				return records.size();
+			if(getRecords() != null)
+				return getRecords().size();
 			return 0;
 		}
 
@@ -86,6 +113,10 @@ public class ActivitiesFragment extends Fragment {
 		@Override
 		public long getItemId(int position) {
 			return position;
+		}
+
+		public List<ActivityRecord> getRecords() {
+			return records;
 		}
 	}
 }

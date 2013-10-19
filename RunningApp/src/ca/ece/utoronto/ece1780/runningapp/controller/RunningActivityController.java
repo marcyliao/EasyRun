@@ -132,47 +132,45 @@ public class RunningActivityController implements LocationListener {
 			
 			// Add a time point and location point to record every time interval.
 			if(currentTime.getTime() - lastRecordFrameTime.getTime() > INTERVAL_ADDING_LOCATION_TO_RECORD) {
-				
-				Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-				if(location != null) {
-					
-					// Add a location and time point to record
-					currentRecord.getLocationPoints().add(location);
-					currentRecord.getLocationPointsTime().add(currentTime);
-					lastRecordFrameTime = currentTime;
-					
-					Log.v("runners", "runners - location point added: " + location.getLatitude() + "," + location.getLatitude());
-					Log.v("runners", "runners - time: " + currentTime);
-					
-					// Add the distance to record once a new location point is added
-					int locationPointsLength = currentRecord.getLocationPoints().size();
-					if(locationPointsLength > 1) {
-						Location last = currentRecord.getLocationPoints().get(locationPointsLength-1);
-						Location lastSecond = currentRecord.getLocationPoints().get(locationPointsLength-2);
-						
-						// Compute new distance
-						currentRecord.setDistance(currentRecord.getDistance()+last.distanceTo(lastSecond));
-						Log.v("runners", "runners - distance: " + currentRecord.getDistance());
-						
-						// Compute calories
-						currentRecord.setCalories((int) UtilityCaculator.computeColories(70, currentRecord.getDistance()));
-						
-						// Compute avg speed
-						double avgSpeed = (double) ((currentRecord.getDistance()*3600)/(currentRecord.getTimeLength()));
-						Log.v("runners", "avg speed: " + avgSpeed + " = " + currentRecord.getDistance()+"/"+currentRecord.getTimeLength()/3600);
-						currentRecord.setAvgSpeed((float)avgSpeed);
-					}
-					
-					if(listener != null)
-						listener.onLocationAdded(currentRecord);
-				}
+				processNewLocationAdded(currentTime);
 			}
-			
 		}
 		
-		// Notify listener
+		// Notify record update
 		if(listener != null)
 			listener.onDataChange(currentRecord);
+	}
+
+	private void processNewLocationAdded(Date currentTime) {
+		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(location != null) {
+			
+			// Add a location and time point to record
+			currentRecord.getLocationPoints().add(location);
+			currentRecord.getLocationPointsTime().add(currentTime);
+			lastRecordFrameTime = currentTime;
+			
+			// Add the distance to record once a new location point is added
+			int locationPointsLength = currentRecord.getLocationPoints().size();
+			if(locationPointsLength > 1) {
+				Location last = currentRecord.getLocationPoints().get(locationPointsLength-1);
+				Location lastSecond = currentRecord.getLocationPoints().get(locationPointsLength-2);
+				
+				// Compute new distance
+				currentRecord.setDistance(currentRecord.getDistance()+last.distanceTo(lastSecond));
+				
+				// Compute calories
+				currentRecord.setCalories((int) UtilityCaculator.computeColories(70, currentRecord.getDistance()));
+				
+				// Compute avg speed
+				double avgSpeed = (double) ((currentRecord.getDistance()*3600)/(currentRecord.getTimeLength()));
+				currentRecord.setAvgSpeed((float)avgSpeed);
+			}
+			
+			// Nodify location added
+			if(listener != null)
+				listener.onLocationAdded(currentRecord);
+		}
 	}
 
 	@Override

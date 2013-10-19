@@ -22,7 +22,7 @@ public class RunningExerciseActivity extends Activity {
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
 	
-	// controller
+	// Controller
 	private RunningActivityController controller;
 	
 	@Override
@@ -62,7 +62,7 @@ public class RunningExerciseActivity extends Activity {
 			}
 		});
 		
-		// Once ressume button is clicked, resume activity.
+		// Once resume button is clicked, resume the activity.
 		findViewById(R.id.buttonResume).setOnClickListener(new OnClickListener(){
 			
 			@Override
@@ -118,7 +118,7 @@ public class RunningExerciseActivity extends Activity {
 
 			@Override
 			public void onLocationAdded(ActivityRecord record) {
-				// do nothing
+				// Do nothing
 			}
 		};
 	}
@@ -177,7 +177,7 @@ public class RunningExerciseActivity extends Activity {
 	
 	@Override
 	public void onBackPressed() {
-	    // do nothing.
+	    // Do nothing.
 	}
 	
 	@Override

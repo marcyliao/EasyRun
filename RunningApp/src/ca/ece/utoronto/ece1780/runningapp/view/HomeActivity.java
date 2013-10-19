@@ -78,8 +78,9 @@ public class HomeActivity extends FragmentActivity implements
 		if(requestCode == StartFragment.START_ACTIVITY_REQUEST) {
 			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
 				
-				// force updating data in different fragments.
+				// Force updating data in different fragments.
 				mSectionsPagerAdapter.startFragment.initWidgets();
+				mSectionsPagerAdapter.startFragment.retestLocationAccuracy();
 				mSectionsPagerAdapter.activityFragment.updateList();
 				
 				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_LONG).show();
@@ -87,8 +88,21 @@ public class HomeActivity extends FragmentActivity implements
 			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
 				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
 			}
+			
+		}
+		if(requestCode == ActivitiesFragment.RECORD_DETAIL_REQUEST) {
+			if (resultCode == ActivityRecordActivity.DUMP_RECORD) {
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
+				mSectionsPagerAdapter.activityFragment.updateList();
+			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	protected void onResume() {
+		mSectionsPagerAdapter.startFragment.retestLocationAccuracy();
+		super.onResume();
 	}
 
 	@Override

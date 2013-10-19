@@ -1,12 +1,19 @@
 package ca.ece.utoronto.ece1780.runningapp.data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
 import android.location.Location;
+import android.location.LocationManager;
 
-public class ActivityRecord {
+public class ActivityRecord implements Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	//unique id
 	private Long id;
 
@@ -225,6 +232,22 @@ public class ActivityRecord {
 			}
 		}
 		locationPointsTimeStr = builder.toString();
+		
+	}
+
+	public void prepareToShow() {
+		String locationXandY [] = locationPointsStr.split(",");
+		String time [] = this.locationPointsTimeStr.split(",");
+		for(int i=0; i<time.length-1; i++) {
+			// Convert location String list to location list
+			Location l = new Location(LocationManager.GPS_PROVIDER);
+			l.setLatitude(Double.valueOf(locationXandY[2*i]));
+			l.setLongitude(Double.valueOf(locationXandY[2*i+1]));
+			locationPoints.add(l);
+			
+			// Convert location time to time
+			locationPointsTime.add(new Date(Long.valueOf(time[i])));
+		}
 		
 	}
 }

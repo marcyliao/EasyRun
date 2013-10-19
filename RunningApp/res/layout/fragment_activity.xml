@@ -2,8 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".StartActivity$DummySectionFragment" 
-    android:background="#444">
+    tools:context=".StartActivity$DummySectionFragment" >
 
     <ListView
         android:id="@+id/listViewActivities"

@@ -8,6 +8,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.LinearGradient;
+import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -66,7 +70,17 @@ public class StartFragment extends Fragment implements LocationListener {
 	public void initWidgets() {
 		UserSetting setting = new UserSetting(getActivity());
 		
-		((TextView)rootView.findViewById(R.id.TextViewTotalDistance)).setText(String.format("%.1f",Double.valueOf(setting.getDistance())/1000));
+		TextView distance = (TextView)rootView.findViewById(R.id.TextViewTotalDistance);
+		(distance).setText(String.format("%.1f",Double.valueOf(setting.getDistance())/1000));
+		
+		// Add gradient effect to the textView of distance.
+		/*
+		Shader textShader=new LinearGradient(0, 0, 0, distance.getPaint().getTextSize(),
+	            new int[]{Color.argb(255, 255, 255, 207),Color.WHITE},
+	            new float[]{0, 1}, TileMode.CLAMP);
+		distance.getPaint().setShader(textShader);
+		*/
+		
 		double avgSpeed = setting.getDistance() == 0?0:(setting.getDistance()*3600)/(setting.getTotalTime());
 		((TextView)rootView.findViewById(R.id.TextViewAverageSpeed)).setText(String.format("%.1f",Double.valueOf(avgSpeed)));
 		((TextView)rootView.findViewById(R.id.TextViewRuns)).setText(String.valueOf(setting.getRuns()));
@@ -203,6 +217,10 @@ public class StartFragment extends Fragment implements LocationListener {
 			locationManager.removeUpdates(this);
 		}
 		
+	}
+	
+	public void retestLocationAccuracy() {
+		testLocation = null;
 	}
 
 }

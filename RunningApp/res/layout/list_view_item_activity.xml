@@ -1,17 +1,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip" 
-    android:background="#000">
+    android:padding="6dip" >
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="70dp"
+        android:layout_width="50dp"
         android:layout_height="fill_parent"
         android:layout_alignParentBottom="true"
         android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/padding"
         android:contentDescription="TODO"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/icon_runner" />
 
     <TextView
         android:id="@+id/TextViewTime"
@@ -49,5 +49,16 @@
         android:textColor="#FFF"
         android:layout_marginLeft="4dp"
         android:textSize="23sp" />
+
+    <RelativeLayout
+        android:id="@+id/padding"
+        android:background="#24c2fd"
+        android:layout_width="4dp"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/icon"
+        android:layout_alignBottom="@+id/icon"
+        android:layout_alignParentLeft="true" >
+
+    </RelativeLayout>
 
 </RelativeLayout> 

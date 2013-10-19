@@ -12,17 +12,15 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
 import ca.ece.utoronto.ece1780.runningapp.controller.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
-import android.widget.TextView;
 
 public class MapModeActivity extends Activity {
 
-	// controller
+	// Controller
 	private RunningActivityController controller;
 	private Marker endMarker;
 	
@@ -46,48 +44,53 @@ public class MapModeActivity extends Activity {
 		GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 		        .getMap();
 
-		// Move the camera instantly to hamburg with a zoom of 15.
 		if (record.getLocationPoints().size() >= 1) {
+			
+			// Get the start location
+			Location startLocation = record.getLocationPoints().get(0);
+			
+			// Get the last location
 			int last = record.getLocationPoints().size()-1;
 			Location lastLocation = record.getLocationPoints().get(last);
-			Location startLocation = record.getLocationPoints().get(0);
 
-			// add the start marker
+			// Add the start marker
 			map.addMarker(new MarkerOptions()
-	        .position(new LatLng(startLocation.getLatitude(), startLocation.getLongitude()))
+	        .position(getLatLngFromLocation(startLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 			
 
-			// add the end marker
+			// Add the end marker
 			endMarker = map.addMarker(new MarkerOptions()
-	        .position(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()))
+	        .position(getLatLngFromLocation(lastLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 			
 			// Move the camera instantly to hamburg with a zoom of 15.
-		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude()), 15));
+		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromLocation(lastLocation), 15));
 		}
 
-		// make sure that there are at least two points on the map
+		// Make sure that there are at least two points on the map
 		if (record.getLocationPoints().size() > 1) {
 			Location originalLocation = record.getLocationPoints().get(0);
 			Location startLocation = originalLocation;
 
-			// draw the route on the map
+			// Draw the route on the map
 			PolylineOptions options = new PolylineOptions();
 			for (int i = 1; i < record.getLocationPoints().size(); i++) {
 				Location endLocation = record.getLocationPoints().get(i);
 
-				options.add(
-						new LatLng(startLocation.getLatitude(),
-								startLocation.getLongitude()),
-						new LatLng(endLocation.getLatitude(), endLocation
-								.getLongitude())).width(5).color(Color.RED);
+				options.add(getLatLngFromLocation(startLocation),getLatLngFromLocation(endLocation))
+					.width(5)
+					.color(Color.RED);
 
 				startLocation = endLocation;
 			}
 			map.addPolyline(options);
-
 		}
+	}
+
+	private LatLng getLatLngFromLocation(Location startLocation) {
+		return new LatLng(startLocation.getLatitude(),
+				startLocation.getLongitude());
 	}
 
 	@Override
@@ -112,16 +115,17 @@ public class MapModeActivity extends Activity {
 				
 				int l1Index = record.getLocationPoints().size()-2;
 				int l2Index = record.getLocationPoints().size()-1;
+				
 				Location l1 = record.getLocationPoints().get(l1Index);
 				Location l2 = record.getLocationPoints().get(l2Index);
 
 				PolylineOptions options = new PolylineOptions();
-				options.add(new LatLng(l1.getLatitude(),l1.getLongitude()),new LatLng(l2.getLatitude(), l2.getLongitude()))
+				options.add(getLatLngFromLocation(l1),getLatLngFromLocation(l2))
 					.width(5).color(Color.RED);	
 				
 				map.addPolyline(options);
 				
-				endMarker.setPosition(new LatLng(l2.getLatitude(),l2.getLongitude()));
+				endMarker.setPosition(getLatLngFromLocation(l2));
 			}
 		};
 	}

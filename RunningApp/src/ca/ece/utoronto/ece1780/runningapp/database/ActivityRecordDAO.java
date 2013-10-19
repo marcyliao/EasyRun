@@ -48,7 +48,7 @@ public class ActivityRecordDAO {
 
 		cursor.moveToFirst();
 		if (!cursor.isAfterLast()) {
-			Record = cursorToRecord(cursor);
+			Record = cursorToRecord(cursor,true);
 		}
 
 		cursor.close();
@@ -71,7 +71,7 @@ public class ActivityRecordDAO {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			ActivityRecord f = cursorToRecord(cursor);
+			ActivityRecord f = cursorToRecord(cursor,false);
 			Records.add(f);
 			cursor.moveToNext();
 		}
@@ -98,16 +98,19 @@ public class ActivityRecordDAO {
 
 		return values;
 	}
-
-	private ActivityRecord cursorToRecord(Cursor cursor) {
+	
+	// Parameter weak: control loading the big data or not
+	private ActivityRecord cursorToRecord(Cursor cursor, boolean weak) {
 		ActivityRecord r = new ActivityRecord();
 		r.setId(cursor.getLong(0));
 		r.setTime(cursor.getLong(1));
 		r.setDistance(cursor.getDouble(2));
 		r.setAvgSpeed(cursor.getFloat(3));
 		r.setCalories(cursor.getInt(4));
-		r.setLocationPointsStr(cursor.getString(5));
-		r.setLocationPointsTimeStr(cursor.getString(6));
+		if(weak) {
+			r.setLocationPointsStr(cursor.getString(5));
+			r.setLocationPointsTimeStr(cursor.getString(6));
+		}	
 		r.setWeather(cursor.getInt(7));
 		r.setTemperature(cursor.getInt(8));
 		r.setTimeLength(cursor.getLong(9));

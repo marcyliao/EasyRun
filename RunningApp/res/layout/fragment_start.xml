@@ -8,7 +8,6 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonStart"
         android:layout_alignParentTop="true"
-        android:background="#000"
         android:paddingBottom="20dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -20,7 +19,7 @@
             android:layout_height="fill_parent"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/xml_background_gray_radius" >
+            android:background="@drawable/texture_background" >
 
             <ImageView
                 android:id="@+id/imageViewGpsSignal"
@@ -42,7 +41,8 @@
             android:layout_marginBottom="10dp"
             android:text="0.0"
             android:textColor="#FFF"
-            android:textSize="80sp" />
+            android:textSize="100sp" 
+            android:textStyle="bold"/>
 
         <TextView
             android:layout_width="wrap_content"
@@ -82,7 +82,7 @@
                         <ImageView
                             android:id="@+id/imageView1"
                             android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_height="20dp"
                             android:layout_alignBottom="@+id/TextViewRuns"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
@@ -93,6 +93,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
+                            android:layout_marginLeft="3dp"
                             android:layout_toRightOf="@+id/imageView1"
                             android:text="0"
                             android:textColor="#FFF"
@@ -105,7 +106,8 @@
                         android:layout_below="@+id/holder1"
                         android:layout_centerHorizontal="true"
                         android:text="@string/runs"
-                        android:textColor="#FFF" />
+                        android:textColor="#CCC"
+                        android:textSize="12sp" />
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -128,6 +130,7 @@
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:text="0"
+                            android:layout_marginLeft="3dp"
                             android:textColor="#FFF"
                             android:textSize="20sp" />
 
@@ -159,7 +162,8 @@
                         android:layout_below="@+id/holder2"
                         android:layout_centerHorizontal="true"
                         android:text="@string/avg_speed"
-                        android:textColor="#FFF" />
+                        android:textColor="#CCC" 
+                        android:textSize="12sp"/>
                 </RelativeLayout>
 
                 <RelativeLayout
@@ -177,7 +181,7 @@
                         <ImageView
                             android:id="@+id/imageView2"
                             android:layout_width="25dp"
-                            android:layout_height="25dp"
+                            android:layout_height="20dp"
                             android:layout_alignBottom="@+id/TextViewCalories"
                             android:layout_alignParentLeft="true"
                             android:layout_alignParentTop="true"
@@ -188,6 +192,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentTop="true"
+                            android:layout_marginLeft="3dp"
                             android:layout_toRightOf="@+id/imageView2"
                             android:text="0"
                             android:textColor="#FFF"
@@ -200,7 +205,8 @@
                         android:layout_below="@+id/holder3"
                         android:layout_centerHorizontal="true"
                         android:text="@string/calories"
-                        android:textColor="#FFF" />
+                        android:textColor="#CCC" 
+                        android:textSize="12sp"/>
                 </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
