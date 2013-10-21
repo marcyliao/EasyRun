@@ -16,8 +16,8 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 public class HomeActivity extends FragmentActivity implements
@@ -31,8 +31,6 @@ public class HomeActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
-
-		Log.v("runners","runners - home activity on create");
 		
 	    // Set up UI components
 		// Set up the action bar.
@@ -47,7 +45,6 @@ public class HomeActivity extends FragmentActivity implements
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
@@ -69,8 +66,6 @@ public class HomeActivity extends FragmentActivity implements
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-		
-		
 	}
 
 	@Override
@@ -79,21 +74,38 @@ public class HomeActivity extends FragmentActivity implements
 			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
 				
 				// Force updating data in different fragments.
-				mSectionsPagerAdapter.startFragment.initWidgets();
-				mSectionsPagerAdapter.startFragment.retestLocationAccuracy();
-				mSectionsPagerAdapter.activityFragment.updateList();
+				// Update start fragment
+				StartFragment startFragment = (StartFragment) getSupportFragmentManager()
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+				if (startFragment != null && startFragment.getView() != null) {
+					startFragment.retestLocationAccuracy();
+					startFragment.initWidgets();
+				}
+
+				// Update activity fragment
+				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
+				if (activityFragment != null && activityFragment.getView() != null) {
+					activityFragment.updateList();
+				}
 				
-				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_LONG).show();
+				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_SHORT).show();
 			}
 			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
-				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
 			}
 			
 		}
 		if(requestCode == ActivitiesFragment.RECORD_DETAIL_REQUEST) {
 			if (resultCode == ActivityRecordActivity.DUMP_RECORD) {
-				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_LONG).show();
-				mSectionsPagerAdapter.activityFragment.updateList();
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
+				
+				// Update activity fragment
+				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
+				if (activityFragment != null && activityFragment.getView() != null) {
+					activityFragment.updateList();
+				}
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -101,7 +113,11 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	protected void onResume() {
-		mSectionsPagerAdapter.startFragment.retestLocationAccuracy();
+		StartFragment fragment = (StartFragment) getSupportFragmentManager()
+				.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+		if (fragment != null && fragment.isInLayout()) {
+			fragment.retestLocationAccuracy();
+		}
 		super.onResume();
 	}
 
@@ -116,8 +132,6 @@ public class HomeActivity extends FragmentActivity implements
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 		
-		Log.v("runners", tab.getPosition() + "is selected");
-		
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		mViewPager.setCurrentItem(tab.getPosition());
@@ -125,10 +139,18 @@ public class HomeActivity extends FragmentActivity implements
 		// Start tracking location when start fragment is on, otherwise stop it
 		// to save battery
 		if(0 == tab.getPosition()) {
-			mSectionsPagerAdapter.startFragment.startUpateLocation();	
+			StartFragment fragment = (StartFragment) getSupportFragmentManager()
+					.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+			if (fragment != null && fragment.getView() != null) {
+				fragment.startUpateLocation();
+			}
 		}
 		else {
-			mSectionsPagerAdapter.startFragment.stopUpateLocation();
+			StartFragment fragment = (StartFragment) getSupportFragmentManager()
+					.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+			if (fragment != null && fragment.getView() != null) {
+				fragment.stopUpateLocation();
+			}
 		}
 	}
 
@@ -141,16 +163,26 @@ public class HomeActivity extends FragmentActivity implements
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
-
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Users select other modes.
+		Intent i;
+	    switch (item.getItemId()) {
+	    case R.id.action_settings:
+	    	i = new Intent(this, SettingActivity.class);
+	        startActivityForResult(i,0);
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
 	 */
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
-
-		StartFragment startFragment = new StartFragment();
-		MusicFragment musicFragment = new MusicFragment();
-		ActivitiesFragment activityFragment = new ActivitiesFragment();
 		
 		public SectionsPagerAdapter(FragmentManager fm) {
 			super(fm);
@@ -160,11 +192,11 @@ public class HomeActivity extends FragmentActivity implements
 		public Fragment getItem(int position) {
 			switch (position) {
 			case 0:
-				return startFragment;
+				return new StartFragment();
 			case 1:
-				return musicFragment;
+				return new MusicFragment();
 			case 2:
-				return activityFragment;
+				return new ActivitiesFragment();
 			}
 			return null;
 		}

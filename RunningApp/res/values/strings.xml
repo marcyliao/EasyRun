@@ -43,5 +43,35 @@
     <string name="title_activity_activity_record">ActivityRecordActivity</string>
     <string name="Note">Note:</string>
     <string name="no_note">No Note</string>
+    <string name="no_target">No target</string>
+    <string name="_continue">Continue</string>
+    <string name="whats_your_target_distance">What is your target?</string>
+    <string name="target_achieved">Target achieved!</string>
+    <string name="title_activity_setting">MainActivity</string>
+    <string name="unit_weight">kg</string>
+    <string name="setting_catagory_profile">PROFILE SETTING</string>
+    
+    <!-- Setting preferences attributes -->
+    <string name="pref_key_name">pref_name</string>
+    <string name="pref_title_name">Name</string>
+    
+    <string name="pref_key_gender">pref_gender</string>
+    <string name="pref_title_gender">Gender</string>
+    <string-array name="pref_array_genders">
+        <item>Keep it secret</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="pref_array_values_genders">
+        <item>notset</item>
+        <item>male</item>
+        <item>female</item>
+    </string-array>
+    <string name="pref_dialog_title_gender">Select Gender</string>
+    
+    <string name="pref_key_weight">pref_weight</string>
+    <string name="pref_title_weight">Weight</string> 
+    <string name="pref_dialog_title_weight">Enter Weight</string>
+    
 
 </resources>

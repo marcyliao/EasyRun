@@ -47,12 +47,17 @@ public class RunningActivityController implements LocationListener {
 	// Listener used to notify UI thread when record is updated
 	private RunningDataChangeListener listener;
 	
+	// Whether the distance is greater than the goal
+	private boolean goalAchieved;
+	
 	// Use singleton
 	private RunningActivityController() {
 		
 		activityGoing = false;
 		locationManager = (LocationManager) appContext.getSystemService(Context.LOCATION_SERVICE);
 		refreshTask = new RefreshTask();
+		
+		goalAchieved = false;
 	}
 	
 	public ActivityRecord getCurrentRecord(){
@@ -73,10 +78,12 @@ public class RunningActivityController implements LocationListener {
 	}
 
 	// Start activity
-	public void startActivity(){	
+	public void startActivity(float goal){	
 
 		// Create a new record
+		goalAchieved = false;
 		currentRecord = new ActivityRecord();
+		currentRecord.setGoal(goal);
 		
 		// Resume Activity
 		resumeActivity();
@@ -137,8 +144,13 @@ public class RunningActivityController implements LocationListener {
 		}
 		
 		// Notify record update
-		if(listener != null)
+		if(listener != null) {
 			listener.onDataChange(currentRecord);
+			if(currentRecord.getGoal() != 0.0f && !goalAchieved && currentRecord.getDistance() >= currentRecord.getGoal()*1000) {
+				goalAchieved = true;
+				listener.onGoalAchieved();
+			}
+		}
 	}
 
 	private void processNewLocationAdded(Date currentTime) {

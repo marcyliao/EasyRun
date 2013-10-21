@@ -1,7 +1,9 @@
 package ca.ece.utoronto.ece1780.runningapp.database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 
@@ -19,7 +21,7 @@ public class ActivityRecordDAO {
 	final public static String[] ALL_COLUMNS = { "_id", "time", "distance",
 			"avg_speed", "calories", "location_points_str",
 			"location_points_time_str", "weather", "temperature",
-			"time_length", "heart_rate", "mood", "note" };
+			"time_length", "heart_rate", "mood", "note", "goal"};
 
 	public ActivityRecordDAO(Context context) {
 		dbHelper = new SQLiteHelper(context);
@@ -95,6 +97,7 @@ public class ActivityRecordDAO {
 		values.put(ALL_COLUMNS[10], Record.getHeartRate());
 		values.put(ALL_COLUMNS[11], Record.getMood());
 		values.put(ALL_COLUMNS[12], Record.getNote());
+		values.put(ALL_COLUMNS[13], Record.getGoal());
 
 		return values;
 	}
@@ -117,7 +120,34 @@ public class ActivityRecordDAO {
 		r.setHeartRate(cursor.getInt(10));
 		r.setMood(cursor.getInt(11));
 		r.setNote(cursor.getString(12));
+		r.setGoal(cursor.getFloat(13));
 		return r;
 	}
+	
+	public Map<String,String> getHistory() {
+		Map<String,String> map = new HashMap<String,String>();
+		
+		int totalCalories = 0;
+		float totalDistance = 0;
+		float totalDuration = 0;
+		int totalRuns = 0;
+		
+		List<ActivityRecord> l = getAllRecords();
+		for(ActivityRecord r : l) {
+			totalCalories += r.getCalories();
+			totalDistance += r.getDistance();
+			totalDuration += r.getTimeLength();
+			totalRuns++;
+		}
+		
+		map.put("totalCalories", String.valueOf(totalCalories));
+		map.put("totalDistance", String.valueOf(totalDistance));
+		map.put("totalDuration", String.valueOf(totalDuration));
+		map.put("totalRuns", String.valueOf(totalRuns));
+		
+		return map;
+	}
+	
+
 
 }

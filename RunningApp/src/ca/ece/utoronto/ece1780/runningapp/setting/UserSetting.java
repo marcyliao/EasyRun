@@ -10,6 +10,7 @@ public class UserSetting {
 		this.context = context;
 	}
 	
+	/*
 	public void updateTotalDistance(float distance) {
 		SharedPreferences setting = context.getSharedPreferences("setting",
 				Context.MODE_PRIVATE);
@@ -56,6 +57,18 @@ public class UserSetting {
 		SharedPreferences setting = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
 		Long totalTime = setting.getLong("total_time", 0L);
 		return totalTime;
+	}
+	*/
+	public void setTargetDistance(float target) {
+		SharedPreferences setting = context.getSharedPreferences("setting",
+				Context.MODE_PRIVATE);
+		setting.edit().putFloat("target", target).commit();
+	}
+	
+	public float getTargetDistance() {
+		SharedPreferences setting = context.getSharedPreferences("setting", Context.MODE_PRIVATE);
+		float target = setting.getFloat("target", 0.0F);
+		return target;
 	}
 
 }

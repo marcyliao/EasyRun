@@ -1,10 +1,16 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
+import java.util.Map;
+
+import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.setting.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
+import ca.ece.utoronto.ece1780.runningapp.view.dialog.SettingGoalDialogFragment;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class StartFragment extends Fragment implements LocationListener {
 
@@ -49,6 +56,12 @@ public class StartFragment extends Fragment implements LocationListener {
 	}
 
 	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {		
 
@@ -66,25 +79,22 @@ public class StartFragment extends Fragment implements LocationListener {
 		
 		return rootView;
 	}
-
+	
 	public void initWidgets() {
-		UserSetting setting = new UserSetting(getActivity());
 		
-		TextView distance = (TextView)rootView.findViewById(R.id.TextViewTotalDistance);
-		(distance).setText(String.format("%.1f",Double.valueOf(setting.getDistance())/1000));
+		Map<String,String> history = new ActivityRecordDAO(getActivity()).getHistory();
+		float totalDistance = Float.valueOf(history.get("totalDistance"));
+		float totalDuration = Float.valueOf(history.get("totalDuration"));
+		int totalCalories = Integer.valueOf(history.get("totalCalories"));
+		int totalRuns = Integer.valueOf(history.get("totalRuns"));
 		
-		// Add gradient effect to the textView of distance.
-		/*
-		Shader textShader=new LinearGradient(0, 0, 0, distance.getPaint().getTextSize(),
-	            new int[]{Color.argb(255, 255, 255, 207),Color.WHITE},
-	            new float[]{0, 1}, TileMode.CLAMP);
-		distance.getPaint().setShader(textShader);
-		*/
+		TextView distanceTextView = (TextView)rootView.findViewById(R.id.TextViewTotalDistance);
+		(distanceTextView).setText(String.format("%.1f",Double.valueOf(totalDistance)/1000));
 		
-		double avgSpeed = setting.getDistance() == 0?0:(setting.getDistance()*3600)/(setting.getTotalTime());
+		double avgSpeed = totalDistance == 0?0:(totalDistance*3600)/(totalDuration);
 		((TextView)rootView.findViewById(R.id.TextViewAverageSpeed)).setText(String.format("%.1f",Double.valueOf(avgSpeed)));
-		((TextView)rootView.findViewById(R.id.TextViewRuns)).setText(String.valueOf(setting.getRuns()));
-		((TextView)rootView.findViewById(R.id.TextViewCalories)).setText(String.valueOf(setting.getCalories()));
+		((TextView)rootView.findViewById(R.id.TextViewRuns)).setText(String.valueOf(totalRuns));
+		((TextView)rootView.findViewById(R.id.TextViewCalories)).setText(String.valueOf(totalCalories));
 		
 		initStartButton(rootView);
 	}
@@ -105,7 +115,7 @@ public class StartFragment extends Fragment implements LocationListener {
 				public void onClick(View v) {
 					
 					// When gps accuracy is low, use a dialog to notify user before start
-					if (testLocation == null|| testLocation.getAccuracy() > GPS_SIGNAL_MEDIUM_LEVEL) {
+					if (testLocation == null || testLocation.getAccuracy() > GPS_SIGNAL_MEDIUM_LEVEL) {
 
 						new AlertDialog.Builder(getActivity())
 								.setIcon(android.R.drawable.ic_dialog_alert)
@@ -114,17 +124,23 @@ public class StartFragment extends Fragment implements LocationListener {
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick( DialogInterface dialog, int which) {
-
+										/*
 										Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
 										getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
+										*/	
+										SettingGoalDialogFragment f =new SettingGoalDialogFragment();
+										f.show(getFragmentManager(),"");
 									}
 								})
-								
 								.setNegativeButton(R.string.no, null).show();
 
 					} else {
+						/*
 						Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
 				        getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
+						*/
+						SettingGoalDialogFragment f =new SettingGoalDialogFragment();
+						f.show(getFragmentManager(),"");
 					}
 				}
 				
@@ -145,11 +161,22 @@ public class StartFragment extends Fragment implements LocationListener {
 	}
 
 	
+	@Override
+	public void setUserVisibleHint(boolean isVisibleToUser) {
+	    super.setUserVisibleHint(isVisibleToUser);
+	    if (isVisibleToUser) { }
+	}
+	
 	// If location is changed, test GPS signal and show to user
 	@Override
 	public void onLocationChanged(Location location) {
 		testLocation = location;
 		ImageView signalView = (ImageView)getView().findViewById(R.id.imageViewGpsSignal);
+		
+		if(testLocation == null) {
+			signalView.setImageResource(R.drawable.icon_signal_0);
+			return;
+		}
 		
 		if(location.getAccuracy()<GPS_SIGNAL_STRONG_LEVEL) {
 			signalView.setImageResource(R.drawable.icon_signal_4);
@@ -166,8 +193,6 @@ public class StartFragment extends Fragment implements LocationListener {
 		else {
 			signalView.setImageResource(R.drawable.icon_signal_0);
 		}
-		
-		Log.v("runners","runners-gps"+location.getAccuracy());
 	}
 
 	@Override
@@ -179,13 +204,11 @@ public class StartFragment extends Fragment implements LocationListener {
 	@Override
 	public void onProviderEnabled(String provider) {
 		// do nothing
-		
 	}
 
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) {
 		// do nothing
-		
 	}
 	
 	@Override
@@ -216,7 +239,6 @@ public class StartFragment extends Fragment implements LocationListener {
 			initStartButton(rootView);
 			locationManager.removeUpdates(this);
 		}
-		
 	}
 	
 	public void retestLocationAccuracy() {

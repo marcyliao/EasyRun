@@ -87,13 +87,6 @@ public class SaveActivityActivity extends Activity  {
 				// Insert the current record to database
 				new ActivityRecordDAO(SaveActivityActivity.this).insertRecord(record);
 				
-				// Add the record data to global setting
-				UserSetting setting = new UserSetting(SaveActivityActivity.this);
-				setting.updateCalories(setting.getCalories()+record.getCalories());
-				setting.updateRuns(setting.getRuns()+1);
-				setting.updateTotalDistance((float) (setting.getDistance()+record.getDistance()));
-				setting.updateTotalTime(setting.getTotalTime()+record.getTimeLength());
-				
 				setResult(RESULT_SAVE);
 				finish();
 			}

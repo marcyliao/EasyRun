@@ -127,6 +127,12 @@ public class MapModeActivity extends Activity {
 				
 				endMarker.setPosition(getLatLngFromLocation(l2));
 			}
+
+			@Override
+			public void onGoalAchieved() {
+				// TODO Auto-generated method stub
+				
+			}
 		};
 	}
 

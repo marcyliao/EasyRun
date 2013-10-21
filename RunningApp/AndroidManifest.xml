@@ -71,7 +71,11 @@
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="ca.ece.utoronto.ece1780.runningapp.view.SettingActivity"
+            android:label="@string/title_activity_setting" >
         </activity>
     </application>
 

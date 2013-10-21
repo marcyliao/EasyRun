@@ -133,10 +133,10 @@ public class ActivityRecordActivity extends Activity {
 				if (startLocation.getLatitude() < smallestLatitude) {
 					smallestLatitude = startLocation.getLatitude();
 				}
-				if (startLocation.getLatitude() > largestLongitude) {
+				if (startLocation.getLongitude() > largestLongitude) {
 					largestLongitude = startLocation.getLongitude();
 				}
-				if (startLocation.getLatitude() < smallestLongitude) {
+				if (startLocation.getLongitude()  < smallestLongitude) {
 					smallestLongitude = startLocation.getLongitude();
 				}
 			}

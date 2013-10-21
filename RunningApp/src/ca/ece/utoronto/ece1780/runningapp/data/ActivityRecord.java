@@ -61,6 +61,9 @@ public class ActivityRecord implements Serializable {
 	// Note
 	private String note;
 	
+	// Goal
+	private float goal;
+	
 	public ActivityRecord() {
 		id = 0L;
 		time = new Date().getTime();
@@ -75,6 +78,7 @@ public class ActivityRecord implements Serializable {
 		heartRate = null;
 		mood = Mood.NONSET;
 		note = null;
+		goal = 0.0f;
 	}
 	
 	public Long getId() {
@@ -249,5 +253,13 @@ public class ActivityRecord implements Serializable {
 			locationPointsTime.add(new Date(Long.valueOf(time[i])));
 		}
 		
+	}
+
+	public float getGoal() {
+		return goal;
+	}
+
+	public void setGoal(float goal) {
+		this.goal = goal;
 	}
 }

@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +30,10 @@ public class RunningExerciseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_running_exercise);
+		
+		ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+		pb.setMax(100);
+		pb.setProgress(0);
 		
 		// By default, the pause button is visible. Press it to pause the activity 
 		// and show the continue and stop button. 
@@ -100,9 +105,10 @@ public class RunningExerciseActivity extends Activity {
 		
 		// Bind listener to controller to update UI when record is updated
 		controller.bindListener(getRecordChangeListener());
-		
+
 		// Start activity
-		controller.startActivity();
+		float goal = getIntent().getFloatExtra("goal", 0.0f);
+		controller.startActivity(goal);
 	}
 
 	private RunningDataChangeListener getRecordChangeListener() {
@@ -114,11 +120,22 @@ public class RunningExerciseActivity extends Activity {
 				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
 				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",currentRecord.getAvgSpeed()));
 				((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(currentRecord.getCalories()));
+				
+				if(currentRecord.getGoal()!=0) {
+					ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+					pb.setMax(100);
+					pb.setProgress((int) (100*(currentRecord.getDistance()/1000/currentRecord.getGoal())));
+				}
 			}
 
 			@Override
 			public void onLocationAdded(ActivityRecord record) {
 				// Do nothing
+			}
+
+			@Override
+			public void onGoalAchieved() {
+				Toast.makeText(RunningExerciseActivity.this, R.string.target_achieved, Toast.LENGTH_SHORT).show();
 			}
 		};
 	}

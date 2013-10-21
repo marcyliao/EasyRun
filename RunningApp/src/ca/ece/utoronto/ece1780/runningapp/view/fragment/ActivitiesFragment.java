@@ -25,7 +25,9 @@ public class ActivitiesFragment extends Fragment {
 
 	public static final int RECORD_DETAIL_REQUEST = 389;
 	private ActivityRecordArrayAdapter mListAdapter;
-
+	
+	private TextView textViewNoActivity;
+	
 	public ActivitiesFragment() {
 	}
 
@@ -35,9 +37,11 @@ public class ActivitiesFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_activity,
 				container, false);
 	    ListView l = (ListView) rootView.findViewById(R.id.listViewActivities);
+	    
+	    textViewNoActivity = (TextView) rootView.findViewById(R.id.textViewNoActivity);
 	    mListAdapter = new ActivityRecordArrayAdapter(getActivity());
 	    l.setAdapter(mListAdapter);
-	    
+	   
 	    l.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
@@ -59,6 +63,7 @@ public class ActivitiesFragment extends Fragment {
 
 
 	public void updateList() {
+		
 		if(mListAdapter != null) {
 			mListAdapter.notifyDataSetChanged();
 		}
@@ -71,6 +76,12 @@ public class ActivitiesFragment extends Fragment {
 		@Override
 		public void notifyDataSetChanged() {
 			records = new ActivityRecordDAO(context).getAllRecords();
+			
+			if(records == null || records.size() == 0)
+				textViewNoActivity.setVisibility(View.VISIBLE);
+			else
+				textViewNoActivity.setVisibility(View.INVISIBLE);
+			
 			super.notifyDataSetChanged();
 		}
 
@@ -78,6 +89,11 @@ public class ActivitiesFragment extends Fragment {
 			super();
 			this.context = context;
 			records = new ActivityRecordDAO(context).getAllRecords();
+			
+			if(records == null || records.size() == 0)
+				textViewNoActivity.setVisibility(View.VISIBLE);
+			else
+				textViewNoActivity.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
