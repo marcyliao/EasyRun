@@ -5,7 +5,7 @@ import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.setting.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;

@@ -1,6 +1,6 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.SettingsFragment;
+import ca.ece.utoronto.ece1780.runningapp.preference.SettingsFragment;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;

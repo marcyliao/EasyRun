@@ -3,7 +3,7 @@ package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 import java.util.Map;
 
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.setting.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.dialog.SettingGoalDialogFragment;

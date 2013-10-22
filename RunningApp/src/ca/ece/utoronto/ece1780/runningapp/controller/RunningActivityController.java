@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 public class RunningActivityController implements LocationListener {
@@ -50,6 +51,9 @@ public class RunningActivityController implements LocationListener {
 	// Whether the distance is greater than the goal
 	private boolean goalAchieved;
 	
+	// current user weight
+	private int weight;
+	
 	// Use singleton
 	private RunningActivityController() {
 		
@@ -58,6 +62,9 @@ public class RunningActivityController implements LocationListener {
 		refreshTask = new RefreshTask();
 		
 		goalAchieved = false;
+		
+		int weight = new UserSetting(appContext).getWeight();
+		this.setWeight(weight);
 	}
 	
 	public ActivityRecord getCurrentRecord(){
@@ -69,6 +76,10 @@ public class RunningActivityController implements LocationListener {
 			appContext = context;
 			controller = new RunningActivityController();
 		}
+
+		// Update the weight here since appContext may be different
+		int weight = new UserSetting(context).getWeight();
+		controller.setWeight(weight);
 		
 		return controller;
 	}
@@ -172,8 +183,8 @@ public class RunningActivityController implements LocationListener {
 				currentRecord.setDistance(currentRecord.getDistance()+last.distanceTo(lastSecond));
 				
 				// Compute calories
-				currentRecord.setCalories((int) UtilityCaculator.computeColories(70, currentRecord.getDistance()));
-				
+				currentRecord.setCalories((int) UtilityCaculator.computeColories(getWeight(), currentRecord.getDistance()));
+				Log.v("asd",getWeight()+"");
 				// Compute avg speed
 				double avgSpeed = (double) ((currentRecord.getDistance()*3600)/(currentRecord.getTimeLength()));
 				currentRecord.setAvgSpeed((float)avgSpeed);
@@ -229,6 +240,14 @@ public class RunningActivityController implements LocationListener {
 	// Bind the listener to notify changing UI thread during udpate
 	public void bindListener(RunningDataChangeListener listener) {
 		this.listener = listener;
+	}
+
+	public int getWeight() {
+		return weight;
+	}
+
+	public void setWeight(int weight) {
+		this.weight = weight;
 	}
 
 	// A timer used to keep track of the activity
