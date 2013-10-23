@@ -8,7 +8,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;

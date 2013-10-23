@@ -9,37 +9,51 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 
 public class MapModeActivity extends Activity {
 
 	// Controller
-	private RunningActivityController controller;
+	
 	private Marker endMarker;
+
+	private ControllerService controllerService;
+	private ServiceConnection sconnection = new ServiceConnection() {  
+		
+		@Override
+        public void onServiceConnected(ComponentName name, IBinder service) {  
+        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+        	controllerService.bindListener(getRecordChangeListener());
+    		prepareMap();
+        }
+		
+		@Override 
+        public void onServiceDisconnected(ComponentName name) {
+        	controllerService.unbindListener();
+        }    
+    };
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_map);
-
-		// Start recording running exercise activity
-		controller = RunningActivityController.getInstance(getApplicationContext());
-
-		// Bind listener to controller to update UI when record is updated
-		controller.bindListener(getRecordChangeListener());
 		
-		prepareMap();
 	}
 
 	private void prepareMap() {
-		ActivityRecord record = controller.getCurrentRecord();
+		ActivityRecord record = controllerService.getCurrentRecord();
 		
 		GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 		        .getMap();
@@ -110,28 +124,29 @@ public class MapModeActivity extends Activity {
 
 			@Override
 			public void onLocationAdded(ActivityRecord record) {
-				GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
-				        .getMap();
-				
-				int l1Index = record.getLocationPoints().size()-2;
-				int l2Index = record.getLocationPoints().size()-1;
-				
-				Location l1 = record.getLocationPoints().get(l1Index);
-				Location l2 = record.getLocationPoints().get(l2Index);
-
-				PolylineOptions options = new PolylineOptions();
-				options.add(getLatLngFromLocation(l1),getLatLngFromLocation(l2))
-					.width(5).color(Color.RED);	
-				
-				map.addPolyline(options);
-				
-				endMarker.setPosition(getLatLngFromLocation(l2));
+				MapFragment f = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
+					if(f != null) {
+					GoogleMap map = f.getMap();
+					
+					int l1Index = record.getLocationPoints().size()-2;
+					int l2Index = record.getLocationPoints().size()-1;
+					
+					Location l1 = record.getLocationPoints().get(l1Index);
+					Location l2 = record.getLocationPoints().get(l2Index);
+	
+					PolylineOptions options = new PolylineOptions();
+					options.add(getLatLngFromLocation(l1),getLatLngFromLocation(l2))
+						.width(5).color(Color.RED);	
+					
+					map.addPolyline(options);
+					
+					endMarker.setPosition(getLatLngFromLocation(l2));
+				}
 			}
 
 			@Override
 			public void onGoalAchieved() {
 				// TODO Auto-generated method stub
-				
 			}
 		};
 	}
@@ -139,5 +154,19 @@ public class MapModeActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
+	}
+	
+	@Override
+	protected void onPause() {
+        unbindService(sconnection);
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+        Intent startIntent = new Intent(MapModeActivity.this, ControllerService.class);
+        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+		
+		super.onResume();
 	}
 }

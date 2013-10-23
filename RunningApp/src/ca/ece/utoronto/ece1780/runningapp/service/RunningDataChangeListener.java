@@ -1,4 +1,4 @@
-package ca.ece.utoronto.ece1780.runningapp.controller;
+package ca.ece.utoronto.ece1780.runningapp.service;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 

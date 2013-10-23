@@ -1,30 +1,36 @@
-package ca.ece.utoronto.ece1780.runningapp.controller;
+package ca.ece.utoronto.ece1780.runningapp.service;
 
 import java.util.Date;
 
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
+import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
+import ca.ece.utoronto.ece1780.runningapp.view.R;
+import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Binder;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 
-import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
-import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
-
-public class RunningActivityController implements LocationListener {
+public class ControllerService extends Service implements LocationListener {
 	
-	private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 2000;
+	public static boolean isServiceRunning = false;
+
+    private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 2000;
 
 	// Time interval to update the timer thread. Unit: ms
 	private static final long MIN_TIME_INTERVAL_FOR_UPDATE = 300;
 
-	// The context to get system services like gps
-	private static Context appContext;
-	
 	// A record to store the data of the current activity
 	private ActivityRecord currentRecord;
 	
@@ -34,14 +40,14 @@ public class RunningActivityController implements LocationListener {
 	// Last time to update record, such as increasing the duration
 	private Date lastUpdateTime;
 	
-	// Is the activity currently going on, or being paused or stopped
+	// Is the activity currently going on, or being stopped
 	private boolean activityGoing;
+	
+	// Is the activity currently going on, or being paused
+	private boolean activityPaused;
 	
 	// Timer used to update the record
 	private RefreshTask refreshTask;
-	
-	// The singleton instance controller
-	private static RunningActivityController controller;
 	
 	// Location manager to get gps location
 	private LocationManager locationManager;
@@ -55,76 +61,104 @@ public class RunningActivityController implements LocationListener {
 	// current user weight
 	private int weight;
 	
-	// Use singleton
-	private RunningActivityController() {
-		
+	// Binder used to communicate with activities;
+    public final IBinder binder = new ControllerServiceBinder();  
+    
+    public class ControllerServiceBinder extends Binder {  
+
+    	public ControllerService getService() {  
+            return ControllerService.this;  
+        }  
+    } 
+    
+	@Override
+	public IBinder onBind(Intent arg0) {
+		return binder;
+	}
+	
+    @Override  
+    public int onStartCommand(Intent intent, int flags, int startId) { 
+    	String MSG = null;
+    	if(intent != null)
+    		MSG = intent.getStringExtra("MSG");  
+        if(MSG!=null && MSG.equals("start") && !isActivityGoing()) {
+            float goal = intent.getFloatExtra("goal",0.0f); 
+            startActivity(goal);
+            
+            Notification notification = new Notification(R.drawable.ic_launcher_small, getText(R.string.app_name),System.currentTimeMillis());
+            Intent notificationIntent = new Intent(this, RunningExerciseActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+            notification.setLatestEventInfo(this, getText(R.string.app_name),getText(R.string.notification_msg), pendingIntent);
+            startForeground(123, notification);
+            
+            isServiceRunning = true;
+        } 
+    	
+        return super.onStartCommand(intent, flags, startId);  
+    }
+    
+	
+	@Override  
+	public void onCreate() { 
 		activityGoing = false;
-		locationManager = (LocationManager) appContext.getSystemService(Context.LOCATION_SERVICE);
-		refreshTask = new RefreshTask();
-		
-		goalAchieved = false;
-		
-		int weight = new UserSetting(appContext).getWeight();
-		this.setWeight(weight);
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
 	}
 	
 	public ActivityRecord getCurrentRecord(){
 		return currentRecord;
 	}
 	
-	public static RunningActivityController getInstance(Context context) {
-		if(controller == null) {
-			appContext = context;
-			controller = new RunningActivityController();
-		}
-
-		// Update the weight here since appContext may be different
-		int weight = new UserSetting(context).getWeight();
-		controller.setWeight(weight);
-		
-		return controller;
-	}
-	
 	public boolean isActivityGoing() {
 		return activityGoing;
+	}
+	
+	public boolean isActivityPaused() {
+		return activityPaused;
 	}
 
 	// Start activity
 	public void startActivity(float goal){	
+		locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
 
+		goalAchieved = false; 
+		weight = new UserSetting(getApplicationContext()).getWeight();
+		activityGoing = true;
+		
 		// Create a new record
-		goalAchieved = false;
 		currentRecord = new ActivityRecord();
 		currentRecord.setGoal(goal);
 		
 		// Resume Activity
 		resumeActivity();
+		refreshTask = new RefreshTask();
+		refreshTask.execute();
+		
 	}
 	
 	public void stopActivity() {
 		pauseActivity();
+        isServiceRunning = false;
+		activityGoing = false;
+		refreshTask.finish();
 		stopUpateLocation();
 	}
 	
 	public void pauseActivity() {
-		activityGoing = false;
-		
-		refreshTask.finish();
+		activityPaused = true;
 	}
 	
 	public void resumeActivity() {
 
-		activityGoing = true;
-		
+		activityPaused = false;
+		lastUpdateTime = new Date();
 		// Start updating location from gps system
 		startUpateLocation();
-		
 		// Add the first point to the location list. 
 		addTheFirstLocation();
-		
-		// Start timer
-		refreshTask = new RefreshTask();
-		refreshTask.execute();
 	}
 
 	private void addTheFirstLocation() {
@@ -135,16 +169,13 @@ public class RunningActivityController implements LocationListener {
 		if(location != null) {
 			currentRecord.getLocationPoints().add(location);
 			currentRecord.getLocationPointsTime().add(currentTime);
-			
-			Log.v("runners", "runners - location point added: " + location.getLatitude() + "," + location.getLatitude());
-			Log.v("runners", "runners - time: " + currentTime);
 		}
 	}
 	
 	// Logic of updating record
 	public void updateCurrentRecord(){
 		
-		if(isActivityGoing()) {
+		if(isActivityGoing() && !isActivityPaused()) {
 			Date currentTime = new Date();
 			currentRecord.setTimeLength(currentRecord.getTimeLength() + (currentTime.getTime() - lastUpdateTime.getTime()));
 			lastUpdateTime = currentTime;
@@ -184,8 +215,8 @@ public class RunningActivityController implements LocationListener {
 				currentRecord.setDistance(currentRecord.getDistance()+last.distanceTo(lastSecond));
 				
 				// Compute calories
-				currentRecord.setCalories((int) UtilityCaculator.computeColories(getWeight(), currentRecord.getDistance()));
-				Log.v("asd",getWeight()+"");
+				currentRecord.setCalories((int) UtilityCaculator.computeColories(weight, currentRecord.getDistance()));
+
 				// Compute avg speed
 				double avgSpeed = (double) ((currentRecord.getDistance()*3600)/(currentRecord.getTimeLength()));
 				currentRecord.setAvgSpeed((float)avgSpeed);
@@ -197,6 +228,29 @@ public class RunningActivityController implements LocationListener {
 		}
 	}
 
+
+	public void startUpateLocation() { 
+		if(locationManager != null) {
+			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
+		}
+	}
+	
+	public void stopUpateLocation() { 
+		if(locationManager != null) {
+			locationManager.removeUpdates(this);
+		}
+	}
+
+	// Release the listener to avoid changing UI thread during update
+	public void unbindListener() {
+		listener = null;
+	}
+
+	// Bind the listener to notify changing UI thread during udpate
+	public void bindListener(RunningDataChangeListener listener) {
+		this.listener = listener;
+	}
+	
 	@Override
 	public void onLocationChanged(Location location) {
 		// TODO Auto-generated method stub
@@ -221,41 +275,10 @@ public class RunningActivityController implements LocationListener {
 		
 	}
 	
-	public void startUpateLocation() { 
-		if(locationManager != null) {
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
-		}
-	}
-	
-	public void stopUpateLocation() { 
-		if(locationManager != null) {
-			locationManager.removeUpdates(this);
-		}
-	}
-
-	// Release the listener to avoid changing UI thread during update
-	public void unbindListener() {
-		listener = null;
-	}
-
-	// Bind the listener to notify changing UI thread during udpate
-	public void bindListener(RunningDataChangeListener listener) {
-		this.listener = listener;
-	}
-
-	public int getWeight() {
-		return weight;
-	}
-
-	public void setWeight(int weight) {
-		this.weight = weight;
-	}
-
 	// A timer used to keep track of the activity
 	class RefreshTask extends AsyncTask<Object, Object, Object> {
 
 		boolean finish = false;
-		
 		
 		@Override
 		protected void onPreExecute() {
@@ -289,9 +312,9 @@ public class RunningActivityController implements LocationListener {
                 	Log.e("runners","runners-" + e.getMessage());
                 };
             }
+            
+            stopSelf();
             return null;
         }  
 	};
-	
-
-}	
+}

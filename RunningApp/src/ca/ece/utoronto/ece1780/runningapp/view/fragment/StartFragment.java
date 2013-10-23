@@ -4,6 +4,7 @@ import java.util.Map;
 
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.dialog.SettingGoalDialogFragment;
@@ -71,7 +72,7 @@ public class StartFragment extends Fragment implements LocationListener {
 		// Initialize GPS service
 		// Get the location manager
 		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !ControllerService.isServiceRunning) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
 		}
 		
@@ -124,10 +125,6 @@ public class StartFragment extends Fragment implements LocationListener {
 								.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick( DialogInterface dialog, int which) {
-										/*
-										Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
-										getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
-										*/	
 										SettingGoalDialogFragment f =new SettingGoalDialogFragment();
 										f.show(getFragmentManager(),"");
 									}
@@ -135,10 +132,6 @@ public class StartFragment extends Fragment implements LocationListener {
 								.setNegativeButton(R.string.no, null).show();
 
 					} else {
-						/*
-						Intent i = new Intent(StartFragment.this.getActivity(),RunningExerciseActivity.class);
-				        getActivity().startActivityForResult(i,StartFragment.START_ACTIVITY_REQUEST);
-						*/
 						SettingGoalDialogFragment f =new SettingGoalDialogFragment();
 						f.show(getFragmentManager(),"");
 					}
@@ -171,27 +164,29 @@ public class StartFragment extends Fragment implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		testLocation = location;
-		ImageView signalView = (ImageView)getView().findViewById(R.id.imageViewGpsSignal);
-		
-		if(testLocation == null) {
-			signalView.setImageResource(R.drawable.icon_signal_0);
-			return;
-		}
-		
-		if(location.getAccuracy()<GPS_SIGNAL_STRONG_LEVEL) {
-			signalView.setImageResource(R.drawable.icon_signal_4);
-		}
-		else if(location.getAccuracy()<GPS_SIGNAL_MEDIUM_LEVEL) {
-			signalView.setImageResource(R.drawable.icon_signal_3);
-		}
-		else if(location.getAccuracy()<GPS_SIGNAL_LOW_LEVEL) {
-			signalView.setImageResource(R.drawable.icon_signal_2);
-		}
-		else if(location.getAccuracy()<GPS_SIGNAL_VERY_LOW_LEVEL) {
-			signalView.setImageResource(R.drawable.icon_signal_1);
-		}
-		else {
-			signalView.setImageResource(R.drawable.icon_signal_0);
+			if(getView() != null) {
+			ImageView signalView = (ImageView)getView().findViewById(R.id.imageViewGpsSignal);
+			
+			if(testLocation == null) {
+				signalView.setImageResource(R.drawable.icon_signal_0);
+				return;
+			}
+			
+			if(location.getAccuracy()<GPS_SIGNAL_STRONG_LEVEL) {
+				signalView.setImageResource(R.drawable.icon_signal_4);
+			}
+			else if(location.getAccuracy()<GPS_SIGNAL_MEDIUM_LEVEL) {
+				signalView.setImageResource(R.drawable.icon_signal_3);
+			}
+			else if(location.getAccuracy()<GPS_SIGNAL_LOW_LEVEL) {
+				signalView.setImageResource(R.drawable.icon_signal_2);
+			}
+			else if(location.getAccuracy()<GPS_SIGNAL_VERY_LOW_LEVEL) {
+				signalView.setImageResource(R.drawable.icon_signal_1);
+			}
+			else {
+				signalView.setImageResource(R.drawable.icon_signal_0);
+			}
 		}
 	}
 

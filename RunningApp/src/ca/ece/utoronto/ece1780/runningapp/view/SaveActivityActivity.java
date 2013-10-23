@@ -1,11 +1,10 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
 
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -18,10 +17,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -40,20 +43,34 @@ public class SaveActivityActivity extends Activity  {
 	public static final int RESULT_SAVE = 728;
 	public static final int RESULT_DUMP = 142;
 	
+
+	private ControllerService controllerService;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_save_activity);
 		
-		prepareMap();
-		prepareWidgets();
 	}
 
+	private ServiceConnection sconnection = new ServiceConnection() {  
+		
+		@Override
+        public void onServiceConnected(ComponentName name, IBinder service) {  
+        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+    		prepareMap();
+    		prepareWidgets();
+        }
+		
+		@Override 
+        public void onServiceDisconnected(ComponentName name) {
+        }    
+    };
+	
 	private void prepareWidgets() {
 
 		// Get the current activity record to save
-		RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
-		ActivityRecord record = controller.getCurrentRecord();
+		ActivityRecord record = controllerService.getCurrentRecord();
 		
 		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",record.getAvgSpeed()));
 		((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(record.getTimeLength()/1000)));
@@ -65,8 +82,7 @@ public class SaveActivityActivity extends Activity  {
 			
 			@Override
 			public void onClick(View v) {
-				RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
-				ActivityRecord record = controller.getCurrentRecord();
+				ActivityRecord record = controllerService.getCurrentRecord();
 				record.setNote(((EditText)findViewById(R.id.editTextNote)).getText().toString());
 				
 				Spinner moodSpinner = (Spinner)findViewById(R.id.spinnerMood);
@@ -107,8 +123,7 @@ public class SaveActivityActivity extends Activity  {
 	    setMapTransparent((ViewGroup)fragment.getView());
 	    
 		// Get the current activity record to save
-		RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
-		ActivityRecord record = controller.getCurrentRecord();
+		ActivityRecord record = controllerService.getCurrentRecord();
 		
 		if (record.getLocationPoints().size() >= 1) {
 
@@ -275,6 +290,20 @@ public class SaveActivityActivity extends Activity  {
 				child.setBackgroundColor(0x00000000);
 			}
 		}
+	}
+	
+	@Override
+	protected void onPause() {
+        unbindService(sconnection);
+		super.onPause();
+	}
+	
+	@Override
+	public void onResume() {
+        Intent startIntent = new Intent(SaveActivityActivity.this, ControllerService.class);
+        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+		
+		super.onResume();
 	}
 	
 }

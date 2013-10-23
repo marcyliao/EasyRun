@@ -73,5 +73,7 @@
     <string name="pref_title_weight">Weight</string> 
     <string name="pref_dialog_title_weight">Enter Weight</string>
     
+    <string name="notification_msg">We are tracking your activity</string>
+    
 
 </resources>

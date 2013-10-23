@@ -1,12 +1,16 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningActivityController;
-import ca.ece.utoronto.ece1780.runningapp.controller.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,10 +26,33 @@ public class RunningExerciseActivity extends Activity {
 	
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
+	private float goal;
+
+	private ControllerService controllerService;
 	
-	// Controller
-	private RunningActivityController controller;
-	
+	private ServiceConnection sconnection = new ServiceConnection() {  
+		
+		@Override
+        public void onServiceConnected(ComponentName name, IBinder service) {  
+        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+        	controllerService.bindListener(getRecordChangeListener());
+        	
+        	if(controllerService.isActivityPaused()) {
+        		findViewById(R.id.layoutAfterPause).setVisibility(View.VISIBLE);
+				findViewById(R.id.buttonPause).setVisibility(View.INVISIBLE);
+        	} 
+        	else {
+        		findViewById(R.id.layoutAfterPause).setVisibility(View.INVISIBLE);
+				findViewById(R.id.buttonPause).setVisibility(View.VISIBLE);
+        	}
+        }
+		
+		@Override 
+        public void onServiceDisconnected(ComponentName name) {
+        	controllerService.unbindListener();
+        }    
+    };
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -47,10 +74,8 @@ public class RunningExerciseActivity extends Activity {
 				}
 		        
 				// Pause activity by pause the controller
-				RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
-				if(controller.isActivityGoing()) {
-					controller.pauseActivity();
-				}
+				if(controllerService != null && controllerService.isActivityGoing())
+					controllerService.pauseActivity();
 				
 				// Show the continue and stop buttons and hide the pause button
 				findViewById(R.id.layoutAfterPause).setVisibility(View.VISIBLE);
@@ -73,10 +98,8 @@ public class RunningExerciseActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				// Resume activity.
-				RunningActivityController controller = RunningActivityController.getInstance(getApplicationContext());
-				if(!controller.isActivityGoing()) {
-					controller.resumeActivity();
-				}
+				if(controllerService != null && controllerService.isActivityGoing())
+					controllerService.resumeActivity();
 				
 				// Show the pause button and hide the stop and resume buttons
 				findViewById(R.id.layoutAfterPause).setVisibility(View.INVISIBLE);
@@ -99,16 +122,16 @@ public class RunningExerciseActivity extends Activity {
 				}
 			}
 		});
-		
-		// Start recording running exercise activity
-		controller = RunningActivityController.getInstance(getApplicationContext());
-		
-		// Bind listener to controller to update UI when record is updated
-		controller.bindListener(getRecordChangeListener());
 
+		if(!ControllerService.isServiceRunning) {
 		// Start activity
-		float goal = getIntent().getFloatExtra("goal", 0.0f);
-		controller.startActivity(goal);
+			goal = getIntent().getFloatExtra("goal", 0.0f);
+			Intent startIntent = new Intent(RunningExerciseActivity.this, ControllerService.class);
+			startIntent.putExtra("MSG", "start");
+			startIntent.putExtra("goal",goal);
+			startService(startIntent);
+		}
+        
 	}
 
 	private RunningDataChangeListener getRecordChangeListener() {
@@ -145,11 +168,23 @@ public class RunningExerciseActivity extends Activity {
 		if(requestCode == SAVE_RECORD_REQUEST) {
 			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
 				setResult(SaveActivityActivity.RESULT_SAVE);
-				finish();
+				controllerService.stopActivity();
+				
+				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_SHORT).show();
+				
+				Intent i = new Intent(this,HomeActivity.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
 			}
 			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
 				setResult(SaveActivityActivity.RESULT_DUMP);
-				finish();
+				controllerService.stopActivity();
+				
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
+				
+				Intent i = new Intent(this,HomeActivity.class);
+				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(i);
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -189,9 +224,14 @@ public class RunningExerciseActivity extends Activity {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-    	RunningActivityController.getInstance(getApplicationContext()).stopActivity();
 	}
 	
+	@Override
+	protected void onPause() {
+        unbindService(sconnection);
+		super.onPause();
+	}
+
 	@Override
 	public void onBackPressed() {
 	    // Do nothing.
@@ -199,7 +239,9 @@ public class RunningExerciseActivity extends Activity {
 	
 	@Override
 	public void onResume() {
-		controller.bindListener(getRecordChangeListener());
+        Intent startIntent = new Intent(RunningExerciseActivity.this, ControllerService.class);
+        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+		
 		super.onResume();
 	}
 }
