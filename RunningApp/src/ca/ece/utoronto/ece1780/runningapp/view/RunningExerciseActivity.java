@@ -1,7 +1,7 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.os.Bundle;
@@ -26,17 +26,21 @@ public class RunningExerciseActivity extends Activity {
 	
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
+	
+	// The goal of the running actvity. If it is zero, no goal is set.
 	private float goal;
 
-	private ControllerService controllerService;
+	private ActivityControllerService controllerService;
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
 		
 		@Override
         public void onServiceConnected(ComponentName name, IBinder service) {  
-        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+        	controllerService = ((ActivityControllerService.ControllerServiceBinder) service).getService();
         	controllerService.bindListener(getRecordChangeListener());
-        	
+
+        	// Once the controllerService is obtained, get the data of
+        	// the current activity record and update the UI
         	if(controllerService.isActivityPaused()) {
         		findViewById(R.id.layoutAfterPause).setVisibility(View.VISIBLE);
 				findViewById(R.id.buttonPause).setVisibility(View.INVISIBLE);
@@ -58,6 +62,7 @@ public class RunningExerciseActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_running_exercise);
 		
+		// Update the progress bar
 		ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
 		pb.setMax(100);
 		pb.setProgress(0);
@@ -114,24 +119,22 @@ public class RunningExerciseActivity extends Activity {
 			public void onClick(View v) {
 				screenLock = !screenLock;
 
-				if(screenLock) {
+				if(screenLock) 
 					((ImageButton)v).setImageResource(R.drawable.icon_lock);
-				}
-				else {
+				else 
 					((ImageButton)v).setImageResource(R.drawable.icon_unlock);
-				}
 			}
 		});
 
-		if(!ControllerService.isServiceRunning) {
-		// Start activity
+		// if the controllerService is not running, start a new running activity
+		if(!ActivityControllerService.isServiceRunning) {
+			// Start activity
 			goal = getIntent().getFloatExtra("goal", 0.0f);
-			Intent startIntent = new Intent(RunningExerciseActivity.this, ControllerService.class);
+			Intent startIntent = new Intent(RunningExerciseActivity.this, ActivityControllerService.class);
 			startIntent.putExtra("MSG", "start");
 			startIntent.putExtra("goal",goal);
 			startService(startIntent);
 		}
-        
 	}
 
 	private RunningDataChangeListener getRecordChangeListener() {
@@ -139,11 +142,15 @@ public class RunningExerciseActivity extends Activity {
 
 			@Override
 			public void onDataChange(ActivityRecord currentRecord) {
+				
+				// When data is updated, update all the relevant UI 
+				// to show users the current activity record
 				((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(currentRecord.getTimeLength()/1000)));
 				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
 				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",currentRecord.getAvgSpeed()));
 				((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(currentRecord.getCalories()));
 				
+				// If goal is set, update the progress bar
 				if(currentRecord.getGoal()!=0) {
 					ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
 					pb.setMax(100);
@@ -167,20 +174,24 @@ public class RunningExerciseActivity extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(requestCode == SAVE_RECORD_REQUEST) {
 			if(resultCode == SaveActivityActivity.RESULT_SAVE) {
+				
+				// If the activity is saved, show msg and go back to the start page
+				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_SHORT).show();
+				
 				setResult(SaveActivityActivity.RESULT_SAVE);
 				controllerService.stopActivity();
-				
-				Toast.makeText(this, R.string.activity_save, Toast.LENGTH_SHORT).show();
 				
 				Intent i = new Intent(this,HomeActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
 			}
 			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
+
+				// If the activity is dumped, show msg and go back to the start page
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
+				
 				setResult(SaveActivityActivity.RESULT_DUMP);
 				controllerService.stopActivity();
-				
-				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
 				
 				Intent i = new Intent(this,HomeActivity.class);
 				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -205,7 +216,7 @@ public class RunningExerciseActivity extends Activity {
 			return super.onOptionsItemSelected(item);
 		}
 		
-	    // Users select other modes.
+	    // Users switch to other modes.
 		Intent i;
 	    switch (item.getItemId()) {
 	    case R.id.action_gesture_mode:
@@ -239,7 +250,7 @@ public class RunningExerciseActivity extends Activity {
 	
 	@Override
 	public void onResume() {
-        Intent startIntent = new Intent(RunningExerciseActivity.this, ControllerService.class);
+        Intent startIntent = new Intent(RunningExerciseActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
 		
 		super.onResume();

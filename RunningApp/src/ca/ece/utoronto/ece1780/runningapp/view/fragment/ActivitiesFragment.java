@@ -36,7 +36,14 @@ public class ActivitiesFragment extends Fragment {
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_activity,
 				container, false);
-	    ListView l = (ListView) rootView.findViewById(R.id.listViewActivities);
+		
+	    prepareWidgets(rootView);
+	    
+		return rootView;
+	}
+
+	private void prepareWidgets(View rootView) {
+		ListView l = (ListView) rootView.findViewById(R.id.listViewActivities);
 	    
 	    textViewNoActivity = (TextView) rootView.findViewById(R.id.textViewNoActivity);
 	    mListAdapter = new ActivityRecordArrayAdapter(getActivity());
@@ -57,8 +64,6 @@ public class ActivitiesFragment extends Fragment {
 				getActivity().startActivityForResult(i, RECORD_DETAIL_REQUEST);
 			}
 	    });
-	    
-		return rootView;
 	}
 
 

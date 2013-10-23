@@ -39,27 +39,27 @@ public class SettingGoalDialogFragment extends DialogFragment {
 	    // Initialize dialog
 	    builder.setView(root);
 		builder.setTitle(R.string.whats_your_target_distance)
-				.setPositiveButton(R.string._continue,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								
-								float goal = Float.valueOf(np1.getValue() + "." + np2.getValue());
-								new UserSetting(getActivity()).setTargetDistance(goal);
-								
-								Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
-								i.putExtra("goal", goal);
-								i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-								getActivity().startActivity(i);
-							}
-						})
-				.setNegativeButton(R.string.no_target,
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog, int id) {
-								Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
-								i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
-								getActivity().startActivity(i);
-							}
-						});
+			.setPositiveButton(R.string._continue,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+							
+						float goal = Float.valueOf(np1.getValue() + "." + np2.getValue());
+						new UserSetting(getActivity()).setTargetDistance(goal);
+							
+						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
+						i.putExtra("goal", goal);
+						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+						getActivity().startActivity(i);
+					}
+				})
+			.setNegativeButton(R.string.no_target,
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
+						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+						getActivity().startActivity(i);
+					}
+				});
 
 		// Create the AlertDialog object and return it
 		return builder.create();

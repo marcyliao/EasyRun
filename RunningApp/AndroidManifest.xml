@@ -6,7 +6,7 @@
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="18" />
 
     <permission
         android:name="ca.ece.utoronto.ece1780.runningapp.view.permission.MAPS_RECEIVE"
@@ -84,7 +84,7 @@
         </activity>
         
         <service
-            android:name="ca.ece.utoronto.ece1780.runningapp.service.ControllerService"
+            android:name="ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService"
             android:icon="@drawable/ic_launcher"
             android:label="Runners" >
         </service>

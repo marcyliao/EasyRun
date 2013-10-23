@@ -10,7 +10,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import android.graphics.Color;
 import android.location.Location;
@@ -29,20 +29,23 @@ public class MapModeActivity extends Activity {
 	
 	private Marker endMarker;
 
-	private ControllerService controllerService;
+	private ActivityControllerService controllerService;
 	private ServiceConnection sconnection = new ServiceConnection() {  
 		
 		@Override
         public void onServiceConnected(ComponentName name, IBinder service) {  
-        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+        	controllerService = ((ActivityControllerService.ControllerServiceBinder) service).getService();
         	controllerService.bindListener(getRecordChangeListener());
+        	
+        	// Once the controllerService is obtained, get the data of
+        	// the current activity record and update the UI
     		prepareMap();
         }
 		
 		@Override 
         public void onServiceDisconnected(ComponentName name) {
         	controllerService.unbindListener();
-        }    
+        }
     };
 	
 	@Override
@@ -124,6 +127,8 @@ public class MapModeActivity extends Activity {
 
 			@Override
 			public void onLocationAdded(ActivityRecord record) {
+				
+				// When a location is added, update the route on the map.
 				MapFragment f = ((MapFragment) getFragmentManager().findFragmentById(R.id.map));
 					if(f != null) {
 					GoogleMap map = f.getMap();
@@ -164,7 +169,7 @@ public class MapModeActivity extends Activity {
 	
 	@Override
 	public void onResume() {
-        Intent startIntent = new Intent(MapModeActivity.this, ControllerService.class);
+        Intent startIntent = new Intent(MapModeActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
 		
 		super.onResume();

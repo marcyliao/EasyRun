@@ -48,11 +48,14 @@ public class ActivityRecordActivity extends Activity {
 	}
 
 	private void prepareWidgets() {
+		
+		// Prepare number data stuff
 		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",record.getAvgSpeed()));
 		((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(record.getTimeLength()/1000)));
 		((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(record.getCalories()));
 		((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(record.getDistance())/1000));
 		
+		// Prepare the mood image
 		ImageView imv = (ImageView)findViewById(R.id.imageViewMood);
 		if(record.getMood() == Mood.HAPPY) {
 			imv.setImageResource(R.drawable.icon_mood_happy);

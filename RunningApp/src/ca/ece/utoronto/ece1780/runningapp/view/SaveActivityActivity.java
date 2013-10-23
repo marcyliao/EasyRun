@@ -4,7 +4,7 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -44,7 +44,7 @@ public class SaveActivityActivity extends Activity  {
 	public static final int RESULT_DUMP = 142;
 	
 
-	private ControllerService controllerService;
+	private ActivityControllerService controllerService;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +57,7 @@ public class SaveActivityActivity extends Activity  {
 		
 		@Override
         public void onServiceConnected(ComponentName name, IBinder service) {  
-        	controllerService = ((ControllerService.ControllerServiceBinder) service).getService();
+        	controllerService = ((ActivityControllerService.ControllerServiceBinder) service).getService();
     		prepareMap();
     		prepareWidgets();
         }
@@ -300,7 +300,7 @@ public class SaveActivityActivity extends Activity  {
 	
 	@Override
 	public void onResume() {
-        Intent startIntent = new Intent(SaveActivityActivity.this, ControllerService.class);
+        Intent startIntent = new Intent(SaveActivityActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
 		
 		super.onResume();

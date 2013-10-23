@@ -2,7 +2,7 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 
 import java.util.Locale;
 
-import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
@@ -34,7 +34,7 @@ public class HomeActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
-		if(ControllerService.isServiceRunning) {
+		if(ActivityControllerService.isServiceRunning) {
 			Intent i = new Intent(this,RunningExerciseActivity.class);
 			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
@@ -78,24 +78,28 @@ public class HomeActivity extends FragmentActivity implements
 	}
 
 	@Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data) {
-            if(requestCode == ActivitiesFragment.RECORD_DETAIL_REQUEST) {
-                    if (resultCode == ActivityRecordActivity.DUMP_RECORD) {
-                            Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT).show();
-                            
-                            // Update activity fragment
-                            ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
-                                            .findFragmentByTag("android:switcher:" + R.id.pager + ":2");
-                            if (activityFragment != null && activityFragment.getView() != null) {
-                                    activityFragment.updateList();
-                            }
-                    }
-            }
-            super.onActivityResult(requestCode, resultCode, data);
-    }
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == ActivitiesFragment.RECORD_DETAIL_REQUEST) {
+			if (resultCode == ActivityRecordActivity.DUMP_RECORD) {
+				Toast.makeText(this, R.string.activity_dump, Toast.LENGTH_SHORT)
+						.show();
+
+				// Update activity fragment
+				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
+				
+				if (activityFragment != null && activityFragment.getView() != null) {
+					activityFragment.updateList();
+				}
+			}
+		}
+		super.onActivityResult(requestCode, resultCode, data);
+	}
 	
 	@Override
 	protected void onResume() {
+		
+		// Force to re-evaluate the GPS accuracy
 		StartFragment fragment = (StartFragment) getSupportFragmentManager()
 				.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
 		if (fragment != null && fragment.isInLayout()) {
@@ -138,13 +142,11 @@ public class HomeActivity extends FragmentActivity implements
 	}
 
 	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 	}
 
 	@Override
-	public void onTabReselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 	}
 	
 	@Override
@@ -161,10 +163,7 @@ public class HomeActivity extends FragmentActivity implements
 	    }
 	}
 	
-	/**
-	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-	 * one of the sections/tabs/pages.
-	 */
+	// Adapter for the tab bar and action bar
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
 		
 		public SectionsPagerAdapter(FragmentManager fm) {

@@ -4,7 +4,7 @@ import java.util.Map;
 
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
-import ca.ece.utoronto.ece1780.runningapp.service.ControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.dialog.SettingGoalDialogFragment;
@@ -35,8 +35,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class StartFragment extends Fragment implements LocationListener {
-
-	public final static int START_ACTIVITY_REQUEST = 87;
 	
 	// Different levels of GPS accuracy
 	private static final int GPS_SIGNAL_VERY_LOW_LEVEL = 50;
@@ -72,16 +70,16 @@ public class StartFragment extends Fragment implements LocationListener {
 		// Initialize GPS service
 		// Get the location manager
 		locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !ControllerService.isServiceRunning) {
+		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !ActivityControllerService.isServiceRunning) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
 		}
 		
-		initWidgets();
+		prepareWidgets();
 		
 		return rootView;
 	}
 	
-	public void initWidgets() {
+	public void prepareWidgets() {
 		
 		Map<String,String> history = new ActivityRecordDAO(getActivity()).getHistory();
 		float totalDistance = Float.valueOf(history.get("totalDistance"));

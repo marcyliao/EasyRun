@@ -22,32 +22,36 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
-public class ControllerService extends Service implements LocationListener {
+public class ActivityControllerService extends Service implements LocationListener {
 	
+	// If the service is alive
 	public static boolean isServiceRunning = false;
 
+	/*Timer control*/
+	// Time interval to add a point to location list. Unit: ms
     private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 2000;
-
 	// Time interval to update the timer thread. Unit: ms
 	private static final long MIN_TIME_INTERVAL_FOR_UPDATE = 300;
+	// Last time to add location point to record 
+	private Date lastRecordFrameTime;
+	// Last time to update record, such as increasing the duration
+	private Date lastUpdateTime;
+	// Timer used to update the record
+	private RefreshTask refreshTask;
 
 	// A record to store the data of the current activity
 	private ActivityRecord currentRecord;
+	// Whether the distance is greater than the goal
+	private boolean goalAchieved;
+	// current user weight
+	private int weight;
 	
-	// Last time to add location point to record 
-	private Date lastRecordFrameTime;
-	
-	// Last time to update record, such as increasing the duration
-	private Date lastUpdateTime;
-	
+	/*Controller states*/
 	// Is the activity currently going on, or being stopped
 	private boolean activityGoing;
-	
 	// Is the activity currently going on, or being paused
 	private boolean activityPaused;
 	
-	// Timer used to update the record
-	private RefreshTask refreshTask;
 	
 	// Location manager to get gps location
 	private LocationManager locationManager;
@@ -55,19 +59,13 @@ public class ControllerService extends Service implements LocationListener {
 	// Listener used to notify UI thread when record is updated
 	private RunningDataChangeListener listener;
 	
-	// Whether the distance is greater than the goal
-	private boolean goalAchieved;
 	
-	// current user weight
-	private int weight;
-	
+	/*Android service control*/
 	// Binder used to communicate with activities;
     public final IBinder binder = new ControllerServiceBinder();  
-    
     public class ControllerServiceBinder extends Binder {  
-
-    	public ControllerService getService() {  
-            return ControllerService.this;  
+    	public ActivityControllerService getService() {  
+            return ActivityControllerService.this;  
         }  
     } 
     
@@ -81,10 +79,12 @@ public class ControllerService extends Service implements LocationListener {
     	String MSG = null;
     	if(intent != null)
     		MSG = intent.getStringExtra("MSG");  
+    	
         if(MSG!=null && MSG.equals("start") && !isActivityGoing()) {
             float goal = intent.getFloatExtra("goal",0.0f); 
             startActivity(goal);
             
+            // Start notification to show the users that the app is running on the background
             Notification notification = new Notification(R.drawable.ic_launcher_small, getText(R.string.app_name),System.currentTimeMillis());
             Intent notificationIntent = new Intent(this, RunningExerciseActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
@@ -160,17 +160,6 @@ public class ControllerService extends Service implements LocationListener {
 		// Add the first point to the location list. 
 		addTheFirstLocation();
 	}
-
-	private void addTheFirstLocation() {
-		Date currentTime = new Date();
-		lastRecordFrameTime = currentTime;
-		
-		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-		if(location != null) {
-			currentRecord.getLocationPoints().add(location);
-			currentRecord.getLocationPointsTime().add(currentTime);
-		}
-	}
 	
 	// Logic of updating record
 	public void updateCurrentRecord(){
@@ -229,6 +218,18 @@ public class ControllerService extends Service implements LocationListener {
 	}
 
 
+	// Release the listener to avoid changing UI thread during update
+	public void unbindListener() {
+		listener = null;
+	}
+
+	// Bind the listener to notify changing UI thread during udpate
+	public void bindListener(RunningDataChangeListener listener) {
+		this.listener = listener;
+	}
+	
+	
+	/*GPS control*/
 	public void startUpateLocation() { 
 		if(locationManager != null) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
@@ -239,16 +240,6 @@ public class ControllerService extends Service implements LocationListener {
 		if(locationManager != null) {
 			locationManager.removeUpdates(this);
 		}
-	}
-
-	// Release the listener to avoid changing UI thread during update
-	public void unbindListener() {
-		listener = null;
-	}
-
-	// Bind the listener to notify changing UI thread during udpate
-	public void bindListener(RunningDataChangeListener listener) {
-		this.listener = listener;
 	}
 	
 	@Override
@@ -317,4 +308,15 @@ public class ControllerService extends Service implements LocationListener {
             return null;
         }  
 	};
+	
+	private void addTheFirstLocation() {
+		Date currentTime = new Date();
+		lastRecordFrameTime = currentTime;
+		
+		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+		if(location != null) {
+			currentRecord.getLocationPoints().add(location);
+			currentRecord.getLocationPointsTime().add(currentTime);
+		}
+	}
 }
