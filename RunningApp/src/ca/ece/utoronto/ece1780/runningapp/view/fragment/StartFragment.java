@@ -303,6 +303,7 @@ public class StartFragment extends Fragment implements LocationListener {
 		super.onResume();
 	}
 
+	
 	public void startUpateLocation() { 
 		if(locationManager != null) {
 			initStartButton(rootView);
