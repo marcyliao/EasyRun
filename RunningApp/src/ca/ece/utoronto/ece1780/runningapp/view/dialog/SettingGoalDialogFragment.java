@@ -45,7 +45,8 @@ public class SettingGoalDialogFragment extends DialogFragment {
 							
 						float goal = Float.valueOf(np1.getValue() + "." + np2.getValue());
 						new UserSetting(getActivity()).setTargetDistance(goal);
-							
+						
+						// Start running activity
 						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
 						i.putExtra("goal", goal);
 						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
