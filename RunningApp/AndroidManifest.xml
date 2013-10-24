@@ -88,6 +88,12 @@
             android:icon="@drawable/ic_launcher"
             android:label="Runners" >
         </service>
+        
+        <service
+            android:name="ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService"
+            android:icon="@drawable/ic_launcher"
+            android:label="Runners" >
+        </service>
     </application>
 
 </manifest>

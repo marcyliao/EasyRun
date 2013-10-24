@@ -31,4 +31,9 @@ public class UserSetting {
 			return Integer.valueOf(weight);
 		return 60;
 	}
+	
+	public boolean isSpeechEnabled(){
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		return sharedPref.getBoolean(context.getString(R.string.pref_key_enable_speech_report), true);
+	}
 }

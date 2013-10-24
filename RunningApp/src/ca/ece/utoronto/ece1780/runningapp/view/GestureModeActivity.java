@@ -3,6 +3,8 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
+import ca.ece.utoronto.ece1780.runningapp.view.listener.ShakeListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -12,6 +14,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,6 +23,7 @@ public class GestureModeActivity extends Activity {
 	private TextView msgView;
 	
 	private ActivityControllerService controllerService;
+	//private ShakeListener mShaker;
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
 		@Override
@@ -31,33 +35,10 @@ public class GestureModeActivity extends Activity {
         	// the current activity record and update the UI
         	msgView = (TextView)findViewById(R.id.TextViewControllerState);
         	if(controllerService.isActivityPaused()) {
-				msgView.setText("Pause");
+				msgView.setText(getString(R.string.pause));
 			} else{
-				msgView.setText("Tracking");
+				msgView.setText(getString(R.string.tracking));
 			}
-			
-        	View gestureView =findViewById(R.id.gestureView);
-        	gestureView.setOnTouchListener(new OnGestureListener(GestureModeActivity.this){
-
-				@Override
-				public void oneFingerBottom2Top() {
-					if(!controllerService.isActivityPaused()) {
-						controllerService.pauseActivity();
-						msgView.setText("Pause");
-					} else{
-						controllerService.resumeActivity();
-						msgView.setText("Tracking");
-					}
-					super.oneFingerBottom2Top();
-				}
-
-				@Override
-				public void oneFingerSingleClick() {
-					Toast.makeText(GestureModeActivity.this, "report", Toast.LENGTH_SHORT).show();
-					super.oneFingerSingleClick();
-				}
-        	});
-        	
         }
 		
 		@Override 
@@ -66,10 +47,55 @@ public class GestureModeActivity extends Activity {
         }    
     };
     
+    private void switchPauseAndResume() {
+		if(controllerService !=null && !controllerService.isActivityPaused()) {
+			controllerService.pauseActivity();
+			msgView.setText(getString(R.string.pause));
+		} else{
+			controllerService.resumeActivity();
+			msgView.setText(getString(R.string.tracking));
+		}
+	}
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gesture_mode);
+		
+		getActionBar().hide();
+		
+		// Keep the screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+		
+		// Prepare Gesture listener
+		View gestureView =findViewById(R.id.gestureView);
+    	gestureView.setOnTouchListener(new OnGestureListener(GestureModeActivity.this){
+
+			@Override
+			public void oneFingerBottom2Top() {
+				switchPauseAndResume();
+				super.oneFingerBottom2Top();
+			}
+
+			@Override
+			public void oneFingerTop2Bottom() {
+				if(controllerService !=null) {
+					controllerService.reportActivity();
+				}
+				super.oneFingerSingleClick();
+			}
+    	});
+    	
+    	
+    	// Prepare shake listener
+    	/*
+		mShaker = new ShakeListener(this);
+		mShaker.setOnShakeListener(new ShakeListener.OnShakeListener() {
+			public void onShake() {
+				switchPauseAndResume();
+			}
+		});
+		*/
 	}
 
 	@Override
@@ -102,6 +128,7 @@ public class GestureModeActivity extends Activity {
 	@Override
 	protected void onPause() {
         unbindService(sconnection);
+        //mShaker.pause();
 		super.onPause();
 	}
 	
@@ -109,6 +136,7 @@ public class GestureModeActivity extends Activity {
 	public void onResume() {
         Intent startIntent = new Intent(GestureModeActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+	    //mShaker.resume();
 		super.onResume();
 	}
 	

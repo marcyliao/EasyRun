@@ -11,9 +11,11 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.speech.tts.TextToSpeech;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -22,7 +24,7 @@ import android.widget.Toast;
 
 public class RunningExerciseActivity extends Activity {
 	
-	public final static int SAVE_RECORD_REQUEST = 239;
+	private final static int SAVE_RECORD_REQUEST = 239;
 	
 	// When screen is locked. All clicks on the screen will not work.
 	private boolean screenLock = false;
@@ -31,6 +33,7 @@ public class RunningExerciseActivity extends Activity {
 	private float goal;
 
 	private ActivityControllerService controllerService;
+
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
 		
@@ -49,6 +52,7 @@ public class RunningExerciseActivity extends Activity {
         		findViewById(R.id.layoutAfterPause).setVisibility(View.INVISIBLE);
 				findViewById(R.id.buttonPause).setVisibility(View.VISIBLE);
         	}
+        	
         }
 		
 		@Override 
@@ -61,6 +65,9 @@ public class RunningExerciseActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_running_exercise);
+		
+		// Keep the screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
 		// Update the progress bar
 		ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
@@ -198,6 +205,7 @@ public class RunningExerciseActivity extends Activity {
 				startActivity(i);
 			}
 		}
+		
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 

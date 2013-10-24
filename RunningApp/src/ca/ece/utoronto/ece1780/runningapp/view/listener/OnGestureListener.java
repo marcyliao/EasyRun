@@ -1,4 +1,4 @@
-package ca.ece.utoronto.ece1780.runningapp.view;
+package ca.ece.utoronto.ece1780.runningapp.view.listener;
 
 import java.util.ArrayList;
 
@@ -284,10 +284,6 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	
 	private float sumOfSquare(float a, float b){
 		return square(a) + square(b);
-	}
-	
-	private Context getApplicationContext(){
-		return this.context;
 	}
 	
 	private class Pointer{

@@ -86,7 +86,7 @@ public class HomeActivity extends FragmentActivity implements
 
 				// Update activity fragment
 				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
-						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":1");
 				
 				if (activityFragment != null && activityFragment.getView() != null) {
 					activityFragment.updateList();
@@ -175,9 +175,9 @@ public class HomeActivity extends FragmentActivity implements
 			switch (position) {
 			case 0:
 				return new StartFragment();
+			//case 1:
+			//	return new MusicFragment();
 			case 1:
-				return new MusicFragment();
-			case 2:
 				return new ActivitiesFragment();
 			}
 			return null;
@@ -186,7 +186,8 @@ public class HomeActivity extends FragmentActivity implements
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			return 3;
+			// return 3;
+			return 2;
 		}
 
 		@Override
@@ -195,9 +196,9 @@ public class HomeActivity extends FragmentActivity implements
 			switch (position) {
 			case 0:
 				return getString(R.string.title_start).toUpperCase(l);
+			//case 1:
+				//return getString(R.string.title_music).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_music).toUpperCase(l);
-			case 2:
 				return getString(R.string.title_activities).toUpperCase(l);
 			}
 			return null;

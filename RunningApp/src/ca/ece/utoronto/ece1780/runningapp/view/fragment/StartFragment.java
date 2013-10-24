@@ -2,9 +2,14 @@ package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
 import java.util.Map;
 
+import org.json.JSONException;
+
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.weather.JSONWeatherParser;
+import ca.ece.utoronto.ece1780.runningapp.utility.weather.Weather;
+import ca.ece.utoronto.ece1780.runningapp.utility.weather.WeatherHttpClient;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.dialog.SettingGoalDialogFragment;
@@ -15,6 +20,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.LinearGradient;
 import android.graphics.Shader;
@@ -22,6 +29,7 @@ import android.graphics.Shader.TileMode;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -51,6 +59,8 @@ public class StartFragment extends Fragment implements LocationListener {
 	
 	private View rootView;
 	
+	private boolean isWeatherObtained = false;
+	
 	public StartFragment() {
 	}
 
@@ -73,9 +83,7 @@ public class StartFragment extends Fragment implements LocationListener {
 		if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) && !ActivityControllerService.isServiceRunning) {
 			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
 		}
-		
 		prepareWidgets();
-		
 		return rootView;
 	}
 	
@@ -96,6 +104,7 @@ public class StartFragment extends Fragment implements LocationListener {
 		((TextView)rootView.findViewById(R.id.TextViewCalories)).setText(String.valueOf(totalCalories));
 		
 		initStartButton(rootView);
+		
 	}
 
 	// Initialize button according to whether gps is enabled or not
@@ -162,31 +171,105 @@ public class StartFragment extends Fragment implements LocationListener {
 	@Override
 	public void onLocationChanged(Location location) {
 		testLocation = location;
-			if(getView() != null) {
-			ImageView signalView = (ImageView)getView().findViewById(R.id.imageViewGpsSignal);
-			
-			if(testLocation == null) {
+		if (getView() != null) {
+			ImageView signalView = (ImageView) getView().findViewById(
+					R.id.imageViewGpsSignal);
+
+			if (testLocation == null) {
 				signalView.setImageResource(R.drawable.icon_signal_0);
 				return;
 			}
 			
-			if(location.getAccuracy()<GPS_SIGNAL_STRONG_LEVEL) {
+			if (!isWeatherObtained) {
+				isWeatherObtained = true;
+				prepareWeatherInfo(Math.round(testLocation.getLatitude()),Math.round(testLocation.getLongitude()));
+			}
+			
+			if (location.getAccuracy() < GPS_SIGNAL_STRONG_LEVEL) {
 				signalView.setImageResource(R.drawable.icon_signal_4);
-			}
-			else if(location.getAccuracy()<GPS_SIGNAL_MEDIUM_LEVEL) {
+			} else if (location.getAccuracy() < GPS_SIGNAL_MEDIUM_LEVEL) {
 				signalView.setImageResource(R.drawable.icon_signal_3);
-			}
-			else if(location.getAccuracy()<GPS_SIGNAL_LOW_LEVEL) {
+			} else if (location.getAccuracy() < GPS_SIGNAL_LOW_LEVEL) {
 				signalView.setImageResource(R.drawable.icon_signal_2);
-			}
-			else if(location.getAccuracy()<GPS_SIGNAL_VERY_LOW_LEVEL) {
+			} else if (location.getAccuracy() < GPS_SIGNAL_VERY_LOW_LEVEL) {
 				signalView.setImageResource(R.drawable.icon_signal_1);
-			}
-			else {
+			} else {
 				signalView.setImageResource(R.drawable.icon_signal_0);
 			}
 		}
 	}
+
+	private void prepareWeatherInfo(long lat, long lng) {
+		JSONWeatherTask task = new JSONWeatherTask();
+		task.execute(new String[]{"lat="+lat+"&lon="+lng});
+	}
+	
+	private class JSONWeatherTask extends AsyncTask<String, Void, Weather> {
+
+		@Override
+		protected Weather doInBackground(String... params) {
+			Weather weather = null;
+			try {
+				String data = ( (new WeatherHttpClient()).getWeatherData(params[0]));
+				
+				if(data == null)
+					return null;
+			
+				weather = JSONWeatherParser.getWeather(data);
+
+				// Let's retrieve the icon
+				if(weather != null) {
+					weather.iconData = ((new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
+				}
+
+			} catch (JSONException e) {				
+				e.printStackTrace();
+			}
+			return weather;
+
+		}
+		
+		@Override
+		protected void onPostExecute(Weather weather) {			
+			super.onPostExecute(weather);
+			
+			if(weather == null) {
+				TextView t = (TextView) rootView.findViewById(R.id.TextViewWeatherLoading);
+				t.setVisibility(TextView.VISIBLE);
+				t.setText(R.string.no_weather_advice);
+				
+				isWeatherObtained = false;
+				return;
+			}
+			
+			Bitmap img;
+			if (weather.iconData != null && weather.iconData.length > 0) {
+				img = BitmapFactory.decodeByteArray(weather.iconData, 0, weather.iconData.length); 
+			}
+			else {
+				isWeatherObtained = false;
+				return;
+			}
+				
+				
+
+			ImageView imgViewWeather = (ImageView) rootView.findViewById(R.id.imageViewWeather);
+			imgViewWeather.setImageBitmap(img);
+			
+			TextView textViewTemperature = (TextView) rootView.findViewById(R.id.TextViewTemperature);
+			textViewTemperature.setText(String.valueOf(Math.round((weather.temperature.getTemp() - 275.15))) +  getString(R.string.centigrade));
+			TextView textViewWeatherDes = (TextView) rootView.findViewById(R.id.TextViewWeatherDesc);
+			textViewWeatherDes.setText(weather.currentCondition.getDescr());
+			
+			rootView.findViewById(R.id.TextViewWeatherLoading).setVisibility(View.INVISIBLE);
+
+		}
+	}
+
+
+
+
+	
 
 	@Override
 	public void onProviderDisabled(String provider) {

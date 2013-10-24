@@ -21,4 +21,14 @@
             android:dialogTitle="@string/pref_dialog_title_weight"/>
         
    </PreferenceCategory>
+   <PreferenceCategory 
+        android:title="@string/setting_catagory_speech_report"
+        android:key="pref_speech_report_settings">
+        
+      	<CheckBoxPreference
+        	android:key="@string/pref_key_enable_speech_report"
+        	android:title="@string/pref_title_enable_speech_report"
+        	android:defaultValue="true" />
+        
+   </PreferenceCategory>
 </PreferenceScreen>

@@ -13,8 +13,6 @@
     <string name="calories">CALORIES</string>
     <string name="runs">RUNS</string>
     <string name="unit_distance">km</string>
-    <string name="centigrade">°C</string>
-    <string name="sunny_advice">Let\'s Run Today!</string>
     <string name="title_activity_running_exercise">RunningExerciseActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="unit_time_min">min</string>
@@ -47,11 +45,19 @@
     <string name="_continue">Continue</string>
     <string name="whats_your_target_distance">What is your target?</string>
     <string name="target_achieved">Target achieved!</string>
-    <string name="title_activity_setting">MainActivity</string>
+    <string name="title_activity_setting">Setting</string>
     <string name="unit_weight">kg</string>
-    <string name="setting_catagory_profile">PROFILE SETTING</string>
+    
+    <!-- weather -->
+    <string name="centigrade">°C</string>
+    <string name="getting_weather_advice">Getting weather information...</string>
+    <string name="no_weather_advice">Can\'t get weather information</string>
+    <string name="run_advice">Let\'s Run Today!</string>
+    <string name="run_advice">Maybe have a rest...</string>
     
     <!-- Setting preferences attributes -->
+    <string name="setting_catagory_profile">PROFILE SETTING</string>
+    
     <string name="pref_key_name">pref_name</string>
     <string name="pref_title_name">Name</string>
     
@@ -73,7 +79,22 @@
     <string name="pref_title_weight">Weight</string> 
     <string name="pref_dialog_title_weight">Enter Weight</string>
     
+    <string name="setting_catagory_speech_report">SPEECH REPORT SETTING</string>
+    
+    <string name="pref_key_enable_speech_report">pref_key_enable_speech_report</string>
+    <string name="pref_title_enable_speech_report">Enable speech report</string>
+    
+    <!-- notification -->
     <string name="notification_msg">We are tracking your activity</string>
     
-
+    <!-- gesture mode -->
+    <string name="pause">pause</string>
+    <string name="tracking">tracking</string>
+   
+    <!-- cue msg -->
+    <string name="activity_started">activity started</string>
+    <string name="activity_paused">activity paused</string>
+    <string name="activity_resumed">activity resumed</string>
+    <string name="activity_stopped">activity stopped</string>
+    
 </resources>

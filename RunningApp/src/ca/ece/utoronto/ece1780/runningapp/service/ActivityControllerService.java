@@ -1,11 +1,9 @@
 package ca.ece.utoronto.ece1780.runningapp.service;
 
 import java.util.Date;
-
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
-import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import android.app.Notification;
@@ -58,6 +56,7 @@ public class ActivityControllerService extends Service implements LocationListen
 	
 	// Listener used to notify UI thread when record is updated
 	private RunningDataChangeListener listener;
+	
 	
 	
 	/*Android service control*/
@@ -122,33 +121,50 @@ public class ActivityControllerService extends Service implements LocationListen
 
 	// Start activity
 	public void startActivity(float goal){	
-		locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
-		goalAchieved = false; 
-		weight = new UserSetting(getApplicationContext()).getWeight();
-		activityGoing = true;
 		
 		// Create a new record
 		currentRecord = new ActivityRecord();
 		currentRecord.setGoal(goal);
 		
-		// Resume Activity
-		resumeActivity();
+		// Obtain location manager
+		locationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+		// Start updating location from gps system
+		startUpateLocation();
+		// Add the first point to the location list. 
+		addTheFirstLocation();
+	
+		// Initialize state variables
+		goalAchieved = false; 
+		weight = new UserSetting(getApplicationContext()).getWeight();
+		activityGoing = true;
+		activityPaused = false;
+		
+		
+		// Start update
+		lastUpdateTime = new Date();
 		refreshTask = new RefreshTask();
 		refreshTask.execute();
 		
+		// Give user speech msg
+		TextToSpeechService.speak(getString(R.string.activity_started), this);
 	}
 	
 	public void stopActivity() {
-		pauseActivity();
+		activityPaused = true;
         isServiceRunning = false;
 		activityGoing = false;
+		
+		// Finish the timmer
 		refreshTask.finish();
+		
 		stopUpateLocation();
+		
+		TextToSpeechService.speak(getString(R.string.activity_stopped), this);
 	}
 	
 	public void pauseActivity() {
 		activityPaused = true;
+		TextToSpeechService.speak(getString(R.string.activity_paused), this);
 	}
 	
 	public void resumeActivity() {
@@ -159,6 +175,8 @@ public class ActivityControllerService extends Service implements LocationListen
 		startUpateLocation();
 		// Add the first point to the location list. 
 		addTheFirstLocation();
+		
+		TextToSpeechService.speak(getString(R.string.activity_resumed), this);
 	}
 	
 	// Logic of updating record
@@ -319,4 +337,31 @@ public class ActivityControllerService extends Service implements LocationListen
 			currentRecord.getLocationPointsTime().add(currentTime);
 		}
 	}
+
+	public void reportActivity() {
+		String msg = getReportMsg();
+		TextToSpeechService.speak(msg, this);
+	}
+
+	private String getReportMsg() {
+		String msgTemplate = "distance, %d kilometres, time, %t, calories, %c";
+		
+		String distance = String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000);
+		int calories = currentRecord.getCalories();
+		String time;
+		Long duration = currentRecord.getTimeLength()/1000;
+		if(duration<60) {
+			time = (duration%60) + " seconds";
+		}
+		else if(duration<3600) {
+			time = (duration%3600)/60 + " minutes " +(duration%60) + " seconds";
+		}
+		else {
+			time = duration/3600 +" hours "+ (duration%3600)/60 + " minutes " +(duration%60) + " seconds";
+		}
+		
+		String msg = msgTemplate.replace("%d", distance).replace("%t", time).replace("%c", String.valueOf(calories));
+		return msg;
+	}
+	
 }
