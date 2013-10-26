@@ -11,7 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,6 +63,11 @@ public class RunningExerciseActivity extends Activity {
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		
+
+		TestNu.numActivity++;
+		Log.v("numActivity", TestNu.numActivity+"");
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_running_exercise);
 		
@@ -242,6 +247,8 @@ public class RunningExerciseActivity extends Activity {
 
 	@Override
 	public void onDestroy() {
+		TestNu.numActivity--;
+		Log.v("numActivity", TestNu.numActivity+"");
 		super.onDestroy();
 	}
 	

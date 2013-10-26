@@ -4,7 +4,6 @@ import java.util.Locale;
 
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 import android.app.ActionBar;
@@ -18,6 +17,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -31,6 +31,10 @@ public class HomeActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
+		TestNu.numActivity++;
+		Log.v("numActivity", TestNu.numActivity+"");
+		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
 		
@@ -78,6 +82,15 @@ public class HomeActivity extends FragmentActivity implements
 	}
 
 	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+
+		TestNu.numActivity--;
+		Log.v("numActivity", TestNu.numActivity+"");
+	}
+
+	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == ActivitiesFragment.RECORD_DETAIL_REQUEST) {
 			if (resultCode == ActivityRecordActivity.DUMP_RECORD) {
@@ -91,6 +104,13 @@ public class HomeActivity extends FragmentActivity implements
 				if (activityFragment != null && activityFragment.getView() != null) {
 					activityFragment.updateList();
 				}
+				
+
+				StartFragment fragment = (StartFragment) getSupportFragmentManager()
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+				if (fragment != null && activityFragment.getView() != null) {
+					fragment.prepareWidgets();
+				}
 			}
 		}
 		super.onActivityResult(requestCode, resultCode, data);
@@ -102,7 +122,7 @@ public class HomeActivity extends FragmentActivity implements
 		// Force to re-evaluate the GPS accuracy
 		StartFragment fragment = (StartFragment) getSupportFragmentManager()
 				.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
-		if (fragment != null && fragment.isInLayout()) {
+		if (fragment != null && fragment.getView() != null) {
 			fragment.retestLocationAccuracy();
 		}
 		super.onResume();

@@ -75,6 +75,8 @@ public class ActivityControllerService extends Service implements LocationListen
 	
     @Override  
     public int onStartCommand(Intent intent, int flags, int startId) { 
+    	Log.d("control_service","onStartCommand");
+    	
     	String MSG = null;
     	if(intent != null)
     		MSG = intent.getStringExtra("MSG");  
@@ -99,11 +101,13 @@ public class ActivityControllerService extends Service implements LocationListen
 	
 	@Override  
 	public void onCreate() { 
+    	Log.d("control_service","onCreate");
 		activityGoing = false;
 	}
 	
 	@Override
 	public void onDestroy() {
+    	Log.d("control_service","destory");
 		super.onDestroy();
 	}
 	
@@ -121,6 +125,7 @@ public class ActivityControllerService extends Service implements LocationListen
 
 	// Start activity
 	public void startActivity(float goal){	
+    	Log.d("control_service","start activity");
 		
 		// Create a new record
 		currentRecord = new ActivityRecord();
@@ -150,6 +155,8 @@ public class ActivityControllerService extends Service implements LocationListen
 	}
 	
 	public void stopActivity() {
+    	Log.d("control_service","stop activity");
+    	
 		activityPaused = true;
         isServiceRunning = false;
 		activityGoing = false;
@@ -163,12 +170,15 @@ public class ActivityControllerService extends Service implements LocationListen
 	}
 	
 	public void pauseActivity() {
+    	Log.d("control_service","pause activity");
+    	
 		activityPaused = true;
 		TextToSpeechService.speak(getString(R.string.activity_paused), this);
 	}
 	
 	public void resumeActivity() {
-
+    	Log.d("control_service","resume activity");
+    	
 		activityPaused = false;
 		lastUpdateTime = new Date();
 		// Start updating location from gps system
@@ -287,15 +297,25 @@ public class ActivityControllerService extends Service implements LocationListen
 	// A timer used to keep track of the activity
 	class RefreshTask extends AsyncTask<Object, Object, Object> {
 
+		@Override
+		protected void onPostExecute(Object result) {
+
+	    	Log.d("control_service","end of timmer");
+            stopSelf();
+			super.onPostExecute(result);
+		}
+
 		boolean finish = false;
 		
 		@Override
 		protected void onPreExecute() {
+	    	Log.d("control_service","start of timmer");
 			finish = false;
 			super.onPreExecute();
 		}
 
 		public void finish() {
+	    	Log.d("control_service","finish timmer");
 			finish = true;
 		}
 		
@@ -322,7 +342,6 @@ public class ActivityControllerService extends Service implements LocationListen
                 };
             }
             
-            stopSelf();
             return null;
         }  
 	};

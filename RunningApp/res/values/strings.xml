@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Runners</string>
+    <string name="app_name">EasyRun</string>
     <string name="action_settings">Settings</string>
     <string name="title_start">start</string>
     <string name="title_music">music</string>
@@ -96,5 +96,6 @@
     <string name="activity_paused">activity paused</string>
     <string name="activity_resumed">activity resumed</string>
     <string name="activity_stopped">activity stopped</string>
+    <string name="gps">GPS</string>
     
 </resources>

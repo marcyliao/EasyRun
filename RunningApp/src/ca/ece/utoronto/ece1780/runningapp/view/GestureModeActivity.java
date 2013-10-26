@@ -4,7 +4,6 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
-import ca.ece.utoronto.ece1780.runningapp.view.listener.ShakeListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -16,7 +15,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class GestureModeActivity extends Activity {
 

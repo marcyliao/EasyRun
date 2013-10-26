@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.util.Log;
+
 public class WeatherHttpClient {
 
 	private static String BASE_URL = "http://api.openweathermap.org/data/2.5/weather?";
@@ -34,6 +36,7 @@ public class WeatherHttpClient {
 
 			is.close();
 			con.disconnect();
+			Log.d("weather","get JSON successfully");
 			return buffer.toString();
 	    }
 		catch(Throwable t) {
@@ -44,6 +47,7 @@ public class WeatherHttpClient {
 			try { con.disconnect(); } catch(Throwable t) {}
 		}
 
+		Log.d("weather","fail to get JSON");
 		return null;
 
 	}
@@ -56,6 +60,8 @@ public class WeatherHttpClient {
 			con.setRequestMethod("GET");
 			con.setDoInput(true);
 			con.setDoOutput(false);
+			con.setConnectTimeout(5000);
+			con.setReadTimeout(6000);
 			con.connect();
 
 			// Let's read the response
@@ -66,6 +72,7 @@ public class WeatherHttpClient {
 			while ( is.read(buffer) != -1)
 				baos.write(buffer);
 
+			Log.d("weather","get IMAGE DATA successfully");
 			return baos.toByteArray();
 	    }
 		catch(Throwable t) {
@@ -76,6 +83,7 @@ public class WeatherHttpClient {
 			try { con.disconnect(); } catch(Throwable t) {}
 		}
 
+		Log.d("weather","fail to get IMAGE DATA");
 		return null;
 
 	}

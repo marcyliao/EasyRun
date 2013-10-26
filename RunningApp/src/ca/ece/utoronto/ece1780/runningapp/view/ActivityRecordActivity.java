@@ -1,5 +1,7 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
+import junit.framework.Test;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -45,6 +48,9 @@ public class ActivityRecordActivity extends Activity {
 		
 		prepareWidgets();
 		prepareMap();
+		
+		TestNu.numActivity++;
+		Log.v("numActivity", TestNu.numActivity+"");
 	}
 
 	private void prepareWidgets() {
@@ -73,6 +79,14 @@ public class ActivityRecordActivity extends Activity {
 		if(record.getNote() != null && !record.getNote().equals(""))
 			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
 			
+	}
+
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		TestNu.numActivity--;
+		Log.v("numActivity", TestNu.numActivity+"");
+		super.onDestroy();
 	}
 
 	private void prepareMap() {
