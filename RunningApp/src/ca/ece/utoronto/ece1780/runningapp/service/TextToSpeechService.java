@@ -1,16 +1,18 @@
 package ca.ece.utoronto.ece1780.runningapp.service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
-
-import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
+import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
+import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
 
 public class TextToSpeechService extends Service implements TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener{
 
@@ -18,11 +20,28 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 	private TextToSpeech mTts;
     private String spokenText;
     public static final String MSG_ETRA_CODE = "msg_code";
-
+    public static List<OnSpeechListener> onSpeechListeners = new ArrayList<OnSpeechListener>();
+    public static List<OnSpeechCompleteListener> onSpeechCompleteListeners = new ArrayList<OnSpeechCompleteListener>();
+    
+    public static int addOnSpeechListener(OnSpeechListener listener){
+    	
+    	TextToSpeechService.onSpeechListeners.add(listener);
+    	return onSpeechListeners.size() - 1;
+    }
+    
+    public static int addOnSpeechCompleteListener(OnSpeechCompleteListener listener){
+    	
+    	TextToSpeechService.onSpeechCompleteListeners.add(listener);
+    	return onSpeechCompleteListeners.size() - 1;
+    }
+    
     static void speak(String msg, Context context){
     	boolean userSetting = new UserSetting(context).isSpeechEnabled();
     	
     	if(!beingUsed && userSetting) {
+    		for(OnSpeechListener listener : TextToSpeechService.onSpeechListeners){
+    			listener.onSpeech();
+    		}
     		Intent i = new Intent(context,TextToSpeechService.class);
     		i.putExtra(MSG_ETRA_CODE, msg);
     		context.startService(i);
@@ -63,6 +82,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     @Override
     public void onUtteranceCompleted(String uttId) {
+
         stopSelf();
     }
 
@@ -72,6 +92,9 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
             mTts.stop();
             mTts.shutdown();
         }
+    	for(OnSpeechCompleteListener listener : TextToSpeechService.onSpeechCompleteListeners){
+    		listener.onSpeechComplete();
+    	}
         beingUsed = false;
         super.onDestroy();
     }
@@ -80,4 +103,5 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     public IBinder onBind(Intent arg0) {
         return null;
     }
+
 }
