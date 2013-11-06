@@ -5,7 +5,6 @@
     android:background="#000"
     tools:context=".RunningExerciseActivity" >
     
-    <!-- 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="fill_parent"
@@ -38,15 +37,15 @@
             android:layout_toLeftOf="@+id/ButtonMusic"
             android:background="@drawable/icon_previous" />
     </RelativeLayout>
- 	-->
+
     <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/buttonLock"
+        android:layout_below="@+id/relativeLayout1"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
         android:layout_marginBottom="15dp" >
 
         <ImageButton
