@@ -10,9 +10,7 @@
     
     
     <string name="title_basic_data">basis</string>
-    <string name="title_speed_vs_distance">speed</string>
-    <string name="title_distance_vs_time">distance</string>
-    <string name="title_calories_vs_time">calories</string>
+    <string name="title_graphs">graphs</string>
     
     <string name="default_distance">Try It Out</string>
     <string name="button_start">Start</string>
@@ -112,9 +110,6 @@
     <string name="activity_stopped">activity stopped</string>
     <string name="gps">GPS</string>
     <string name="title_activity_statistic">Runners</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
     <string name="_calories">Calories</string>
     <string name="_distance">Distance</string>
     <string name="_statistics">Statistics</string>
@@ -124,5 +119,6 @@
     <string name="_calories_speed">Calories Speed</string>
     <string name="_speed_vs_distance">Speed Vs Distance</string>
     <string name="_distance_vs_time">Distance Vs Time</string>
+    <string name="_graphs">Graphs</string>
 
 </resources>

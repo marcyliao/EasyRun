@@ -4,9 +4,7 @@ import java.util.Locale;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics.BasicDataFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics.CaloriesVSTimeFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics.DistanceVSTimeFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics.SpeedVSDistanceFragment;
+import ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics.GraphsFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -84,21 +82,7 @@ public class StatisticActivity extends FragmentActivity {
 				return fragment;
 			}
 			else if(position == 1) {
-				SpeedVSDistanceFragment fragment = new SpeedVSDistanceFragment();
-				Bundle b = new Bundle();
-				b.putSerializable("record", record);
-				fragment.setArguments(b);
-				return fragment;
-			}
-			else if(position == 2) {
-				DistanceVSTimeFragment fragment = new DistanceVSTimeFragment();
-				Bundle b = new Bundle();
-				b.putSerializable("record", record);
-				fragment.setArguments(b);
-				return fragment;
-			}
-			else if(position == 3) {
-				CaloriesVSTimeFragment fragment = new CaloriesVSTimeFragment();
+				GraphsFragment fragment = new GraphsFragment();
 				Bundle b = new Bundle();
 				b.putSerializable("record", record);
 				fragment.setArguments(b);
@@ -111,7 +95,7 @@ public class StatisticActivity extends FragmentActivity {
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			return 4;
+			return 2;
 		}
 
 		@Override
@@ -121,11 +105,7 @@ public class StatisticActivity extends FragmentActivity {
 			case 0:
 				return getString(R.string.title_basic_data).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_speed_vs_distance).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_distance_vs_time).toUpperCase(l);
-			case 3:
-				return getString(R.string.title_calories_vs_time).toUpperCase(l);
+				return getString(R.string.title_graphs).toUpperCase(l);
 			}
 			return null;
 		}
