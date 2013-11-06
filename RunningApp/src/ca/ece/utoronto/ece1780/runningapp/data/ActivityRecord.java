@@ -248,7 +248,7 @@ public class ActivityRecord implements Serializable {
 		locationPointsTimeStr = builder.toString();
 		
 	}
-
+ 
 	public void prepareToShow() {
 		String locationXandY [] = locationPointsStr.split(",");
 		String time [] = this.locationPointsTimeStr.split(",");
