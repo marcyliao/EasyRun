@@ -3,21 +3,34 @@
 
     <string name="app_name">EasyRun</string>
     <string name="action_settings">Settings</string>
+    
     <string name="title_start">start</string>
     <string name="title_music">music</string>
     <string name="title_activities">activities</string>
+    
+    
+    <string name="title_basic_data">basis</string>
+    <string name="title_speed_vs_distance">speed</string>
+    <string name="title_distance_vs_time">distance</string>
+    <string name="title_calories_vs_time">calories</string>
+    
     <string name="default_distance">Try It Out</string>
     <string name="button_start">Start</string>
+    
+    <!-- units -->
     <string name="unit_speed">km/h</string>
+    <string name="unit_calories">kcal</string>
+    <string name="unit_calories_speed">kcal/h</string>
+    <string name="unit_distance">km</string>
+    <string name="unit_pace">min/km</string>
+    <string name="unit_time_min">min</string>
+    
     <string name="avg_speed">AVG SPEED</string>
     <string name="calories">CALORIES</string>
     <string name="runs">RUNS</string>
-    <string name="unit_distance">km</string>
     <string name="title_activity_running_exercise">RunningExerciseActivity</string>
     <string name="hello_world">Hello world!</string>
-    <string name="unit_time_min">min</string>
     <string name="time">TIME</string>
-    <string name="mile">KM</string>
     <string name="map">map</string>
     <string name="gesture">gesture</string>
     <string name="title_activity_gesture_mode">GestureModeActivity</string>
@@ -47,22 +60,25 @@
     <string name="target_achieved">Target achieved!</string>
     <string name="title_activity_setting">Setting</string>
     <string name="unit_weight">kg</string>
-    
+
+    <!-- actionbar buttons -->
+    <string name="trash">Trash</string>
+    <string name="statistics">Statistics</string>
+
     <!-- weather -->
     <string name="centigrade">°C</string>
     <string name="getting_weather_advice">Getting weather information...</string>
     <string name="no_weather_advice">Can\'t get weather information</string>
     <string name="run_advice">Let\'s Run Today!</string>
     <string name="run_advice">Maybe have a rest...</string>
-    
+
     <!-- Setting preferences attributes -->
     <string name="setting_catagory_profile">PROFILE SETTING</string>
-    
     <string name="pref_key_name">pref_name</string>
     <string name="pref_title_name">Name</string>
-    
     <string name="pref_key_gender">pref_gender</string>
     <string name="pref_title_gender">Gender</string>
+
     <string-array name="pref_array_genders">
         <item>Keep it secret</item>
         <item>Male</item>
@@ -73,29 +89,40 @@
         <item>male</item>
         <item>female</item>
     </string-array>
+
     <string name="pref_dialog_title_gender">Select Gender</string>
-    
     <string name="pref_key_weight">pref_weight</string>
-    <string name="pref_title_weight">Weight</string> 
+    <string name="pref_title_weight">Weight</string>
     <string name="pref_dialog_title_weight">Enter Weight</string>
-    
     <string name="setting_catagory_speech_report">SPEECH REPORT SETTING</string>
-    
     <string name="pref_key_enable_speech_report">pref_key_enable_speech_report</string>
     <string name="pref_title_enable_speech_report">Enable speech report</string>
-    
+
     <!-- notification -->
     <string name="notification_msg">We are tracking your activity</string>
-    
+
     <!-- gesture mode -->
     <string name="pause">pause</string>
     <string name="tracking">tracking</string>
-   
+
     <!-- cue msg -->
     <string name="activity_started">activity started</string>
     <string name="activity_paused">activity paused</string>
     <string name="activity_resumed">activity resumed</string>
     <string name="activity_stopped">activity stopped</string>
     <string name="gps">GPS</string>
-    
+    <string name="title_activity_statistic">Runners</string>
+    <string name="title_section1">Section 1</string>
+    <string name="title_section2">Section 2</string>
+    <string name="title_section3">Section 3</string>
+    <string name="_calories">Calories</string>
+    <string name="_distance">Distance</string>
+    <string name="_statistics">Statistics</string>
+    <string name="_duration">Duration</string>
+    <string name="_avg_speed">AVG Speed</string>
+    <string name="_avg_pace">AVG Pace</string>
+    <string name="_calories_speed">Calories Speed</string>
+    <string name="_speed_vs_distance">Speed Vs Distance</string>
+    <string name="_distance_vs_time">Distance Vs Time</string>
+
 </resources>

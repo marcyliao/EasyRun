@@ -27,7 +27,7 @@ public class ActivityControllerService extends Service implements LocationListen
 
 	/*Timer control*/
 	// Time interval to add a point to location list. Unit: ms
-    private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 2000;
+    private static final int INTERVAL_ADDING_LOCATION_TO_RECORD = 3000;
 	// Time interval to update the timer thread. Unit: ms
 	private static final long MIN_TIME_INTERVAL_FOR_UPDATE = 300;
 	// Last time to add location point to record 
@@ -56,8 +56,6 @@ public class ActivityControllerService extends Service implements LocationListen
 	
 	// Listener used to notify UI thread when record is updated
 	private RunningDataChangeListener listener;
-	
-	
 	
 	/*Android service control*/
 	// Binder used to communicate with activities;
@@ -88,6 +86,7 @@ public class ActivityControllerService extends Service implements LocationListen
             // Start notification to show the users that the app is running on the background
             Notification notification = new Notification(R.drawable.ic_launcher_small, getText(R.string.app_name),System.currentTimeMillis());
             Intent notificationIntent = new Intent(this, RunningExerciseActivity.class);
+            notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
             notification.setLatestEventInfo(this, getText(R.string.app_name),getText(R.string.notification_msg), pendingIntent);
             startForeground(123, notification);
@@ -218,15 +217,14 @@ public class ActivityControllerService extends Service implements LocationListen
 		if(location != null) {
 			
 			// Add a location and time point to record
-			currentRecord.getLocationPoints().add(location);
+			currentRecord.getLocationPoints().add(currentRecord.new Location(location));
 			currentRecord.getLocationPointsTime().add(currentTime);
-			lastRecordFrameTime = currentTime;
 			
 			// Add the distance to record once a new location point is added
 			int locationPointsLength = currentRecord.getLocationPoints().size();
 			if(locationPointsLength > 1) {
-				Location last = currentRecord.getLocationPoints().get(locationPointsLength-1);
-				Location lastSecond = currentRecord.getLocationPoints().get(locationPointsLength-2);
+				ActivityRecord.Location last = currentRecord.getLocationPoints().get(locationPointsLength-1);
+				ActivityRecord.Location lastSecond = currentRecord.getLocationPoints().get(locationPointsLength-2);
 				
 				// Compute new distance
 				currentRecord.setDistance(currentRecord.getDistance()+last.distanceTo(lastSecond));
@@ -237,8 +235,14 @@ public class ActivityControllerService extends Service implements LocationListen
 				// Compute avg speed
 				double avgSpeed = (double) ((currentRecord.getDistance()*3600)/(currentRecord.getTimeLength()));
 				currentRecord.setAvgSpeed((float)avgSpeed);
+				
+				// Add a speed point to speed record
+				Double deltadistance = last.distanceTo(lastSecond);
+				Long deltaTime = currentTime.getTime() - lastRecordFrameTime.getTime();
+				currentRecord.getSpeedRecords().add(deltadistance/(deltaTime/3600.0F));
 			}
-			
+
+			lastRecordFrameTime = currentTime;
 			// Nodify location added
 			if(listener != null)
 				listener.onLocationAdded(currentRecord);
@@ -352,8 +356,9 @@ public class ActivityControllerService extends Service implements LocationListen
 		
 		Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 		if(location != null) {
-			currentRecord.getLocationPoints().add(location);
+			currentRecord.getLocationPoints().add(currentRecord.new Location(location));
 			currentRecord.getLocationPointsTime().add(currentTime);
+			currentRecord.getSpeedRecords().add(0.0D);
 		}
 	}
 

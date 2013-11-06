@@ -47,16 +47,16 @@ public class SettingGoalDialogFragment extends DialogFragment {
 						// Start running activity
 						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
 						i.putExtra("goal", goal);
-						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 						getActivity().startActivity(i);
+						getActivity().finish();
 					}
 				})
 			.setNegativeButton(R.string.no_target,
 				new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int id) {
 						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
-						i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 						getActivity().startActivity(i);
+						getActivity().finish();
 					}
 				});
 

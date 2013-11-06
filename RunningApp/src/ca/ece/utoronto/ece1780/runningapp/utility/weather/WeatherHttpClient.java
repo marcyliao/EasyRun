@@ -7,7 +7,12 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import android.util.Log;
+import android.widget.ImageView;
 
 public class WeatherHttpClient {
 
@@ -51,40 +56,17 @@ public class WeatherHttpClient {
 		return null;
 
 	}
+	
+	public void attachImage(String code, ImageView view) {
+		ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(view.getContext()).build();
+		ImageLoader imageLoader = ImageLoader.getInstance();
+		imageLoader.init(config);
+		DisplayImageOptions options;
+		options = new DisplayImageOptions.Builder()
+				.cacheInMemory(true)
+				.cacheOnDisc(true)
+				.build();
 
-	public byte[] getImage(String code) {
-		HttpURLConnection con = null ;
-		InputStream is = null;
-		try {
-			con = (HttpURLConnection) ( new URL(IMG_URL + code)).openConnection();
-			con.setRequestMethod("GET");
-			con.setDoInput(true);
-			con.setDoOutput(false);
-			con.setConnectTimeout(5000);
-			con.setReadTimeout(6000);
-			con.connect();
-
-			// Let's read the response
-			is = con.getInputStream();
-			byte[] buffer = new byte[1024];
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-			while ( is.read(buffer) != -1)
-				baos.write(buffer);
-
-			Log.d("weather","get IMAGE DATA successfully");
-			return baos.toByteArray();
-	    }
-		catch(Throwable t) {
-			t.printStackTrace();
-		}
-		finally {
-			try { is.close(); } catch(Throwable t) {}
-			try { con.disconnect(); } catch(Throwable t) {}
-		}
-
-		Log.d("weather","fail to get IMAGE DATA");
-		return null;
-
+		imageLoader.displayImage(IMG_URL + code, view, options);
 	}
 }

@@ -13,7 +13,6 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
 import android.graphics.Color;
-import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -68,11 +67,11 @@ public class MapModeActivity extends Activity {
 		if (record.getLocationPoints().size() >= 1) {
 			
 			// Get the start location
-			Location startLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = record.getLocationPoints().get(0);
 			
 			// Get the last location
 			int last = record.getLocationPoints().size()-1;
-			Location lastLocation = record.getLocationPoints().get(last);
+			ActivityRecord.Location lastLocation = record.getLocationPoints().get(last);
 
 			// Add the start marker
 			map.addMarker(new MarkerOptions()
@@ -91,13 +90,13 @@ public class MapModeActivity extends Activity {
 
 		// Make sure that there are at least two points on the map
 		if (record.getLocationPoints().size() > 1) {
-			Location originalLocation = record.getLocationPoints().get(0);
-			Location startLocation = originalLocation;
+			ActivityRecord.Location originalLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = originalLocation;
 
 			// Draw the route on the map
 			PolylineOptions options = new PolylineOptions();
 			for (int i = 1; i < record.getLocationPoints().size(); i++) {
-				Location endLocation = record.getLocationPoints().get(i);
+				ActivityRecord.Location endLocation = record.getLocationPoints().get(i);
 
 				options.add(getLatLngFromLocation(startLocation),getLatLngFromLocation(endLocation))
 					.width(5)
@@ -109,7 +108,7 @@ public class MapModeActivity extends Activity {
 		}
 	}
 
-	private LatLng getLatLngFromLocation(Location startLocation) {
+	private LatLng getLatLngFromLocation(ActivityRecord.Location startLocation) {
 		return new LatLng(startLocation.getLatitude(),
 				startLocation.getLongitude());
 	}
@@ -140,8 +139,8 @@ public class MapModeActivity extends Activity {
 					int l1Index = record.getLocationPoints().size()-2;
 					int l2Index = record.getLocationPoints().size()-1;
 					
-					Location l1 = record.getLocationPoints().get(l1Index);
-					Location l2 = record.getLocationPoints().get(l2Index);
+					ActivityRecord.Location l1 = record.getLocationPoints().get(l1Index);
+					ActivityRecord.Location l2 = record.getLocationPoints().get(l2Index);
 	
 					PolylineOptions options = new PolylineOptions();
 					options.add(getLatLngFromLocation(l1),getLatLngFromLocation(l2))

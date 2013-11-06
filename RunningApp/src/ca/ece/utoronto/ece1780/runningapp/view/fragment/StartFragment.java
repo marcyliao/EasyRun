@@ -184,7 +184,7 @@ public class StartFragment extends Fragment implements LocationListener {
 			
 			
 			// Update weather
-			if (!isWeatherObtained) {
+			if (!isWeatherObtained) {	
 				isWeatherObtained = true;
 				prepareWeatherInfo(testLocation.getLatitude(),testLocation.getLongitude());
 			}
@@ -221,11 +221,6 @@ public class StartFragment extends Fragment implements LocationListener {
 			
 				weather = JSONWeatherParser.getWeather(data);
 
-				// Let's retrieve the icon
-				if(weather != null) {
-					weather.iconData = ((new WeatherHttpClient()).getImage(weather.currentCondition.getIcon()));
-				}
-
 			} catch (JSONException e) {				
 				e.printStackTrace();
 			}
@@ -246,20 +241,10 @@ public class StartFragment extends Fragment implements LocationListener {
 					Log.d("weather","could not get weather");
 					return;
 				}
-				
-				Bitmap img = null;
-				if (weather.iconData != null && weather.iconData.length > 0) {
-					img = BitmapFactory.decodeByteArray(weather.iconData, 0, weather.iconData.length); 
-				}
-				
-				if(img == null) {
-					isWeatherObtained = false;
-					Log.d("weather","could not get image");
-					return;
-				}
-				
+
 				ImageView imgViewWeather = (ImageView) rootView.findViewById(R.id.imageViewWeather);
-				imgViewWeather.setImageBitmap(img);
+				
+				new WeatherHttpClient().attachImage(weather.currentCondition.getIcon(),imgViewWeather);
 				
 				TextView textViewTemperature = (TextView) rootView.findViewById(R.id.TextViewTemperature);
 				textViewTemperature.setText(String.valueOf(Math.round((weather.temperature.getTemp() - 275.15))) +  getString(R.string.centigrade));

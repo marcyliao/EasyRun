@@ -6,6 +6,7 @@ import java.util.Date;
 
 import android.location.Location;
 import android.location.LocationManager;
+import android.util.Log;
 
 public class ActivityRecord implements Serializable {
 	
@@ -64,6 +65,9 @@ public class ActivityRecord implements Serializable {
 	// Goal
 	private float goal;
 	
+	// Speed records
+	private ArrayList<Double> speeds;
+	
 	public ActivityRecord() {
 		id = 0L;
 		time = new Date().getTime();
@@ -72,6 +76,7 @@ public class ActivityRecord implements Serializable {
 		calories = 0;
 		locationPoints = new ArrayList<Location>();
 		locationPointsTime = new ArrayList<Date>();
+		speeds = new ArrayList<Double>();
 		weather = Weather.NONSET;
 		temperature = null;
 		timeLength = 0L;
@@ -91,6 +96,11 @@ public class ActivityRecord implements Serializable {
 
 	public Long getTime() {
 		return time;
+	}
+	
+	// pace of the activity, converted from avg speed. Unit: min/km
+	public float getAvgPace() {
+		return (1/avgSpeed)*60;
 	}
 
 	public void setTime(Long time) {
@@ -244,15 +254,24 @@ public class ActivityRecord implements Serializable {
 		String time [] = this.locationPointsTimeStr.split(",");
 		for(int i=0; i<time.length-1; i++) {
 			// Convert location String list to location list
-			Location l = new Location(LocationManager.GPS_PROVIDER);
+			Location l = new Location();
 			l.setLatitude(Double.valueOf(locationXandY[2*i]));
 			l.setLongitude(Double.valueOf(locationXandY[2*i+1]));
 			locationPoints.add(l);
 			
 			// Convert location time to time
 			locationPointsTime.add(new Date(Long.valueOf(time[i])));
+			
+			// If its the first time stamp, the speed is zero
+			if(i==0) {
+				speeds.add(0.0D);
+			}
+			else {
+				double deltadistance = locationPoints.get(i).distanceTo(locationPoints.get(i-1));
+				Long deltaTime = locationPointsTime.get(i).getTime()-locationPointsTime.get(i-1).getTime();
+				speeds.add(deltadistance/(deltaTime/3600.0F));
+			}
 		}
-		
 	}
 
 	public float getGoal() {
@@ -261,5 +280,80 @@ public class ActivityRecord implements Serializable {
 
 	public void setGoal(float goal) {
 		this.goal = goal;
+	}
+	
+	public ArrayList<Double> getSpeedRecords() {
+		return speeds;
+	}
+	
+	public class Location  implements Serializable{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private double lat;
+		private double lng;
+		
+		private static final double EARTH_RADIUS = 6378137;
+		
+		public void setLatitude(double lat) {
+			this.lat = lat;
+		}
+		
+		public void setLongitude(double lng) {
+			this.lng = lng;
+		}
+		
+		public double getLatitude(){
+			return lat;
+		}
+		
+		public double getLongitude(){
+			return lng;
+		}
+		
+		public double distanceTo(Location l) {
+			return distanceBetween(this.getLatitude(),this.getLongitude(),l.getLatitude(),l.getLongitude());
+		}
+		
+		public double distanceBetween(double lat1, double lng1, double lat2,
+				double lng2) {
+			double radLat1 = rad(lat1);
+			double radLat2 = rad(lat2);
+			double a = radLat1 - radLat2;
+			double b = rad(lng1) - rad(lng2);
+			double s = 2 * Math.asin(Math.sqrt(Math.pow(Math.sin(a / 2), 2)
+					+ Math.cos(radLat1) * Math.cos(radLat2)
+					* Math.pow(Math.sin(b / 2), 2)));
+			s = s * EARTH_RADIUS;
+			return s;
+		}
+		
+		private double rad(double d) {
+	        return d * Math.PI / 180.0;
+	    }
+		
+		public Location(android.location.Location l){
+			this.setLatitude(l.getLatitude());
+			this.setLongitude(l.getLongitude());
+		}
+		
+		public Location() {
+			
+		}
+	}
+	
+	public double getHighestSpeed() {
+		double highest = 0;
+		for(Double speed : speeds) {
+			if(speed > highest) {
+				highest = speed;
+			}
+		}
+		return highest;
+	}
+
+	public float getCaloriesSpeed() {
+		return calories/(timeLength*1.0F/1000/3600);
 	}
 }

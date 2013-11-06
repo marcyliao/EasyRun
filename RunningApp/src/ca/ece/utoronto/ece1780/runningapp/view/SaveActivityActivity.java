@@ -15,7 +15,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -128,7 +127,7 @@ public class SaveActivityActivity extends Activity  {
 		if (record.getLocationPoints().size() >= 1) {
 
 			// Add the start marker
-			Location startLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = record.getLocationPoints().get(0);
 			map.addMarker(new MarkerOptions()
 	        .position(getLatLngFromLocation(startLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
@@ -136,7 +135,7 @@ public class SaveActivityActivity extends Activity  {
 
 			// Add the end marker
 			int last = record.getLocationPoints().size()-1;
-			Location lastLocation = record.getLocationPoints().get(last);
+			ActivityRecord.Location lastLocation = record.getLocationPoints().get(last);
 			map.addMarker(new MarkerOptions()
 	        .position(getLatLngFromLocation(lastLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
@@ -153,8 +152,8 @@ public class SaveActivityActivity extends Activity  {
 		
 		// Make sure that there are at least two points on the map
 		if (record.getLocationPoints().size() > 1) {
-			Location originalLocation = record.getLocationPoints().get(0);
-			Location startLocation = originalLocation;
+			ActivityRecord.Location originalLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = originalLocation;
 			
 			smallestLatitude = startLocation.getLatitude();
 			largestLatitude = startLocation.getLatitude();
@@ -165,7 +164,7 @@ public class SaveActivityActivity extends Activity  {
 			PolylineOptions options = new PolylineOptions();
 			for (int i = 1; i < record.getLocationPoints().size(); i++) {
 				
-				Location endLocation = record.getLocationPoints().get(i);
+				ActivityRecord.Location endLocation = record.getLocationPoints().get(i);
 				options.add(getLatLngFromLocation(startLocation),getLatLngFromLocation(endLocation))
 					.width(5)
 					.color(Color.RED);
@@ -211,7 +210,7 @@ public class SaveActivityActivity extends Activity  {
 		}
 	}
 
-	private LatLng getLatLngFromLocation(Location startLocation) {
+	private LatLng getLatLngFromLocation(ActivityRecord.Location startLocation) {
 		return new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
 	}
 

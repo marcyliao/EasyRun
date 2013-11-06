@@ -1,6 +1,8 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import junit.framework.Test;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -15,11 +17,13 @@ import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.graphics.Color;
-import android.location.Location;
+
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +49,7 @@ public class ActivityRecordActivity extends Activity {
 		
 		record = new ActivityRecordDAO(this).getRecord(id);
 		record.prepareToShow();
+		
 		
 		prepareWidgets();
 		prepareMap();
@@ -78,6 +83,12 @@ public class ActivityRecordActivity extends Activity {
 		
 		if(record.getNote() != null && !record.getNote().equals(""))
 			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
+		
+		// Set title of actionbar to the date of the activity
+		Date date = new Date(record.getTime());
+		SimpleDateFormat dateformatYYYYMMDD = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
+		String dateTitle = dateformatYYYYMMDD.format(date);
+		getActionBar().setTitle(dateTitle);
 			
 	}
 
@@ -99,7 +110,7 @@ public class ActivityRecordActivity extends Activity {
 		if (record.getLocationPoints().size() >= 1) {
 
 			// Add the start marker
-			Location startLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = record.getLocationPoints().get(0);
 			map.addMarker(new MarkerOptions()
 	        .position(getLatLngFromLocation(startLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
@@ -107,7 +118,7 @@ public class ActivityRecordActivity extends Activity {
 
 			// Add the end marker
 			int last = record.getLocationPoints().size()-1;
-			Location lastLocation = record.getLocationPoints().get(last);
+			ActivityRecord.Location lastLocation = record.getLocationPoints().get(last);
 			map.addMarker(new MarkerOptions()
 	        .position(getLatLngFromLocation(lastLocation))
 	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
@@ -124,8 +135,8 @@ public class ActivityRecordActivity extends Activity {
 
 		// Make sure that there are at least two points on the map
 		if (record.getLocationPoints().size() > 1) {
-			Location originalLocation = record.getLocationPoints().get(0);
-			Location startLocation = originalLocation;
+			ActivityRecord.Location originalLocation = record.getLocationPoints().get(0);
+			ActivityRecord.Location startLocation = originalLocation;
 
 			smallestLatitude = startLocation.getLatitude();
 			largestLatitude = startLocation.getLatitude();
@@ -136,7 +147,7 @@ public class ActivityRecordActivity extends Activity {
 			PolylineOptions options = new PolylineOptions();
 			for (int i = 1; i < record.getLocationPoints().size(); i++) {
 
-				Location endLocation = record.getLocationPoints().get(i);
+				ActivityRecord.Location endLocation = record.getLocationPoints().get(i);
 				options.add(getLatLngFromLocation(startLocation),
 						getLatLngFromLocation(endLocation)).width(5)
 						.color(Color.RED);
@@ -190,7 +201,7 @@ public class ActivityRecordActivity extends Activity {
 		}
 	}
 	
-	private LatLng getLatLngFromLocation(Location startLocation) {
+	private LatLng getLatLngFromLocation(ActivityRecord.Location startLocation) {
 		return new LatLng(startLocation.getLatitude(), startLocation.getLongitude());
 	}
 
@@ -206,23 +217,33 @@ public class ActivityRecordActivity extends Activity {
 		
 	    // Users select other modes.
 	    switch (item.getItemId()) {
-	    case R.id.action_dump:
-	    	new AlertDialog.Builder(this)
-				.setIcon(android.R.drawable.ic_dialog_alert)
-				.setTitle(R.string.dump_activity_dialog_title)
-				.setMessage(R.string.dump_activity_dialog_info)
-				.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick( DialogInterface dialog, int which) {
-						new ActivityRecordDAO(ActivityRecordActivity.this).deleteRecord(record.getId());
-						setResult(DUMP_RECORD);
-						finish();
-					}
-				}).setNegativeButton(R.string.no, null).show();
-	        return true;
-	    default:
-	        return super.onOptionsItemSelected(item);
+		    case R.id.action_dump:
+		    	new AlertDialog.Builder(this)
+					.setIcon(android.R.drawable.ic_dialog_alert)
+					.setTitle(R.string.dump_activity_dialog_title)
+					.setMessage(R.string.dump_activity_dialog_info)
+					.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+	
+						@Override
+						public void onClick( DialogInterface dialog, int which) {
+							new ActivityRecordDAO(ActivityRecordActivity.this).deleteRecord(record.getId());
+							setResult(DUMP_RECORD);
+							finish();
+						}
+					}).setNegativeButton(R.string.no, null).show();
+		        return true;
+		        
+		    case R.id.action_statistics:
+		    	Intent i = new Intent(this, StatisticActivity.class);
+		    	
+		    	Bundle b = new Bundle();
+		    	b.putSerializable("record", record);
+		    	i.putExtras(b);
+		    	startActivity(i);
+		    	return true;
+		    	
+		    default:
+		        return super.onOptionsItemSelected(item);
 	    }
 	}
 

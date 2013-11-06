@@ -40,8 +40,8 @@ public class HomeActivity extends FragmentActivity implements
 		
 		if(ActivityControllerService.isServiceRunning) {
 			Intent i = new Intent(this,RunningExerciseActivity.class);
-			i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(i);
+			finish();
 		}
 		
 	    // Set up UI components
@@ -105,7 +105,7 @@ public class HomeActivity extends FragmentActivity implements
 					activityFragment.updateList();
 				}
 				
-
+ 
 				StartFragment fragment = (StartFragment) getSupportFragmentManager()
 						.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
 				if (fragment != null && activityFragment.getView() != null) {

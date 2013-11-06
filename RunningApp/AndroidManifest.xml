@@ -45,26 +45,26 @@
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" 
-            android:launchMode = "singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.GestureModeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" 
-            android:launchMode = "singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.MapModeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" 
-            android:launchMode = "singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.SaveActivityActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" 
-            android:launchMode = "singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
 
         <meta-data
@@ -74,26 +74,33 @@
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:screenOrientation="portrait" 
-            android:launchMode = "singleTop">
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.SettingActivity"
-            android:label="@string/title_activity_setting" 
-            android:launchMode = "singleTop">
+            android:label="@string/title_activity_setting"
+            android:launchMode="singleTop" >
         </activity>
-        
+
         <service
             android:name="ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService"
             android:icon="@drawable/ic_launcher"
             android:label="Runners" >
         </service>
-        
         <service
             android:name="ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService"
             android:icon="@drawable/ic_launcher"
             android:label="Runners" >
         </service>
+
+        <activity
+            android:name="ca.ece.utoronto.ece1780.runningapp.view.StatisticActivity"
+            android:label="@string/title_activity_statistic" 
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

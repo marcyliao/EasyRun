@@ -194,8 +194,8 @@ public class RunningExerciseActivity extends Activity {
 				controllerService.stopActivity();
 				
 				Intent i = new Intent(this,HomeActivity.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
+				finish();
 			}
 			else if(resultCode == SaveActivityActivity.RESULT_DUMP) {
 
@@ -206,8 +206,8 @@ public class RunningExerciseActivity extends Activity {
 				controllerService.stopActivity();
 				
 				Intent i = new Intent(this,HomeActivity.class);
-				i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(i);
+				finish();
 			}
 		}
 		
