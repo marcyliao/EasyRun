@@ -1,6 +1,7 @@
 package ca.ece.utoronto.ece1780.runningapp.view.listener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -10,7 +11,9 @@ import android.view.View;
 
 public abstract class OnGestureListener implements View.OnTouchListener {
 
-	ArrayList<Pointer> pointers;
+	List<Pointer> pointers;
+	List<Point> points;
+	float clockIndex;
 	final String DEBUG_TAG = "TouchListener";
 	Context context;
 	
@@ -19,6 +22,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		this.context = context;
 		
 		pointers = new ArrayList<Pointer>();
+		points = new ArrayList<Point>();
 	}
 	
 	@Override
@@ -26,6 +30,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		
 		// get the action type of one touch action
 		int actionType = MotionEventCompat.getActionMasked(event);
+		
 
 		switch (actionType) {
 		// if the prime pointer press down
@@ -40,6 +45,10 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			pointer.startTime = event.getDownTime();
 			//add the pointer into the pointer array list
 			pointers.add(pointer);
+			
+			Point point = new Point(pointer.startX, pointer.startY);
+			points.add(point);
+			
 			
 			
 			Log.d(DEBUG_TAG, "Prime Down " + pointer.Id + "  " + pointer.startX + "  " + pointer.startY);
@@ -66,17 +75,39 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		
 		case MotionEvent.ACTION_MOVE:{
 			
-			Pointer pointer = pointers.get(0);
+			if(!this.isMultiFingerGesture()){
+				
+				Pointer pointer = pointers.get(0);
+				
+				int historySize = event.getHistorySize();
+				int startPointsSize = points.size();
+				for(int i = 0; i < historySize; i++){
+					Point point = new Point(event.getHistoricalX(i), event.getHistoricalY(i));
+					points.add(point);
+				}
+				Point point = new Point(MotionEventCompat.getX(event, 0), MotionEventCompat.getY(event, 0));
+				points.add(point);
+
+				int endPointsSize = points.size();
+				int midPointsSize = (endPointsSize + startPointsSize) / 2;
+				Point startPoint = points.get(startPointsSize - 1);
+				Point midPoint = points.get(midPointsSize - 1);
+				Point endPoint = points.get(endPointsSize - 1);
+				Point point1 = new Point(midPoint.getX() - startPoint.getX(), midPoint.getY() - startPoint.getY());
+				Point point2 = new Point(endPoint.getX() - midPoint.getX(),   endPoint.getY() - midPoint.getY());
+
+				clockIndex += Point.PointMultiply(point2, point1);
+					
+					// caculta p2 * p1
+//					if (Point.PointMultiply(point2, point1) > 0) {
+//						System.out.println(clockIndex + " $$ clock wise : " 	+ Point.PointMultiply(point2, point1));
+//					} else {
+//						System.out.println(clockIndex + " $$ Counter clock : " + Point.PointMultiply(point2, point1));
+//					}
+					
+					
+			}
 			
-			int historySize = event.getHistorySize();
-			
-			for(int i = 0; i < historySize; i++)
-				System.out.println(i + "  " + event.getHistoricalX(i) + " : " + event.getHistoricalY(i));
-			
-			System.out.println("e  " +  MotionEventCompat.getX(event, 0) + "  " + MotionEventCompat.getY(event, 0));				
-			System.out.println();
-			
-			Log.d(DEBUG_TAG, "Pointer Move " + pointer.Id + "  " + pointer.startX + "  " + pointer.startY);
 			break;
 		}
 
@@ -105,7 +136,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			pointer.endX = MotionEventCompat.getX(event, 0);
 			pointer.endY = MotionEventCompat.getY(event, 0);
 			pointer.endTime = event.getEventTime();
-			
+			System.out.println("clockIndex : " + clockIndex);
 			//if it is a multi finger Gesture
 			if(isDoubleFingerGesture()){
 
@@ -146,6 +177,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		return false;
 	}
 	
+	private boolean isMultiFingerGesture(){
+		
+		if(pointers.size() > 1)
+			return true;
+		
+		return false;
+	}
+	
 	private Pointer finaPointerById (int pointerId){
 		
 		for (Pointer pointer : pointers){
@@ -162,10 +201,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		float primeDistanceX = primePointer.endX - primePointer.startX;
 		float primeDistanceY = primePointer.endY - primePointer.startY;
 	
-
-		Log.d(DEBUG_TAG, "duration : " + (primePointer.endTime - primePointer.startTime));
-
-		if( square(primeDistanceX) < square(primeDistanceY)){
+		if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK){
+			singleFingerClockCircle();
+		}
+		
+		else if(clockIndex > Pointer.CLOCK_BENCHMARK){
+			singleFingerCounterClockCircle();
+		}
+		else if( square(primeDistanceX) < square(primeDistanceY)){
 			
 			if(primeDistanceY > Pointer.Y_TRAVEL_BENCHEMARK){
 				oneFingerTop2Bottom();
@@ -226,6 +269,10 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	
 	public void twoFingersSingleClick(){};
 
+	public void singleFingerClockCircle(){};
+	
+	public void singleFingerCounterClockCircle(){};
+
 	private void DoubleFingerGesture(Pointer primePointer, Pointer secondPointer){
 		
 		
@@ -276,6 +323,8 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 
 	void init(){
 		pointers.clear();
+		points.clear();
+		clockIndex = 0;
 	}
 	
 	private float square (float a){
@@ -284,6 +333,35 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	
 	private float sumOfSquare(float a, float b){
 		return square(a) + square(b);
+	}
+	
+	private static class Point{
+		
+		float x, y;
+		
+		public Point(float startX, float startY){
+			
+			this.x = startX;
+			this.y = startY;
+		}
+		
+		public float getX(){
+			
+			return this.x;
+		}
+		
+		public float getY(){
+			
+			return this.y;
+		}
+		
+		public static float PointMultiply(Point p1, Point p2){
+			
+			float result =  p1.getX()*p2.getY() - p2.getX()*p1.getY();
+			
+			return result;
+			
+		}
 	}
 	
 	private class Pointer{
@@ -300,6 +378,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		static final float X_TRAVEL_BENCHEMARK = 100f;
 		static final float Y_TRAVEL_BENCHEMARK = 100f;
 		static final float DISTANCE_BENCHEMARK = 100f;
+		static final float CLOCK_BENCHMARK     = 200f;
 		static final long  LONGPRESS_BENCHEMARK = 800;
 
 		//set some constant to represent invalid states
