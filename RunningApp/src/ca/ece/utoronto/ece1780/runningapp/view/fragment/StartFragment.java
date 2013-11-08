@@ -51,7 +51,7 @@ public class StartFragment extends Fragment implements LocationListener {
 	
 	private View rootView;
 	
-	private boolean isWeatherObtained = false;
+	private boolean isWeatherObtained;
 	
 	public StartFragment() {
 	}
@@ -65,7 +65,9 @@ public class StartFragment extends Fragment implements LocationListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {		
-
+		
+		isWeatherObtained = false;
+		
 		rootView = inflater.inflate(R.layout.fragment_start,
 				container, false);
 		
