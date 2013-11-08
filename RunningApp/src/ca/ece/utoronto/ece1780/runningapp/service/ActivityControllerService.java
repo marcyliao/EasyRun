@@ -107,6 +107,7 @@ public class ActivityControllerService extends Service implements LocationListen
 	@Override
 	public void onDestroy() {
     	Log.d("control_service","destory");
+    	TextToSpeechService.stop(getApplicationContext());
 		super.onDestroy();
 	}
 	
@@ -165,7 +166,6 @@ public class ActivityControllerService extends Service implements LocationListen
 		
 		stopUpateLocation();
 		
-		TextToSpeechService.speak(getString(R.string.activity_stopped), this);
 	}
 	
 	public void pauseActivity() {

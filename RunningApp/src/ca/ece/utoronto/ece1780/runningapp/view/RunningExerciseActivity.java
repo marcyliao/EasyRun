@@ -3,6 +3,7 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -106,6 +107,7 @@ public class RunningExerciseActivity extends Activity {
 			public void onClick(View v) {
 		         Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
 		         startActivityForResult(i,SAVE_RECORD_REQUEST);
+		 		TextToSpeechService.speak(getString(R.string.activity_stopped), RunningExerciseActivity.this);
 			}
 		});
 		
