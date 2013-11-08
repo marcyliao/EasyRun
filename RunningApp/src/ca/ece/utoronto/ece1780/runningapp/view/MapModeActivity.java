@@ -63,7 +63,8 @@ public class MapModeActivity extends Activity {
 		
 		GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 		        .getMap();
-
+		map.clear();
+		
 		if (record.getLocationPoints().size() >= 1) {
 			
 			// Get the start location

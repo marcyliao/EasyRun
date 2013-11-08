@@ -45,6 +45,30 @@ public class GestureModeActivity extends Activity {
         }    
     };
     
+    private RunningDataChangeListener getRecordChangeListener() {
+		return new RunningDataChangeListener(){
+
+			@Override
+			public void onDataChange(ActivityRecord currentRecord) {
+				
+				// When data is updated, update all the relevant UI 
+				// to show users the current activity record
+				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
+				
+			}
+
+			@Override
+			public void onLocationAdded(ActivityRecord record) {
+				// Do nothing
+			}
+
+			@Override
+			public void onGoalAchieved() {
+				// Do nothing
+			}
+		};
+	}
+    
     private void switchPauseAndResume() {
 		if(controllerService !=null && !controllerService.isActivityPaused()) {
 			controllerService.pauseActivity();
@@ -60,7 +84,7 @@ public class GestureModeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gesture_mode);
 		
-		getActionBar().hide();
+		// getActionBar().hide();
 		
 		// Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -101,26 +125,6 @@ public class GestureModeActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.gesture_mode, menu);
 		return true;
-	}
-	
-	private RunningDataChangeListener getRecordChangeListener() {
-		return new RunningDataChangeListener(){
-
-			@Override
-			public void onDataChange(ActivityRecord currentRecord) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onLocationAdded(ActivityRecord record) {
-				// TODO Auto-generated method stub
-			}
-
-			@Override
-			public void onGoalAchieved() {
-				// TODO Auto-generated method stub
-			}
-		};
 	}
 	
 	@Override
