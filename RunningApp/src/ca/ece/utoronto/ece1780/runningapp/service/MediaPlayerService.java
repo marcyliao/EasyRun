@@ -67,8 +67,6 @@ public class MediaPlayerService extends Service {
 			
 			@Override
 			public void onSpeechComplete() {
-				
-				Log.d("WAkaka", "This is from onSpeechCompelete");
 				MediaPlayerService.this.pause();
 			}
 		});
@@ -131,8 +129,7 @@ public class MediaPlayerService extends Service {
 		//if meidaDirectory is not a directory 
 		if(!mediaDirectory.isDirectory())
 			return false;
-		//clear the mediaList
-		mediaList.clear();
+
 		//add the absolutePath of all the files end with mp3 and wma under the mediaDirectory into the mediaList		
 		for(File mediaFile : mediaDirectory.listFiles()){
 			
