@@ -313,7 +313,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 				twoFingersLeft2Right();
 			
 			else if (primeDistanceX < 0 - Pointer.X_TRAVEL_BENCHEMARK && secondDistanceX < 0 - Pointer.X_TRAVEL_BENCHEMARK)
-				twoFingersLeft2Right();
+				twoFingersRight2Left();
 			
 			else
 				twoFingersSingleClick();

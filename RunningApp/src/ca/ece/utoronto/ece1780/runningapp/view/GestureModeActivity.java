@@ -1,26 +1,32 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
-import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
-import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
+import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
 
 public class GestureModeActivity extends Activity {
 
+	
 	private TextView msgView;
 	
 	private ActivityControllerService controllerService;
+	
+	private MediaPlayerService mediaPlayer;
+	
 	//private ShakeListener mShaker;
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
@@ -45,30 +51,6 @@ public class GestureModeActivity extends Activity {
         }    
     };
     
-    private RunningDataChangeListener getRecordChangeListener() {
-		return new RunningDataChangeListener(){
-
-			@Override
-			public void onDataChange(ActivityRecord currentRecord) {
-				
-				// When data is updated, update all the relevant UI 
-				// to show users the current activity record
-				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
-				
-			}
-
-			@Override
-			public void onLocationAdded(ActivityRecord record) {
-				// Do nothing
-			}
-
-			@Override
-			public void onGoalAchieved() {
-				// Do nothing
-			}
-		};
-	}
-    
     private void switchPauseAndResume() {
 		if(controllerService !=null && !controllerService.isActivityPaused()) {
 			controllerService.pauseActivity();
@@ -84,10 +66,30 @@ public class GestureModeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gesture_mode);
 		
-		// getActionBar().hide();
+		getActionBar().hide();
 		
 		// Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        
+    	//Prepare music service  added by nate
+		//set up music service
+		Intent intent = new Intent(this, MediaPlayerService.class);
+		startService(intent);
+		Log.d("Gesture", "This is from Gesture Mode Activity");
+		bindService(intent, new ServiceConnection() {
+			
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				mediaPlayer = null;	
+			}
+			
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				
+				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+				mediaPlayer = mediaBinder.getMediaPlayerService();
+			}
+		}, 0);
 		
 		// Prepare Gesture listener
 		View gestureView =findViewById(R.id.gestureView);
@@ -106,6 +108,79 @@ public class GestureModeActivity extends Activity {
 				}
 				super.oneFingerSingleClick();
 			}
+
+			@Override
+			public void oneFingerSingleClick() {
+			
+				super.oneFingerSingleClick();
+			}
+
+			@Override
+			public void twoFingersLeft2Right() {
+				Log.d("Gesture", "twoFingersLeft2Right");
+				if(mediaPlayer.isReady()){
+					mediaPlayer.playNext();
+					Log.d("Gesture", mediaPlayer.getIndex() + mediaPlayer.onWhichSong());
+				}
+				super.twoFingersLeft2Right();
+			}
+
+			@Override
+			public void twoFingersRight2Left() {
+				Log.d("Gesture", "twoFingersRight2Left");
+				if(mediaPlayer.isReady()){
+					mediaPlayer.playPrevious();
+					
+					Log.d("Gesture", mediaPlayer.getIndex()+ mediaPlayer.onWhichSong());
+				}
+				super.twoFingersRight2Left();
+			}
+
+			@Override
+			public void twoFingersSingleClick() {
+				Log.d("Gesture", "twoFingersSingleClick");
+				mediaPlayer.pause();
+				super.twoFingersSingleClick();
+			}
+
+			@Override
+			public void twoFingersTop2Bottom() {
+				Log.d("Gesture", "twoFingersTop2Bottom");
+				if(mediaPlayer.isReady()){
+					mediaPlayer.play();
+				}
+				super.twoFingersTop2Bottom();
+			}
+
+			@Override
+			public void twoFingersBottom2Top() {
+				if(mediaPlayer.isPlaying()){
+					mediaPlayer.stop();
+				}
+				super.twoFingersBottom2Top();
+			}
+
+			@Override
+			public void twoFingersIncreaseDistance() {
+				
+				if(mediaPlayer.isPlaying()){
+					mediaPlayer.volumeUp(1);
+				}
+				super.twoFingersIncreaseDistance();
+			}
+
+			@Override
+			public void twoFingersDecreaseDistance() {
+				if(mediaPlayer.isPlaying()){
+					mediaPlayer.volumeDown(1);
+				}
+				super.twoFingersDecreaseDistance();
+			}
+
+			
+			
+			
+			
     	});
     	
     	
@@ -125,6 +200,26 @@ public class GestureModeActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.gesture_mode, menu);
 		return true;
+	}
+	
+	private RunningDataChangeListener getRecordChangeListener() {
+		return new RunningDataChangeListener(){
+
+			@Override
+			public void onDataChange(ActivityRecord currentRecord) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onLocationAdded(ActivityRecord record) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onGoalAchieved() {
+				// TODO Auto-generated method stub
+			}
+		};
 	}
 	
 	@Override
