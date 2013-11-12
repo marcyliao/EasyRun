@@ -1,0 +1,278 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/buttonStart"
+        android:layout_alignParentTop="true"
+        android:paddingBottom="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="30dp" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout2"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/texture_background" >
+
+            <ImageView
+                android:id="@+id/imageViewGpsSignal"
+                android:layout_width="40dp"
+                android:layout_height="25dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="30dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/icon_signal_0" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/TextViewTotalDistance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/relativeLayout1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            android:text="0.0"
+            android:textColor="#FFF"
+            android:textSize="100sp" 
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/TextViewTotalDistance"
+            android:layout_alignBottom="@+id/TextViewTotalDistance"
+            android:layout_toRightOf="@+id/TextViewTotalDistance"
+            android:text="@string/unit_distance"
+            android:textColor="#FFF"
+            android:textSize="15sp" />
+
+        <RelativeLayout
+            android:id="@+id/relativeLayout1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" >
+
+            <LinearLayout
+                android:id="@+id/linearLayout1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true" >
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <RelativeLayout
+                        android:id="@+id/holder1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" >
+
+                        <ImageView
+                            android:id="@+id/imageView1"
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@+id/TextViewRuns"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/icon_run" />
+
+                        <TextView
+                            android:id="@+id/TextViewRuns"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginLeft="3dp"
+                            android:layout_toRightOf="@+id/imageView1"
+                            android:text="0"
+                            android:textColor="#FFF"
+                            android:textSize="20sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/holder1"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/runs"
+                        android:textColor="#CCC"
+                        android:textSize="12sp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <RelativeLayout
+                        android:id="@+id/holder2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentTop="true" >
+
+                        <TextView
+                            android:id="@+id/TextViewAverageSpeed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_centerHorizontal="true"
+                            android:text="0"
+                            android:layout_marginLeft="3dp"
+                            android:textColor="#FFF"
+                            android:textSize="20sp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginRight="3dp"
+                            android:layout_alignBottom="@+id/TextViewAverageSpeed"
+                            android:layout_alignParentTop="true"
+                            android:layout_toLeftOf="@+id/TextViewAverageSpeed"
+                            android:src="@drawable/icon_speed" />
+
+                        <TextView
+                            android:id="@+id/TextView2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignBaseline="@+id/TextViewAverageSpeed"
+                            android:layout_alignBottom="@+id/TextViewAverageSpeed"
+                            android:layout_toRightOf="@+id/TextViewAverageSpeed"
+                            android:text="@string/unit_speed"
+                            android:textColor="#FFF"
+                            android:textSize="15sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/TextView1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/holder2"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/avg_speed"
+                        android:textColor="#CCC" 
+                        android:textSize="12sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" >
+
+                    <RelativeLayout
+                        android:id="@+id/holder3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerHorizontal="true" >
+
+                        <ImageView
+                            android:id="@+id/imageView2"
+                            android:layout_width="25dp"
+                            android:layout_height="20dp"
+                            android:layout_alignBottom="@+id/TextViewCalories"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:src="@drawable/icon_calories" />
+
+                        <TextView
+                            android:id="@+id/TextViewCalories"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginLeft="3dp"
+                            android:layout_toRightOf="@+id/imageView2"
+                            android:text="0"
+                            android:textColor="#FFF"
+                            android:textSize="20sp" />
+                    </RelativeLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/holder3"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/calories"
+                        android:textColor="#CCC" 
+                        android:textSize="12sp"/>
+                </RelativeLayout>
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/LayoutWeather"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/relativeLayout1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="15dp" >
+
+            <TextView
+                android:id="@+id/TextViewWeatherLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/getting_weather_advice"
+                android:textSize="13sp"
+                android:textColor="#FFF" />
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" 
+                android:layout_centerHorizontal="true"
+                android:id="@+id/RelativeLayout5">
+
+                <ImageView
+                    android:id="@+id/imageViewWeather"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                	android:layout_centerVertical="true"/>
+                
+                <TextView
+               	 	android:id="@+id/TextViewTemperature"
+                	android:layout_width="wrap_content"
+                	android:layout_height="wrap_content"
+                	android:layout_toRightOf="@+id/imageViewWeather"
+                	android:layout_centerVertical="true"
+                	android:textColor="#FFF"
+                	android:textSize="30sp" />
+            </RelativeLayout>
+            
+             <TextView
+                android:id="@+id/TextViewWeatherDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/RelativeLayout5"
+                android:textSize="15sp"
+                android:textColor="#FFF"/>
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/buttonStart"
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/xml_button_basic"
+        android:text="@string/button_start"
+        android:textColor="#FFF"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>
