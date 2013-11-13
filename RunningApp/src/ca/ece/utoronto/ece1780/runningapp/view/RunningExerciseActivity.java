@@ -169,30 +169,38 @@ public class RunningExerciseActivity extends Activity {
 			startService(startIntent);
 		}
 		
-		
-		Intent intent = new Intent(this, MediaPlayerService.class);
-		if(MediaPlayerService.isServiceRunning == false){
-		
-			startService(intent);
+		//check if the mediaPlayerService is running or not
+		if(MediaPlayerService.isServiceRunning == true){
+			Intent intent = new Intent(this, MediaPlayerService.class);
+			bindService(intent, mediaConnection, 0);
 		}
 		
-		bindService(intent, mediaConnection, 0);
-		
+	
 		Button musicButton= (Button)findViewById(R.id.ButtonMusic);
 		musicButton.setOnClickListener(new OnClickListener() {
 			
+			Intent intent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
+
 			@Override
 			public void onClick(View v) {
-				if(mediaPlayer.isReady() && !mediaPlayer.isPlaying()){
-					
-					mediaPlayer.play();
-				}
-				else if(mediaPlayer.isPlaying()){
-					mediaPlayer.pause();
-				}
 				
+				if(MediaPlayerService.isServiceRunning == false){
+					startService(intent);
+					bindService(intent, mediaConnection, 0);
+				}
+				else{
+					if(mediaPlayer.isPlaying()){
+						mediaPlayer.pause();
+					}
+					else if(mediaPlayer.isPaused()){
+						mediaPlayer.pause();
+					}
+					else{
+						mediaPlayer.play();
+					}
+				}
 			}
-		});
+		});//end of setOnClickListener
 		
 		Button nextSongButton = (Button)findViewById(R.id.ButtonNextSong);
 		nextSongButton.setOnClickListener(new OnClickListener() {
@@ -319,6 +327,9 @@ public class RunningExerciseActivity extends Activity {
 	@Override
 	protected void onPause() {
         unbindService(sconnection);
+        if(MediaPlayerService.isServiceRunning){
+        	unbindService(mediaConnection);
+        }
 		super.onPause();
 	}
 
@@ -331,6 +342,11 @@ public class RunningExerciseActivity extends Activity {
 	public void onResume() {
         Intent startIntent = new Intent(RunningExerciseActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+        
+        Intent mediaIntent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
+        if(MediaPlayerService.isServiceRunning){
+        	bindService(mediaIntent, mediaConnection, 0);
+        }
 		
 		super.onResume();
 	}

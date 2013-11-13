@@ -89,7 +89,7 @@ public class MediaPlayerService extends Service {
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
         notification.setLatestEventInfo(this, getText(R.string.app_name),"music is playing", pendingIntent);
-        startForeground(123, notification);
+        startForeground(234, notification);
         
         if(this.isReady()){
         	this.play();
@@ -341,6 +341,11 @@ public class MediaPlayerService extends Service {
 	public int getIndex(){
 		
 		return mediaIndex;
+	}
+	
+	public boolean isPaused(){
+		
+		return isPaused;
 	}
 	
 	public boolean isPlaying(){
