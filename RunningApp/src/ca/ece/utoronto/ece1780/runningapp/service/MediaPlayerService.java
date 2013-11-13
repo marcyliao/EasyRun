@@ -35,13 +35,15 @@ public class MediaPlayerService extends Service {
 	//used to communicate with activity
 	MediaBinder mediaBinder;
 	//MediaPlayer is the critical component of this Class
-	MediaPlayer mediaPlayer;
+	private MediaPlayer mediaPlayer;
 	//sign for if the mediaPlayer is paused or not
-	boolean isPaused;
+	private boolean isPaused;
+	//
+	private boolean isAutoPaused;
 	//mediaList is used to store all the media files paths 
-	List<String> mediaList;
+	private List<String> mediaList;
 	//mediaIndex is used to indicate which song is play on the array list now
-	int mediaIndex;
+	private int mediaIndex;
 	//
 	private static List<MediaInformaitonReceiver> receivers = new ArrayList<MediaInformaitonReceiver>();
 	
@@ -65,7 +67,10 @@ public class MediaPlayerService extends Service {
 			
 			@Override
 			public void onSpeech() {
-				MediaPlayerService.this.pause();
+				if(MediaPlayerService.this.isPlaying()){
+					MediaPlayerService.this.pause();
+					isAutoPaused = true;
+				}
 			}
 		});
 		
@@ -73,7 +78,10 @@ public class MediaPlayerService extends Service {
 			
 			@Override
 			public void onSpeechComplete() {
-				MediaPlayerService.this.pause();
+				if(isAutoPaused){
+					MediaPlayerService.this.pause();
+					isAutoPaused = false;
+				}
 			}
 		});
 		
@@ -428,14 +436,18 @@ public class MediaPlayerService extends Service {
 			switch(state){
 			case TelephonyManager.CALL_STATE_OFFHOOK:
 			case TelephonyManager.CALL_STATE_RINGING:{
-				
-				MediaPlayerService.this.pause();
+				if(MediaPlayerService.this.isPlaying()){
+					MediaPlayerService.this.pause();
+					isAutoPaused = true;
+				}
 				break;
 			}
 			
 			case TelephonyManager.CALL_STATE_IDLE:{
-				
-				MediaPlayerService.this.pause();
+				if(isAutoPaused){
+					MediaPlayerService.this.pause();
+					isAutoPaused = false;
+				}
 				break;
 			}
 				

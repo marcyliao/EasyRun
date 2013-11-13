@@ -51,6 +51,21 @@ public class GestureModeActivity extends Activity {
         }    
     };
     
+	private ServiceConnection mediaConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mediaPlayer = null;	
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+
+			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+			mediaPlayer = mediaBinder.getMediaPlayerService();
+		}
+	};
+    
     private void switchPauseAndResume() {
 		if(controllerService !=null && !controllerService.isActivityPaused()) {
 			controllerService.pauseActivity();
@@ -71,29 +86,6 @@ public class GestureModeActivity extends Activity {
 		// Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         
-    	//Prepare music service  added by nate
-		//set up music service
-		Intent intent = new Intent(this, MediaPlayerService.class);
-		if(MediaPlayerService.isServiceRunning == false){
-		
-			startService(intent);
-		}
-		
-		bindService(intent, new ServiceConnection() {
-			
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				mediaPlayer = null;	
-			}
-			
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-	
-				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
-				mediaPlayer = mediaBinder.getMediaPlayerService();
-			}
-		}, 0);
-		
 		// Prepare Gesture listener
 		View gestureView =findViewById(R.id.gestureView);
     	gestureView.setOnTouchListener(new OnGestureListener(GestureModeActivity.this){
@@ -120,21 +112,17 @@ public class GestureModeActivity extends Activity {
 
 			@Override
 			public void twoFingersLeft2Right() {
-				Log.d("Gesture", "twoFingersLeft2Right");
 				if(mediaPlayer.isReady()){
 					mediaPlayer.playNext();
-					Log.d("Gesture", mediaPlayer.getIndex() + mediaPlayer.getSongName());
 				}
 				super.twoFingersLeft2Right();
 			}
 
 			@Override
 			public void twoFingersRight2Left() {
-				Log.d("Gesture", "twoFingersRight2Left");
 				if(mediaPlayer.isReady()){
 					mediaPlayer.playPrevious();
 					
-					Log.d("Gesture", mediaPlayer.getIndex()+ mediaPlayer.getSongName());
 				}
 				super.twoFingersRight2Left();
 			}
@@ -148,18 +136,27 @@ public class GestureModeActivity extends Activity {
 
 			@Override
 			public void twoFingersTop2Bottom() {
-				Log.d("Gesture", "twoFingersTop2Bottom");
-				if(mediaPlayer.isReady()){
-					mediaPlayer.play();
+				
+				//set up music service
+				Intent intent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
+				if(MediaPlayerService.isServiceRunning == false){
+				
+					startService(intent);
 				}
+			
+				bindService(intent, mediaConnection, 0);
 				super.twoFingersTop2Bottom();
 			}
 
 			@Override
 			public void twoFingersBottom2Top() {
+				
+				Intent intent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
 				if(mediaPlayer.isPlaying()){
 					mediaPlayer.stop();
 				}
+				unbindService(mediaConnection);
+				stopService(intent);
 				super.twoFingersBottom2Top();
 			}
 
@@ -195,11 +192,6 @@ public class GestureModeActivity extends Activity {
 				}
 				super.oneFingerClockCircleComplete();
 			}
-
-			
-			
-			
-			
     	});
     	
     	
@@ -243,7 +235,11 @@ public class GestureModeActivity extends Activity {
 	
 	@Override
 	protected void onPause() {
-        unbindService(sconnection);
+        
+		unbindService(sconnection);
+		if(MediaPlayerService.isServiceRunning){
+			unbindService(mediaConnection);
+		}
         //mShaker.pause();
 		super.onPause();
 	}
@@ -251,7 +247,10 @@ public class GestureModeActivity extends Activity {
 	@Override
 	public void onResume() {
         Intent startIntent = new Intent(GestureModeActivity.this, ActivityControllerService.class);
-        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);
+        
+        Intent mediaIntent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
+        bindService(mediaIntent, mediaConnection, 0);
 	    //mShaker.resume();
 		super.onResume();
 	}
