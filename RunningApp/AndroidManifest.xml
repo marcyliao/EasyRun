@@ -83,6 +83,10 @@
             android:label="@string/title_activity_setting"
             android:launchMode="singleTop" >
         </activity>
+        <activity
+            android:name="ca.ece.utoronto.ece1780.runningapp.view.MediaFileDirectoryActivity"
+            android:label="@string/title_activity_setting">
+        </activity>
 
         <service
             android:name="ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService"
