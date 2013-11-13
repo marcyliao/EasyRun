@@ -39,6 +39,8 @@ public class MediaPlayerService extends Service {
 	int mediaIndex;
 	//
 	private static List<MediaInformaitonReceiver> receivers = new ArrayList<MediaInformaitonReceiver>();
+	
+	public static boolean isServiceRunning = false;
 
 	@Override
 	public void onCreate() {
@@ -76,9 +78,17 @@ public class MediaPlayerService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
+		isServiceRunning = true;
 		return super.onStartCommand(intent, flags, startId);
 	}
-	
+
+	@Override
+	public void onDestroy() {
+		
+		isServiceRunning = false;
+		super.onDestroy();
+	}
+
 
 	@Override
 	public IBinder onBind(Intent intent) {
