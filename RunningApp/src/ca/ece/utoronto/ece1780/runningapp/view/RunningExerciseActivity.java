@@ -1,27 +1,29 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
-import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
-import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
-import android.os.Bundle;
-import android.os.IBinder;
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
+import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
+import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 public class RunningExerciseActivity extends Activity {
 	
@@ -34,6 +36,8 @@ public class RunningExerciseActivity extends Activity {
 	private float goal;
 
 	private ActivityControllerService controllerService;
+	
+	public MediaPlayerService mediaPlayer;
 
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
@@ -149,6 +153,61 @@ public class RunningExerciseActivity extends Activity {
 			startIntent.putExtra("goal",goal);
 			startService(startIntent);
 		}
+		
+		Intent intent = new Intent(this, MediaPlayerService.class);
+		if(MediaPlayerService.isServiceRunning == false){
+		
+			startService(intent);
+		}
+		
+		bindService(intent, new ServiceConnection() {
+			
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				mediaPlayer = null;	
+			}
+			
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+	
+				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+				mediaPlayer = mediaBinder.getMediaPlayerService();
+			}
+		}, 0);
+		
+		Button musicButton= (Button)findViewById(R.id.ButtonMusic);
+		musicButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(mediaPlayer.isReady() && !mediaPlayer.isPlaying()){
+					
+					mediaPlayer.play();
+				}
+				else if(mediaPlayer.isPlaying()){
+					mediaPlayer.pause();
+				}
+				
+			}
+		});
+		
+		Button nextSongButton = (Button)findViewById(R.id.ButtonNextSong);
+		nextSongButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mediaPlayer.playNext();
+			}
+		});
+		
+		Button prevSongButton= (Button)findViewById(R.id.ButtonPrevSong);
+		prevSongButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				mediaPlayer.playPrevious();
+			}
+		});
 	}
 
 	private RunningDataChangeListener getRecordChangeListener() {

@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -26,6 +27,23 @@ public class MusicFragment extends Fragment {
 	private SongArrayAdapter mListAdapter;
 	private MediaPlayerService mediaPlayer;
 	private TextView textViewNoSong;
+	
+	Button musicButton;
+	
+	private ServiceConnection mediaConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mediaPlayer = null;	
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+
+			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+			mediaPlayer = mediaBinder.getMediaPlayerService();
+		}
+	};
 
 	public MusicFragment() {
 		
@@ -36,27 +54,63 @@ public class MusicFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_music, container, false);
 		
-		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
-		this.getActivity().startService(intent);
-		this.getActivity().bindService(intent, new ServiceConnection() {
+		
+		
+		musicButton = (Button) rootView.findViewById(R.id.MusicButton);
+		
+		if(MediaPlayerService.isServiceRunning == true){
+			musicButton.setText("stop");
+		}
+		
+		musicButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				mediaPlayer = null;	
+			public void onClick(View v) {
+				Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+				if(!MediaPlayerService.isServiceRunning){
+					
+					getActivity().startService(intent);
+					getActivity().bindService(intent, mediaConnection , 0);
+					MusicFragment.this.musicButton.setText("stop");
+
+				}
+				else{
+					mediaPlayer.stop();
+					getActivity().unbindService(mediaConnection);
+					getActivity().stopService(intent);
+					MusicFragment.this.musicButton.setText("start");
+				}
+				
 			}
-			
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-	
-				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
-				mediaPlayer = mediaBinder.getMediaPlayerService();
-			}
-		}, 0);
+		});
+		
+
 		
 	    prepareWidgets(rootView);
     
 		return rootView;
 	}
+
+	
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		if(MediaPlayerService.isServiceRunning == true){
+			getActivity().unbindService(mediaConnection);
+		}
+	}
+
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		if(MediaPlayerService.isServiceRunning == true){
+			Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+			getActivity().bindService(intent, mediaConnection, 0);
+		}
+	}
+
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -72,14 +126,14 @@ public class MusicFragment extends Fragment {
 	private void prepareWidgets(View rootView) {
 		ListView l = (ListView) rootView.findViewById(R.id.listViewSongs);
 		textViewNoSong = (TextView) rootView.findViewById(R.id.textViewNoSong);
-		Button addSongs = (Button) rootView.findViewById(R.id.ButtonAddSongs);
-		addSongs.setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), MediaFileDirectoryActivity.class);
-				startActivityForResult(intent, 0);
-			}
-		});
+//		Button addSongs = (Button) rootView.findViewById(R.id.ButtonAddSongs);
+//		addSongs.setOnClickListener(new OnClickListener() {
+//			
+//			public void onClick(View v) {
+//				Intent intent = new Intent(getActivity(), MediaFileDirectoryActivity.class);
+//				startActivityForResult(intent, 0);
+//			}
+//		});
 	    mListAdapter = new SongArrayAdapter(getActivity());
 	    l.setAdapter(mListAdapter);
 	}
@@ -101,8 +155,6 @@ public class MusicFragment extends Fragment {
 		public void notifyDataSetChanged() {
 			super.notifyDataSetChanged();
 
-			//TODO: update medialist
-			
 			if(songPaths == null || songPaths.size() == 0)
 				textViewNoSong.setVisibility(View.VISIBLE);
 			else

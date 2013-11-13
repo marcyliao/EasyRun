@@ -74,6 +74,11 @@ public class GestureModeActivity extends Activity {
     	//Prepare music service  added by nate
 		//set up music service
 		Intent intent = new Intent(this, MediaPlayerService.class);
+		if(MediaPlayerService.isServiceRunning == false){
+		
+			startService(intent);
+		}
+		
 		bindService(intent, new ServiceConnection() {
 			
 			@Override
@@ -83,7 +88,7 @@ public class GestureModeActivity extends Activity {
 			
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
-				
+	
 				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
 				mediaPlayer = mediaBinder.getMediaPlayerService();
 			}

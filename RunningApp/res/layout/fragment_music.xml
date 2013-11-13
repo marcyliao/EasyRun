@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
     </ListView>
-    
+    <!-- 
     <Button 
         android:id="@+id/ButtonAddSongs"
         android:layout_width="wrap_content"
@@ -19,6 +19,12 @@
         android:text="add Songs"
         android:textSize="15sp"
         android:textStyle="italic"/>
+    -->
+    <Button
+        android:id="@+id/MusicButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="start"></Button>
 
     <TextView
         android:id="@+id/textViewNoSong"

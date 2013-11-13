@@ -4,6 +4,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -19,6 +21,9 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
+import ca.ece.utoronto.ece1780.runningapp.view.R;
+import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.MediaInformaitonReceiver;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
@@ -79,6 +84,15 @@ public class MediaPlayerService extends Service {
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
 		isServiceRunning = true;
+        Notification notification = new Notification(R.drawable.ic_launcher_small, getText(R.string.app_name),System.currentTimeMillis());
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        notification.setLatestEventInfo(this, getText(R.string.app_name),"music is playing", pendingIntent);
+        startForeground(123, notification);
+        
+        
+		
 		return super.onStartCommand(intent, flags, startId);
 	}
 
