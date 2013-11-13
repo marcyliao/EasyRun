@@ -50,7 +50,6 @@ public class MediaPlayerService extends Service {
 		mediaList = new ArrayList<String>();
 		mediaBinder = new MediaBinder();
 		setMediaDirectory();
-		Log.d("MPS", "Service is created...");
 		
 		TelephonyManager phoneManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		phoneManager.listen(new MediaPhoneStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
@@ -77,7 +76,6 @@ public class MediaPlayerService extends Service {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 
-		Log.d("MPS", "Service is started...");
 		return super.onStartCommand(intent, flags, startId);
 	}
 	
@@ -99,33 +97,43 @@ public class MediaPlayerService extends Service {
 		mediaList.clear();
 	}
 	
+	public List<String> getMediaList(){
+		
+		return mediaList;
+	}
+	
+	public String getArtist(int index){
+		
+		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+		mmr.setDataSource(mediaList.get(index));
+		String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
+		
+		return artist;	
+	}
 	
 	public String getArtist(){
 		
-		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(mediaList.get(mediaIndex));
-		String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-	
-		return artist;		
+		return getArtist(mediaIndex);		
 	}
 	
-	public String getSongName(){
+	public String getSongName(int index){
 		
 		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(mediaList.get(mediaIndex));
+		mmr.setDataSource(mediaList.get(index));
 		String songName = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
 		
 		return songName;
 	}
 	
-	//the default directory of music is /music of the external storage directory.
-	public boolean setMediaDirectory(){
+	public String getSongName(){
 		
-		File mediaDirectory = new File(Environment.getExternalStorageDirectory(),"/Music");
-		return setMediaDirectory(mediaDirectory);
+		return getSongName(mediaIndex);
 	}
-	
-	public boolean setMediaDirectory(File mediaDirectory){
+
+	public boolean addMediaDirectory(String directoryPath){
+		
+		File mediaDirectory = new File(directoryPath);
+		
 		//if meidaDirectory is not a directory 
 		if(!mediaDirectory.isDirectory())
 			return false;
@@ -149,7 +157,20 @@ public class MediaPlayerService extends Service {
 			mediaIndex = 0;
 			return true;
 		}
-			
+		
+	}
+	
+	//the default directory of music is /music of the external storage directory.
+	public boolean setMediaDirectory(){
+		
+		File mediaDirectory = new File(Environment.getExternalStorageDirectory(),"/Music");
+		return setMediaDirectory(mediaDirectory);
+	}
+	
+	public boolean setMediaDirectory(File mediaDirectory){
+
+			mediaList.clear();
+			return addMediaDirectory(mediaDirectory.getAbsolutePath());
 	}
 	
 	//return how many songs are in the media list	
@@ -164,11 +185,8 @@ public class MediaPlayerService extends Service {
 		play(mediaIndex);
 	}
 	
-	//begin to play the song which mdianIndex is pointed
-	public void play(int mediaIndex){
+	public void play(String mediaPath){
 		
-		System.out.println(this.getArtist() + " : " + this.getSongName());
-		String mediaPath = mediaList.get(mediaIndex);
 		mediaPlayer.reset();
 		try {
 			mediaPlayer.setDataSource(mediaPath);
@@ -183,9 +201,17 @@ public class MediaPlayerService extends Service {
 		isPaused = false;
 		for(MediaInformaitonReceiver receiver : receivers){
 			
-			receiver.setMediaName(this.onWhichSong());
+			receiver.setMediaName(this.getArtist());
 			receiver.setMediaDuration(mediaPlayer.getDuration());
 		}
+		
+	}
+	
+	//begin to play the song which mdianIndex is pointed
+	public void play(int mediaIndex){
+		
+		String mediaPath = mediaList.get(mediaIndex);
+		this.play(mediaPath);
 	}
 	
 	public void playFrom(int time){
@@ -268,7 +294,6 @@ public class MediaPlayerService extends Service {
 	public void volumeUp(int amount){
 		
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		Toast.makeText(context, "Volume was : " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), Toast.LENGTH_SHORT).show();
 		for(int i = 0; i < amount; i++){
 			
 			audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
@@ -279,7 +304,6 @@ public class MediaPlayerService extends Service {
 	public void volumeDown(int amount){
 		
 		AudioManager audioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
-		Toast.makeText(context, "Volume was : " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC), Toast.LENGTH_SHORT).show();
 		for(int i = 0; i < amount; i++){
 			
 			audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
@@ -290,27 +314,6 @@ public class MediaPlayerService extends Service {
 	public int getIndex(){
 		
 		return mediaIndex;
-	}
-	
-	public String onWhichSong(){
-		
-		//delete the file dictionary information from the mediaName
-		String mediaName = mediaList.get(mediaIndex);
-		int index = mediaName.indexOf('/', 0);
-		while( index != -1){
-			
-			if(index < mediaName.length()){
-				mediaName = mediaName.substring(index+1, mediaName.length());
-				index = mediaName.indexOf('/', 0);
-			}
-		}
-		//delete the .mp3 and .wma from the mediaName
-		index = mediaName.indexOf('.', 0);
-		if(index != -1 && index < mediaName.length()){
-			mediaName = mediaName.substring(0, index);
-		}
-		
-		return mediaName;
 	}
 	
 	public boolean isPlaying(){

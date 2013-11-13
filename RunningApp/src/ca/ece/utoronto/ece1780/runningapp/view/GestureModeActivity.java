@@ -74,8 +74,6 @@ public class GestureModeActivity extends Activity {
     	//Prepare music service  added by nate
 		//set up music service
 		Intent intent = new Intent(this, MediaPlayerService.class);
-		startService(intent);
-		Log.d("Gesture", "This is from Gesture Mode Activity");
 		bindService(intent, new ServiceConnection() {
 			
 			@Override
@@ -120,7 +118,7 @@ public class GestureModeActivity extends Activity {
 				Log.d("Gesture", "twoFingersLeft2Right");
 				if(mediaPlayer.isReady()){
 					mediaPlayer.playNext();
-					Log.d("Gesture", mediaPlayer.getIndex() + mediaPlayer.onWhichSong());
+					Log.d("Gesture", mediaPlayer.getIndex() + mediaPlayer.getSongName());
 				}
 				super.twoFingersLeft2Right();
 			}
@@ -131,7 +129,7 @@ public class GestureModeActivity extends Activity {
 				if(mediaPlayer.isReady()){
 					mediaPlayer.playPrevious();
 					
-					Log.d("Gesture", mediaPlayer.getIndex()+ mediaPlayer.onWhichSong());
+					Log.d("Gesture", mediaPlayer.getIndex()+ mediaPlayer.getSongName());
 				}
 				super.twoFingersRight2Left();
 			}
@@ -175,6 +173,22 @@ public class GestureModeActivity extends Activity {
 					mediaPlayer.volumeDown(1);
 				}
 				super.twoFingersDecreaseDistance();
+			}
+
+			@Override
+			public void oneFingerCounterClockCircleComplete() {
+				if(mediaPlayer.isPlaying()){
+					mediaPlayer.volumeDown(1);
+				}
+				super.oneFingerCounterClockCircleComplete();
+			}
+
+			@Override
+			public void oneFingerClockCircleComplete() {
+				if(mediaPlayer.isPlaying()){
+					mediaPlayer.volumeUp(1);
+				}
+				super.oneFingerClockCircleComplete();
 			}
 
 			
