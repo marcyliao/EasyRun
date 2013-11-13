@@ -164,6 +164,7 @@ public class MediaPlayerService extends Service {
 	public boolean setMediaDirectory(){
 		
 		File mediaDirectory = new File(Environment.getExternalStorageDirectory(),"/Music");
+
 		return setMediaDirectory(mediaDirectory);
 	}
 	
