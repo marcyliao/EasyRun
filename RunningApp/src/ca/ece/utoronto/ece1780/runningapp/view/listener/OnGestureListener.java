@@ -3,6 +3,8 @@ package ca.ece.utoronto.ece1780.runningapp.view.listener;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
+
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
 import android.util.Log;
@@ -14,6 +16,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	List<Pointer> pointers;
 	List<Point> points;
 	float clockIndex;
+	int circleIndex;
 	final String DEBUG_TAG = "TouchListener";
 	Context context;
 	
@@ -23,6 +26,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		
 		pointers = new ArrayList<Pointer>();
 		points = new ArrayList<Point>();
+	}
+	
+
+	void init(){
+		pointers.clear();
+		points.clear();
+		clockIndex = 0;
+		circleIndex = 0;
 	}
 	
 	@Override
@@ -49,10 +60,6 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			Point point = new Point(pointer.startX, pointer.startY);
 			points.add(point);
 			
-			
-			
-			Log.d(DEBUG_TAG, "Prime Down " + pointer.Id + "  " + pointer.startX + "  " + pointer.startY);
-			
 			break;
 		}
 		// if the second pointer pree down
@@ -69,15 +76,12 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			//add the pointer into the pointer array list
 			pointers.add(pointer);
 			
-			Log.d(DEBUG_TAG, "Second Down " + pointer.Id + "  " + pointer.startX + "  " + pointer.startY);
 			break;
 		}
 		
 		case MotionEvent.ACTION_MOVE:{
 			
 			if(!this.isMultiFingerGesture()){
-				
-				Pointer pointer = pointers.get(0);
 				
 				int historySize = event.getHistorySize();
 				int startPointsSize = points.size();
@@ -97,15 +101,20 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 				Point point2 = new Point(endPoint.getX() - midPoint.getX(),   endPoint.getY() - midPoint.getY());
 
 				clockIndex += Point.PointMultiply(point2, point1);
+				
+				if(clockIndex > Pointer.CLOCK_BENCHMARK && Point.nearBy(points.get(circleIndex), point)){
 					
-					// caculta p2 * p1
-//					if (Point.PointMultiply(point2, point1) > 0) {
-//						System.out.println(clockIndex + " $$ clock wise : " 	+ Point.PointMultiply(point2, point1));
-//					} else {
-//						System.out.println(clockIndex + " $$ Counter clock : " + Point.PointMultiply(point2, point1));
-//					}
+					circleIndex = points.size()-1;
+					clockIndex = 0;
+					oneFingerCounterClockCircleComplete();
+				}
+				else if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK && Point.nearBy(points.get(circleIndex), point)){
 					
+					circleIndex = points.size()-1;
+					clockIndex = 0;
+					oneFingerClockCircleComplete();
 					
+				}
 			}
 			
 			break;
@@ -201,14 +210,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		float primeDistanceX = primePointer.endX - primePointer.startX;
 		float primeDistanceY = primePointer.endY - primePointer.startY;
 	
-		if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK){
-			singleFingerClockCircle();
-		}
-		
-		else if(clockIndex > Pointer.CLOCK_BENCHMARK){
-			singleFingerCounterClockCircle();
-		}
-		else if( square(primeDistanceX) < square(primeDistanceY)){
+//		if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK){
+//			singleFingerClockCircle();
+//		}
+//		
+//		else if(clockIndex > Pointer.CLOCK_BENCHMARK){
+//			singleFingerCounterClockCircle();
+//		}
+		if( UtilityCaculator.square(primeDistanceX) < UtilityCaculator.square(primeDistanceY)){
 			
 			if(primeDistanceY > Pointer.Y_TRAVEL_BENCHEMARK){
 				oneFingerTop2Bottom();
@@ -219,7 +228,6 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			else if(primePointer.endTime - primePointer.startTime > Pointer.LONGPRESS_BENCHEMARK){
 				oneFingerLongPress();
 			}
-				
 			else{
 				oneFingerSingleClick();
 			}
@@ -239,45 +247,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			else{
 				oneFingerSingleClick();
 			}
-						
 		}
 	}
-	
-	public void oneFingerTop2Bottom(){};
-	
-	public void oneFingerBottom2Top(){};
-	
-	public void oneFingerLeft2Right(){};
-	
-	public void oneFingerRight2Left(){};
-	
-	public void oneFingerSingleClick(){};
-	
-	public void oneFingerLongPress(){};
-	
-	public void twoFingersIncreaseDistance(){};
-	
-	public void twoFingersDecreaseDistance(){};
-	
-	public void twoFingersTop2Bottom(){};
-	
-	public void twoFingersBottom2Top(){};
-	
-	public void twoFingersLeft2Right(){};
-	
-	public void twoFingersRight2Left(){};
-	
-	public void twoFingersSingleClick(){};
-
-	public void singleFingerClockCircle(){};
-	
-	public void singleFingerCounterClockCircle(){};
 
 	private void DoubleFingerGesture(Pointer primePointer, Pointer secondPointer){
 		
 		
-		float startDistance = (float) Math.sqrt(square(primePointer.startX - secondPointer.startX) + square(primePointer.startY - secondPointer.startY));
-		float endDistance   = (float) Math.sqrt(square(primePointer.endX - secondPointer.endX)     + square(primePointer.endY - secondPointer.endY));
+		float startDistance = (float) Math.sqrt(UtilityCaculator.square(primePointer.startX - secondPointer.startX) + UtilityCaculator.square(primePointer.startY - secondPointer.startY));
+		float endDistance   = (float) Math.sqrt(UtilityCaculator.square(primePointer.endX - secondPointer.endX)     + UtilityCaculator.square(primePointer.endY - secondPointer.endY));
 		
 		
 		if(endDistance > startDistance + Pointer.DISTANCE_BENCHEMARK){
@@ -295,7 +272,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		float secondDistanceY = secondPointer.endY - secondPointer.startY;
 		
 		// if the main movement is from Y
-		if( sumOfSquare(primeDistanceX, secondDistanceX)  < sumOfSquare(primeDistanceY, secondDistanceY) ){
+		if( UtilityCaculator.sumOFSquare(primeDistanceX, secondDistanceX)  < UtilityCaculator.sumOFSquare(primeDistanceY, secondDistanceY) ){
 
 			if(primeDistanceY > Pointer.Y_TRAVEL_BENCHEMARK && secondDistanceY > Pointer.Y_TRAVEL_BENCHEMARK)
 				twoFingersTop2Bottom();
@@ -320,21 +297,37 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		}
 		
 	}//end of MultiFingerGesture
+	
+	public void oneFingerCounterClockCircleComplete(){System.out.println("Clock circle complete;");}
 
-	void init(){
-		pointers.clear();
-		points.clear();
-		clockIndex = 0;
-	}
+	public void oneFingerClockCircleComplete(){System.out.println("Counter Clock circle complete;");}	
 	
-	private float square (float a){
-		return a * a;
-	}
+	public void oneFingerTop2Bottom(){}
 	
-	private float sumOfSquare(float a, float b){
-		return square(a) + square(b);
-	}
+	public void oneFingerBottom2Top(){}
 	
+	public void oneFingerLeft2Right(){}
+	
+	public void oneFingerRight2Left(){}
+	
+	public void oneFingerSingleClick(){}
+	
+	public void oneFingerLongPress(){}
+	
+	public void twoFingersIncreaseDistance(){}
+	
+	public void twoFingersDecreaseDistance(){}
+	
+	public void twoFingersTop2Bottom(){}
+	
+	public void twoFingersBottom2Top(){}
+	
+	public void twoFingersLeft2Right(){}
+	
+	public void twoFingersRight2Left(){}
+	
+	public void twoFingersSingleClick(){}
+
 	private static class Point{
 		
 		float x, y;
@@ -362,6 +355,17 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			return result;
 			
 		}
+		
+		public static boolean nearBy(Point p1, Point p2){
+			
+			float distance = (float) Math.sqrt( UtilityCaculator.sumOFSquare(p1.x-p2.x, p1.y-p2.y));
+			
+			if (distance < Pointer.DISTANCE_BENCHEMARK)
+				return true;
+			else
+				return false;
+		}
+		
 	}
 	
 	private class Pointer{
@@ -378,7 +382,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		static final float X_TRAVEL_BENCHEMARK = 100f;
 		static final float Y_TRAVEL_BENCHEMARK = 100f;
 		static final float DISTANCE_BENCHEMARK = 100f;
-		static final float CLOCK_BENCHMARK     = 200f;
+		static final float CLOCK_BENCHMARK     = 300f;
 		static final long  LONGPRESS_BENCHEMARK = 800;
 
 		//set some constant to represent invalid states
@@ -399,6 +403,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 			endX = INVALID_POINTER_POSITION;
 			endY = INVALID_POINTER_POSITION;
 		}
+
 	}// end of Pointer
 	
 }// end of TouchListener
