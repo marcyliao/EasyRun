@@ -38,6 +38,21 @@ public class RunningExerciseActivity extends Activity {
 	private ActivityControllerService controllerService;
 	
 	public MediaPlayerService mediaPlayer;
+	
+	public ServiceConnection mediaConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			mediaPlayer = null;	
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+
+			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+			mediaPlayer = mediaBinder.getMediaPlayerService();
+		}
+	};
 
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
@@ -154,26 +169,14 @@ public class RunningExerciseActivity extends Activity {
 			startService(startIntent);
 		}
 		
+		
 		Intent intent = new Intent(this, MediaPlayerService.class);
 		if(MediaPlayerService.isServiceRunning == false){
 		
 			startService(intent);
 		}
 		
-		bindService(intent, new ServiceConnection() {
-			
-			@Override
-			public void onServiceDisconnected(ComponentName name) {
-				mediaPlayer = null;	
-			}
-			
-			@Override
-			public void onServiceConnected(ComponentName name, IBinder service) {
-	
-				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
-				mediaPlayer = mediaBinder.getMediaPlayerService();
-			}
-		}, 0);
+		bindService(intent, mediaConnection, 0);
 		
 		Button musicButton= (Button)findViewById(R.id.ButtonMusic);
 		musicButton.setOnClickListener(new OnClickListener() {

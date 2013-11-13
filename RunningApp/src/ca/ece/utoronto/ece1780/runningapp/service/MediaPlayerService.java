@@ -91,8 +91,10 @@ public class MediaPlayerService extends Service {
         notification.setLatestEventInfo(this, getText(R.string.app_name),"music is playing", pendingIntent);
         startForeground(123, notification);
         
-        
-		
+        if(this.isReady()){
+        	this.play();
+        }
+
 		return super.onStartCommand(intent, flags, startId);
 	}
 
