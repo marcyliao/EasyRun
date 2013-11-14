@@ -124,9 +124,9 @@ public class RunningExerciseActivity extends Activity {
 		findViewById(R.id.buttonStop).setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-		         Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
-		         startActivityForResult(i,SAVE_RECORD_REQUEST);
-		 		TextToSpeechService.speak(getString(R.string.activity_stopped), RunningExerciseActivity.this);
+				Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
+				startActivityForResult(i,SAVE_RECORD_REQUEST);
+				// TextToSpeechService.speak(getString(R.string.activity_stopped), RunningExerciseActivity.this);
 			}
 		});
 		

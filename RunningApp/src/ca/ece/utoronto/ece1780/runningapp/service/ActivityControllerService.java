@@ -107,7 +107,7 @@ public class ActivityControllerService extends Service implements LocationListen
 	@Override
 	public void onDestroy() {
     	Log.d("control_service","destory");
-    	TextToSpeechService.stop(getApplicationContext());
+    	// TextToSpeechService.stop(getApplicationContext());
 		super.onDestroy();
 	}
 	
@@ -156,7 +156,9 @@ public class ActivityControllerService extends Service implements LocationListen
 	
 	public void stopActivity() {
     	Log.d("control_service","stop activity");
-    	
+
+ 		TextToSpeechService.speak(getString(R.string.activity_stopped), this);
+ 		
 		activityPaused = true;
         isServiceRunning = false;
 		activityGoing = false;
