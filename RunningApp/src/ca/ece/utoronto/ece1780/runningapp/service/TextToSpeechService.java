@@ -96,6 +96,10 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     
     @Override
     public void onStart(Intent intent, int startId) {
+    	
+    	if(intent == null)
+    		return;
+    	
         spokenText = intent.getStringExtra(MSG_ETRA_CODE);
         if(mTts == null)
         	mTts = new TextToSpeech(this, this);
