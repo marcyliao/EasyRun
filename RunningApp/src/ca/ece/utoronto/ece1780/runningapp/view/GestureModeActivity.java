@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
@@ -129,8 +130,9 @@ public class GestureModeActivity extends Activity {
 
 			@Override
 			public void twoFingersSingleClick() {
-				Log.d("Gesture", "twoFingersSingleClick");
-				mediaPlayer.pause();
+				if(mediaPlayer.isReady()){
+					mediaPlayer.pause();
+				}
 				super.twoFingersSingleClick();
 			}
 
@@ -163,33 +165,32 @@ public class GestureModeActivity extends Activity {
 			@Override
 			public void twoFingersIncreaseDistance() {
 				
-				if(mediaPlayer.isPlaying()){
-					mediaPlayer.volumeUp(1);
-				}
+				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
 				super.twoFingersIncreaseDistance();
 			}
 
 			@Override
 			public void twoFingersDecreaseDistance() {
-				if(mediaPlayer.isPlaying()){
-					mediaPlayer.volumeDown(1);
-				}
+
+				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
 				super.twoFingersDecreaseDistance();
 			}
 
 			@Override
 			public void oneFingerCounterClockCircleComplete() {
-				if(mediaPlayer.isPlaying()){
-					mediaPlayer.volumeDown(1);
-				}
+
+				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
 				super.oneFingerCounterClockCircleComplete();
 			}
 
 			@Override
 			public void oneFingerClockCircleComplete() {
-				if(mediaPlayer.isPlaying()){
-					mediaPlayer.volumeUp(1);
-				}
+
+				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
 				super.oneFingerClockCircleComplete();
 			}
     	});
