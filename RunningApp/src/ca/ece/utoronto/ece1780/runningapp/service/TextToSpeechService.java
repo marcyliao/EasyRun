@@ -54,9 +54,6 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 	    	boolean userSetting = new UserSetting(context).isSpeechEnabled();
 	    	
 	    	if(userSetting) {
-	    		for(OnSpeechListener listener : TextToSpeechService.onSpeechListeners){
-	    			//listener.onSpeech();
-	    		}
 	    		Intent i = new Intent(context,TextToSpeechService.class);
 	    		context.startService(i);
 	    	}
