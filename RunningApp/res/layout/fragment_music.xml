@@ -20,11 +20,24 @@
         android:textSize="15sp"
         android:textStyle="italic"/>
     -->
-    <Button
-        android:id="@+id/MusicButton"
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="start"></Button>
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/MusicButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start" >
+        </Button>
+
+        <Button
+            android:id="@+id/musicPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pause" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewNoSong"

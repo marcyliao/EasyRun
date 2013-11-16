@@ -38,16 +38,16 @@ public class MediaPlayerService extends Service {
 	private MediaPlayer mediaPlayer;
 	//sign for if the mediaPlayer is paused or not
 	private boolean isPaused;
-	//
+	//sign for whether the media player is paused by auto action or by user
 	private boolean isAutoPaused;
 	//mediaList is used to store all the media files paths 
 	private List<String> mediaList;
 	//mediaIndex is used to indicate which song is play on the array list now
 	private int mediaIndex;
-	//
-	private static List<MediaInformaitonReceiver> receivers = new ArrayList<MediaInformaitonReceiver>();
-	
+	//tell whether the service is running or not for other services and activities
 	public static boolean isServiceRunning = false;
+	
+	String Tag = "MediaService_1";
 
 	@Override
 	public void onCreate() {
@@ -85,6 +85,7 @@ public class MediaPlayerService extends Service {
 			}
 		});
 		
+		Log.d(Tag, "OnCreate is called.");
 	}
 
 	
@@ -103,6 +104,7 @@ public class MediaPlayerService extends Service {
         	this.play();
         }
 
+        Log.d(Tag, "OnStartCommand is called.");
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -110,6 +112,7 @@ public class MediaPlayerService extends Service {
 	public void onDestroy() {
 		
 		isServiceRunning = false;
+		Log.d(Tag, "OnDestroy is called.");
 		super.onDestroy();
 	}
 
@@ -118,11 +121,6 @@ public class MediaPlayerService extends Service {
 	public IBinder onBind(Intent intent) {
 		
 		return mediaBinder;
-	}
-	
-	public static void regiestReceiver(MediaInformaitonReceiver receiver){
-		
-		receivers.add(receiver);
 	}
 	
 	public void resetMediaPlayer(){
@@ -234,11 +232,6 @@ public class MediaPlayerService extends Service {
 		mediaPlayer.setOnPreparedListener(new PreparedListener());
 		mediaPlayer.setOnCompletionListener(new CompletionListener());
 		isPaused = false;
-		for(MediaInformaitonReceiver receiver : receivers){
-			
-			receiver.setMediaName(this.getArtist());
-			receiver.setMediaDuration(mediaPlayer.getDuration());
-		}
 		
 	}
 	
@@ -401,10 +394,6 @@ public class MediaPlayerService extends Service {
 							e.printStackTrace();
 						}
 						position = mediaPlayer.getCurrentPosition();
-						for(MediaInformaitonReceiver receiver : receivers){
-							receiver.setMediaPlayPosition(position);
-						}
-						
 					}
 							
 				}

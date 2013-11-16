@@ -30,6 +30,7 @@ public class MusicFragment extends Fragment {
 	
 	Button musicButton;
 	
+	
 	private ServiceConnection mediaConnection = new ServiceConnection() {
 		
 		@Override
@@ -57,6 +58,17 @@ public class MusicFragment extends Fragment {
 		
 		
 		musicButton = (Button) rootView.findViewById(R.id.MusicButton);
+		Button pauseButton = (Button) rootView.findViewById(R.id.musicPause);
+		pauseButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				if(mediaPlayer.isReady())
+					mediaPlayer.pause();
+				
+			}
+		});
 		
 		if(MediaPlayerService.isServiceRunning == true){
 			musicButton.setText("stop");
