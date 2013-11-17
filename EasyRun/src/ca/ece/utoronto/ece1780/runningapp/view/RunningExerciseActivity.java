@@ -107,7 +107,6 @@ public class RunningExerciseActivity extends Activity {
 			public void onClick(View v) {
 		         Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
 		         startActivityForResult(i,SAVE_RECORD_REQUEST);
-		 		TextToSpeechService.speak(getString(R.string.activity_stopped), RunningExerciseActivity.this);
 			}
 		});
 		

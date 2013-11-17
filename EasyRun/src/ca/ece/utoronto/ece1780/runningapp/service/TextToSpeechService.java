@@ -10,13 +10,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
+import android.util.Log;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
 
 public class TextToSpeechService extends Service implements TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener{
 
-	private static boolean beingUsed = false;
+	public static boolean isServiceRunning = false;
 	static private TextToSpeech mTts;
     private String spokenText;
     public static final String MSG_ETRA_CODE = "msg_code";
@@ -34,21 +35,35 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     }
     
     public static void speak(String msg, Context context){
+    	isServiceRunning = true;
     	boolean userSetting = new UserSetting(context).isSpeechEnabled();
     	
-    	if(!beingUsed && userSetting) {
+    	if(userSetting) {
     		for(OnSpeechListener listener : TextToSpeechService.onSpeechListeners){
     			listener.onSpeech();
     		}
     		Intent i = new Intent(context,TextToSpeechService.class);
     		i.putExtra(MSG_ETRA_CODE, msg);
     		context.startService(i);
-    		beingUsed = true;  
     	}
     }
     
-    static void stop(Context context){
-		beingUsed = true;  
+    public static void start(Context context){
+    	if(isServiceRunning != true) {
+	    	isServiceRunning = true;
+	    	boolean userSetting = new UserSetting(context).isSpeechEnabled();
+	    	
+	    	if(userSetting) {
+	    		for(OnSpeechListener listener : TextToSpeechService.onSpeechListeners){
+	    			listener.onSpeech();
+	    		}
+	    		Intent i = new Intent(context,TextToSpeechService.class);
+	    		context.startService(i);
+	    	}
+    	}
+    }
+    
+    static public void stop(Context context){
     	Intent i = new Intent(context,TextToSpeechService.class);
     	context.stopService(i);
     }
@@ -59,19 +74,22 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     @Override
     public void onInit(int status) {
+
+    	Log.d("speak","init");
     	boolean available = false;
         if (status == TextToSpeech.SUCCESS) {
             int result = mTts.setLanguage(Locale.US);
             if (result != TextToSpeech.LANG_MISSING_DATA && result != TextToSpeech.LANG_NOT_SUPPORTED) {
+            	if (spokenText != null) {
+	            	HashMap<String, String> params = new HashMap<String, String>();
+	            	params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"dumpId");
+	
+	            	mTts.setSpeechRate(0.9f);
+	            	mTts.setOnUtteranceCompletedListener(this);
+	                mTts.speak(spokenText, TextToSpeech.QUEUE_FLUSH, params);
+            	}
             	
-            	HashMap<String, String> params = new HashMap<String, String>();
-            	params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"dumpId");
-
-            	mTts.setSpeechRate(0.9f);
-            	mTts.setOnUtteranceCompletedListener(this);
-                mTts.speak(spokenText, TextToSpeech.QUEUE_FLUSH, params);
                 available = true;
-                
             }
         }
         
@@ -81,10 +99,13 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     
     @Override
     public void onStart(Intent intent, int startId) {
+    	if(intent == null)
+    		return;
+    	
         spokenText = intent.getStringExtra(MSG_ETRA_CODE);
         if(mTts == null)
         	mTts = new TextToSpeech(this, this);
-        else {
+        else if (spokenText != null){
         	HashMap<String, String> params = new HashMap<String, String>();
         	params.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,"dumpId");
 
@@ -96,7 +117,6 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     @Override
     public void onUtteranceCompleted(String uttId) {
-    	beingUsed = false;
     	for(OnSpeechCompleteListener listener : TextToSpeechService.onSpeechCompleteListeners){
     		listener.onSpeechComplete();
     	}
@@ -110,7 +130,8 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
             mTts = null;
         }
 
-        beingUsed = false;
+    	isServiceRunning = false;
+    	Log.d("speak","stop");
         super.onDestroy();
     }
 

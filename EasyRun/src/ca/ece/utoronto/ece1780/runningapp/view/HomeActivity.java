@@ -3,6 +3,7 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import java.util.Locale;
 
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
@@ -80,6 +81,9 @@ public class HomeActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		
+		// start the tts service
+		TextToSpeechService.start(this);
+		
 	}
 
 	@Override
@@ -87,6 +91,9 @@ public class HomeActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		super.onDestroy();
 
+		if(TextToSpeechService.isServiceRunning && !ActivityControllerService.isServiceRunning)
+			TextToSpeechService.stop(this);
+		
 		TestNu.numActivity--;
 		Log.v("numActivity", TestNu.numActivity+"");
 	}
