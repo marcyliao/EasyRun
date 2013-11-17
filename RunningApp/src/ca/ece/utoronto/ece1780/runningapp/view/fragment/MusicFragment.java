@@ -14,11 +14,17 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView.FindListener;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
+import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
+import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.MediaFileDirectoryActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
@@ -64,9 +70,12 @@ public class MusicFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				
-				if(mediaPlayer.isReady())
+				if(mediaPlayer != null && mediaPlayer.isReady())
 					mediaPlayer.pause();
-				
+				else {
+					startMusicService();
+				}
+					
 			}
 		});
 		
@@ -78,32 +87,46 @@ public class MusicFragment extends Fragment {
 			
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(getActivity(), MediaPlayerService.class);
 				if(!MediaPlayerService.isServiceRunning){
-					
-					getActivity().startService(intent);
-					getActivity().bindService(intent, mediaConnection , 0);
-					MusicFragment.this.musicButton.setText("stop");
-
+					startMusicService();
 				}
 				else{
-					mediaPlayer.stop();
-					getActivity().unbindService(mediaConnection);
-					getActivity().stopService(intent);
-					MusicFragment.this.musicButton.setText("start");
+					stopMusicService();
 				}
 				
 			}
-		});
-		
 
+			private void stopMusicService() {
+				Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+				mediaPlayer.stop();
+				getActivity().unbindService(mediaConnection);
+				getActivity().stopService(intent);
+				MusicFragment.this.musicButton.setText("start");
+				mediaPlayer = null;
+			}
+
+			
+		});
 		
 	    prepareWidgets(rootView);
     
 		return rootView;
 	}
 
+	private void startMusicService() {
+		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+		getActivity().startService(intent);
+		getActivity().bindService(intent, mediaConnection , 0);
+		MusicFragment.this.musicButton.setText("stop");
+	}
 	
+	private void startMusicService(String path) {
+		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+		intent.putExtra(MediaPlayerService.PATH, path);
+		getActivity().startService(intent);
+		getActivity().bindService(intent, mediaConnection , 0);
+		MusicFragment.this.musicButton.setText("stop");
+	}
 	
 	@Override
 	public void onPause() {
@@ -148,6 +171,20 @@ public class MusicFragment extends Fragment {
 //		});
 	    mListAdapter = new SongArrayAdapter(getActivity());
 	    l.setAdapter(mListAdapter);
+	    l.setOnItemClickListener(new OnItemClickListener(){
+
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view,
+					int position, long id) {
+				String path = mListAdapter.getItem(position);
+
+				if(mediaPlayer != null && mediaPlayer.isReady())
+					mediaPlayer.play(path);
+				else {
+					startMusicService(path);
+				}
+			}
+	    });
 	}
 
 
@@ -161,7 +198,6 @@ public class MusicFragment extends Fragment {
 	private class SongArrayAdapter extends BaseAdapter {
 		private final Context context;
 		private List<String> songPaths;
-
 
 		@Override
 		public void notifyDataSetChanged() {
@@ -177,7 +213,7 @@ public class MusicFragment extends Fragment {
 			super();
 			this.context = context;
 			
-			//TODO: update medialist
+			songPaths = new MusicUtility().getAllMusicPath();
 			
 			if(songPaths == null || songPaths.size() == 0)
 				textViewNoSong.setVisibility(View.VISIBLE);
@@ -189,13 +225,16 @@ public class MusicFragment extends Fragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = (LayoutInflater) context
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View rowView = inflater.inflate(R.layout.list_view_item_activity, parent, false);
+			View rowView = inflater.inflate(R.layout.list_view_item_song, parent, false);
 			
 			TextView textViewSongName = (TextView) rowView.findViewById(R.id.TextViewSongName);
 			TextView textViewSongDesc = (TextView) rowView.findViewById(R.id.TextViewSongDesc);
 			
-			//TODO: setup each list item according to the mediaList.get(position)
-
+			MediaInformationProvider provider = new MediaInformationProvider();
+			
+			textViewSongName.setText(provider.getTitle(songPaths.get(position)));
+			textViewSongDesc.setText(provider.getArtist(songPaths.get(position)));
+			
 			return rowView;
 		}
 		
@@ -207,8 +246,8 @@ public class MusicFragment extends Fragment {
 		}
 
 		@Override
-		public Object getItem(int position) {
-			return position;
+		public String getItem(int position) {
+			return songPaths.get(position);
 		}
 
 		@Override

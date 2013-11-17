@@ -8,36 +8,10 @@
         android:id="@+id/listViewSongs"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/layoutMusicPanel"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
     </ListView>
-    <!-- 
-    <Button 
-        android:id="@+id/ButtonAddSongs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="add Songs"
-        android:textSize="15sp"
-        android:textStyle="italic"/>
-    -->
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:id="@+id/MusicButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="start" >
-        </Button>
-
-        <Button
-            android:id="@+id/musicPause"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="pause" />
-    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewNoSong"
@@ -46,7 +20,29 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:text="No songs"
-        android:textSize="15sp" 
-        android:textStyle="italic"/>
+        android:textSize="15sp"
+        android:textStyle="italic" />
+
+    <LinearLayout
+        android:id="@+id/layoutMusicPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/MusicButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start" />
+
+        <Button
+            android:id="@+id/musicPause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="pause" />
+    </LinearLayout>
 
 </RelativeLayout>

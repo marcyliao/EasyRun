@@ -30,6 +30,7 @@ import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
 
 public class MediaPlayerService extends Service {
 	
+	public static final String PATH = "path";
 	//used to get the system services such as AudioManager.
 	Context context;
 	//used to communicate with activity
@@ -101,7 +102,11 @@ public class MediaPlayerService extends Service {
         startForeground(234, notification);
         
         if(this.isReady()){
-        	this.play();
+        	String path = intent.getStringExtra(PATH);
+        	if(path != null)
+        		this.play(path);
+        	else
+        		this.play();
         }
 
         Log.d(Tag, "OnStartCommand is called.");
