@@ -50,12 +50,12 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     
     public static void start(Context context){
     	if(isServiceRunning != true) {
-	    	isServiceRunning = true;
 	    	boolean userSetting = new UserSetting(context).isSpeechEnabled();
 	    	
 	    	if(userSetting) {
 	    		Intent i = new Intent(context,TextToSpeechService.class);
 	    		context.startService(i);
+		    	isServiceRunning = true;
 	    	}
     	}
     }
