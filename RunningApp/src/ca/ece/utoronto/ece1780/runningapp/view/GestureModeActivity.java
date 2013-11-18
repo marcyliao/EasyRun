@@ -208,7 +208,10 @@ public class GestureModeActivity extends Activity {
 
 			@Override
 			public void onDataChange(ActivityRecord currentRecord) {
-				// TODO Auto-generated method stub
+				// When data is updated, update all the relevant UI 
+				// to show users the current activity record
+				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
+				
 			}
 
 			@Override
