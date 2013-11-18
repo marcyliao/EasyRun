@@ -241,8 +241,10 @@ public class MusicFragment extends Fragment {
 					int position, long id) {
 				String path = mListAdapter.getItem(position);
 
-				if(mediaPlayer != null && mediaPlayer.isReady())
+				if(mediaPlayer != null && mediaPlayer.isReady()) {
 					mediaPlayer.play(path);
+					updateMusicUI();
+				}
 				else {
 					startMusicService(path);
 				}
