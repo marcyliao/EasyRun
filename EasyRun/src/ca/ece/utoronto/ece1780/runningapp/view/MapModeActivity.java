@@ -174,7 +174,7 @@ public class MapModeActivity extends Activity {
 	@Override
 	public void onResume() {
         Intent startIntent = new Intent(MapModeActivity.this, ActivityControllerService.class);
-        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
+        bindService(startIntent, sconnection, 0);  
 		
 		super.onResume();
 	}

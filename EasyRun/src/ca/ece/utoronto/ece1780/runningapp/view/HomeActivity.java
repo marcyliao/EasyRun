@@ -33,9 +33,6 @@ public class HomeActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-		TestNu.numActivity++;
-		Log.v("numActivity", TestNu.numActivity+"");
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
@@ -93,9 +90,6 @@ public class HomeActivity extends FragmentActivity implements
 
 		if(TextToSpeechService.isServiceRunning && !ActivityControllerService.isServiceRunning)
 			TextToSpeechService.stop(this);
-		
-		TestNu.numActivity--;
-		Log.v("numActivity", TestNu.numActivity+"");
 	}
 
 	@Override
@@ -113,7 +107,7 @@ public class HomeActivity extends FragmentActivity implements
 					activityFragment.updateList();
 				}
 				
- 
+				// Update start fragment
 				StartFragment fragment = (StartFragment) getSupportFragmentManager()
 						.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
 				if (fragment != null && activityFragment.getView() != null) {

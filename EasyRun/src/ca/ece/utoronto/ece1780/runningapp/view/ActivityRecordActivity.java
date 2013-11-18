@@ -1,9 +1,5 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -15,7 +11,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import android.graphics.Color;
 
 
@@ -24,7 +20,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -54,17 +49,23 @@ public class ActivityRecordActivity extends Activity {
 		prepareWidgets();
 		prepareMap();
 		
-		TestNu.numActivity++;
-		Log.v("numActivity", TestNu.numActivity+"");
 	}
 
 	private void prepareWidgets() {
 		
 		// Prepare number data stuff
-		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",record.getAvgSpeed()));
-		((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(record.getTimeLength()/1000)));
-		((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(record.getCalories()));
-		((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(record.getDistance())/1000));
+		FormatProcessor fp = new FormatProcessor(this);
+		
+		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(record.getAvgSpeed()));
+		((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(record.getTimeLength()));
+		((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(record.getCalories()));
+		((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(record.getDistance()));
+		
+		if(record.getNote() != null && !record.getNote().equals(""))
+			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
+		
+		// Set title of actionbar to the date of the activity
+		getActionBar().setTitle(fp.getDate(record.getTime()));
 		
 		// Prepare the mood image
 		ImageView imv = (ImageView)findViewById(R.id.imageViewMood);
@@ -79,24 +80,12 @@ public class ActivityRecordActivity extends Activity {
 		}
 		else if(record.getMood() == Mood.SAD) {
 			imv.setImageResource(R.drawable.icon_mood_sad);
-		}
-		
-		if(record.getNote() != null && !record.getNote().equals(""))
-			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
-		
-		// Set title of actionbar to the date of the activity
-		Date date = new Date(record.getTime());
-		SimpleDateFormat dateformatYYYYMMDD = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
-		String dateTitle = dateformatYYYYMMDD.format(date);
-		getActionBar().setTitle(dateTitle);
-			
+		}	
 	}
 
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		TestNu.numActivity--;
-		Log.v("numActivity", TestNu.numActivity+"");
 		super.onDestroy();
 	}
 
@@ -112,16 +101,16 @@ public class ActivityRecordActivity extends Activity {
 			// Add the start marker
 			ActivityRecord.Location startLocation = record.getLocationPoints().get(0);
 			map.addMarker(new MarkerOptions()
-	        .position(getLatLngFromLocation(startLocation))
-	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
+	        	.position(getLatLngFromLocation(startLocation))
+	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
 			
 
 			// Add the end marker
 			int last = record.getLocationPoints().size()-1;
 			ActivityRecord.Location lastLocation = record.getLocationPoints().get(last);
 			map.addMarker(new MarkerOptions()
-	        .position(getLatLngFromLocation(lastLocation))
-	        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+	        	.position(getLatLngFromLocation(lastLocation))
+	        	.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
 			
 			 // Move the camera instantly to hamburg with a zoom of 15.
 		    map.moveCamera(CameraUpdateFactory.newLatLngZoom(getLatLngFromLocation(lastLocation), 15));

@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.utility.weather.JSONWeatherParser;
 import ca.ece.utoronto.ece1780.runningapp.utility.weather.Weather;
 import ca.ece.utoronto.ece1780.runningapp.utility.weather.WeatherHttpClient;
@@ -57,12 +58,6 @@ public class StartFragment extends Fragment implements LocationListener {
 	}
 
 	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {		
 		
@@ -92,16 +87,18 @@ public class StartFragment extends Fragment implements LocationListener {
 	public void prepareWidgets() {
 		
 		Map<String,String> history = new ActivityRecordDAO(getActivity()).getHistory();
-		float totalDistance = Float.valueOf(history.get("totalDistance"));
+		double totalDistance = Float.valueOf(history.get("totalDistance"));
 		float totalDuration = Float.valueOf(history.get("totalDuration"));
 		int totalCalories = Integer.valueOf(history.get("totalCalories"));
 		int totalRuns = Integer.valueOf(history.get("totalRuns"));
 		
+		FormatProcessor fp = new FormatProcessor(rootView.getContext());
+		
 		TextView distanceTextView = (TextView)rootView.findViewById(R.id.TextViewTotalDistance);
-		(distanceTextView).setText(String.format("%.1f",Double.valueOf(totalDistance)/1000));
+		(distanceTextView).setText(fp.getDistance(totalDistance));
 		
 		double avgSpeed = totalDistance == 0?0:(totalDistance*3600)/(totalDuration);
-		((TextView)rootView.findViewById(R.id.TextViewAverageSpeed)).setText(String.format("%.1f",Double.valueOf(avgSpeed)));
+		((TextView)rootView.findViewById(R.id.TextViewAverageSpeed)).setText(fp.getSpeed(avgSpeed));
 		((TextView)rootView.findViewById(R.id.TextViewRuns)).setText(String.valueOf(totalRuns));
 		((TextView)rootView.findViewById(R.id.TextViewCalories)).setText(String.valueOf(totalCalories));
 		

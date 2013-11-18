@@ -3,12 +3,12 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.view.Menu;
@@ -53,7 +53,8 @@ public class GestureModeActivity extends Activity {
 				
 				// When data is updated, update all the relevant UI 
 				// to show users the current activity record
-				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
+				FormatProcessor fp = new FormatProcessor(GestureModeActivity.this);
+				((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(currentRecord.getDistance()));
 				
 			}
 
@@ -84,8 +85,6 @@ public class GestureModeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gesture_mode);
 		
-		// getActionBar().hide();
-		
 		// Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 		
@@ -107,17 +106,7 @@ public class GestureModeActivity extends Activity {
 				super.oneFingerSingleClick();
 			}
     	});
-    	
-    	
-    	// Prepare shake listener
-    	/*
-		mShaker = new ShakeListener(this);
-		mShaker.setOnShakeListener(new ShakeListener.OnShakeListener() {
-			public void onShake() {
-				switchPauseAndResume();
-			}
-		});
-		*/
+ 
 	}
 
 	@Override
@@ -130,15 +119,13 @@ public class GestureModeActivity extends Activity {
 	@Override
 	protected void onPause() {
         unbindService(sconnection);
-        //mShaker.pause();
 		super.onPause();
 	}
 	
 	@Override
 	public void onResume() {
         Intent startIntent = new Intent(GestureModeActivity.this, ActivityControllerService.class);
-        bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);  
-	    //mShaker.resume();
+        bindService(startIntent, sconnection, 0); 
 		super.onResume();
 	}
 	

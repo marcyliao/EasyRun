@@ -35,7 +35,6 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     }
     
     public static void speak(String msg, Context context){
-    	isServiceRunning = true;
     	boolean userSetting = new UserSetting(context).isSpeechEnabled();
     	
     	if(userSetting) {
@@ -45,12 +44,12 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     		Intent i = new Intent(context,TextToSpeechService.class);
     		i.putExtra(MSG_ETRA_CODE, msg);
     		context.startService(i);
+        	isServiceRunning = true;
     	}
     }
     
     public static void start(Context context){
     	if(isServiceRunning != true) {
-	    	isServiceRunning = true;
 	    	boolean userSetting = new UserSetting(context).isSpeechEnabled();
 	    	
 	    	if(userSetting) {
@@ -59,6 +58,7 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 	    		}
 	    		Intent i = new Intent(context,TextToSpeechService.class);
 	    		context.startService(i);
+		    	isServiceRunning = true;
 	    	}
     	}
     }
