@@ -1,6 +1,7 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +12,9 @@ import ca.ece.utoronto.ece1780.runningapp.view.R;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ public class ActivitiesFragment extends Fragment {
 	private ActivityRecordArrayAdapter mListAdapter;
 	
 	private TextView textViewNoActivity;
+	private List<ActivityRecord> records = new ArrayList<ActivityRecord>();
 	
 	public ActivitiesFragment() {
 	}
@@ -64,23 +68,45 @@ public class ActivitiesFragment extends Fragment {
 				getActivity().startActivityForResult(i, RECORD_DETAIL_REQUEST);
 			}
 	    });
+	    
+	    updateList();
 	}
 
 
 	public void updateList() {
 		
-		if(mListAdapter != null) {
-			mListAdapter.notifyDataSetChanged();
-		}
+		new AsyncTask<Object,Object,List<ActivityRecord>>(){
+
+			@Override
+			protected void onPostExecute(List<ActivityRecord> result) {
+				if(mListAdapter != null) {
+					records = result;
+					mListAdapter.notifyDataSetChanged();
+
+					Log.v("activities","finish");
+				}
+				super.onPostExecute(result);
+			}
+
+			@Override
+			protected List<ActivityRecord> doInBackground(Object... params) {
+
+				Log.v("activities","before load");
+				List<ActivityRecord> records = new ActivityRecordDAO(getActivity().getApplicationContext()).getAllRecords();
+
+				Log.v("activities","after load");
+				return records;
+			}
+			
+		}.execute();
+		
 	}
 	
 	private class ActivityRecordArrayAdapter extends BaseAdapter {
 		private final Context context;
-		private List<ActivityRecord> records;
 
 		@Override
 		public void notifyDataSetChanged() {
-			records = new ActivityRecordDAO(context).getAllRecords();
 			
 			if(records == null || records.size() == 0)
 				textViewNoActivity.setVisibility(View.VISIBLE);

@@ -3,23 +3,13 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:padding="6dip" >
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="50dp"
-        android:layout_height="fill_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/padding"
-        android:contentDescription="TODO"
-        android:src="@drawable/icon_runner" />
 
     <TextView
         android:id="@+id/TextViewSongDesc"
         android:layout_width="fill_parent"
         android:layout_height="23dip"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toRightOf="@+id/padding"
         android:singleLine="true"
         android:text="Description"
         android:textSize="15sp" 
@@ -31,8 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/TextViewSongDesc"
         android:layout_alignParentTop="true"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_toRightOf="@id/icon"
+        android:layout_toRightOf="@+id/padding"
         android:gravity="center_vertical"
         android:text="Song Title"
         android:textColor="#FFF"
@@ -42,9 +31,8 @@
         android:id="@+id/padding"
         android:background="#24c2fd"
         android:layout_width="4dp"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/icon"
-        android:layout_alignBottom="@+id/icon"
+        android:layout_height="fill_parent"
+        android:layout_marginRight="10dp"
         android:layout_alignParentLeft="true" >
 
     </RelativeLayout>

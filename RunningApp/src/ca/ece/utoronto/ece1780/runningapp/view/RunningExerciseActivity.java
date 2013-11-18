@@ -22,7 +22,6 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
-import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 public class RunningExerciseActivity extends Activity {
@@ -51,9 +50,32 @@ public class RunningExerciseActivity extends Activity {
 
 			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
 			mediaPlayer = mediaBinder.getMediaPlayerService();
+			
+			if(!mediaPlayer.isReady()) {
+				Toast.makeText(RunningExerciseActivity.this, "no song found", Toast.LENGTH_SHORT).show();
+				unbindService(this);
+				Intent intent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
+				stopService(intent);
+				
+				return;
+			}
+			updateMusicUI();
 		}
 	};
 
+	private void updateMusicUI() {
+		if(mediaPlayer == null) {
+			musicButton.setBackgroundResource(R.drawable.icon_music_play);
+			return;
+		}
+		if(mediaPlayer.isPaused() || !mediaPlayer.isReady()) {
+			musicButton.setBackgroundResource(R.drawable.icon_music_play);
+			return;
+		}
+		musicButton.setBackgroundResource(R.drawable.icon_music_pause);
+
+		return;
+	}
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
 		
@@ -80,6 +102,8 @@ public class RunningExerciseActivity extends Activity {
         	controllerService.unbindListener();
         }    
     };
+
+	private Button musicButton;
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -176,30 +200,33 @@ public class RunningExerciseActivity extends Activity {
 		}
 		
 	
-		Button musicButton= (Button)findViewById(R.id.ButtonMusic);
+		musicButton = (Button)findViewById(R.id.ButtonMusic);
 		musicButton.setOnClickListener(new OnClickListener() {
 			
-			Intent intent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
 
 			@Override
 			public void onClick(View v) {
-				
+
 				if(MediaPlayerService.isServiceRunning == false){
-					startService(intent);
-					bindService(intent, mediaConnection, 0);
+					startMusic();
 				}
 				else{
 					if(mediaPlayer.isPlaying()){
 						mediaPlayer.pause();
+						updateMusicUI();
 					}
 					else if(mediaPlayer.isPaused()){
 						mediaPlayer.pause();
+						updateMusicUI();
 					}
 					else{
 						mediaPlayer.play();
+						updateMusicUI();
 					}
 				}
 			}
+
+			
 		});//end of setOnClickListener
 		
 		Button nextSongButton = (Button)findViewById(R.id.ButtonNextSong);
@@ -207,7 +234,12 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				mediaPlayer.playNext();
+				if(mediaPlayer != null && mediaPlayer.isReady()){
+					mediaPlayer.playNext();
+					updateMusicUI();
+				}
+				else
+					startMusic();
 			}
 		});
 		
@@ -216,11 +248,23 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
-				mediaPlayer.playPrevious();
+				if(mediaPlayer != null && mediaPlayer.isReady()) {
+					mediaPlayer.playPrevious();
+					updateMusicUI();
+				}
+				else
+					startMusic();
+					
 			}
 		});
 	}
 
+	private void startMusic() {
+		Intent intent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
+		startService(intent);
+		bindService(intent, mediaConnection, 0);
+	}
+	
 	private RunningDataChangeListener getRecordChangeListener() {
 		return new RunningDataChangeListener(){
 

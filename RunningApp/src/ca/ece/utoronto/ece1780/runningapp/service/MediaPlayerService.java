@@ -23,8 +23,6 @@ import android.util.Log;
 import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
-import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
-import ca.ece.utoronto.ece1780.runningapp.view.listener.MediaInformaitonReceiver;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
 
@@ -69,8 +67,7 @@ public class MediaPlayerService extends Service {
 			@Override
 			public void onSpeech() {
 				if(MediaPlayerService.this.isPlaying()){
-					MediaPlayerService.this.pause();
-					isAutoPaused = true;
+					MediaPlayerService.this.autoPause();
 				}
 			}
 		});
@@ -80,8 +77,7 @@ public class MediaPlayerService extends Service {
 			@Override
 			public void onSpeechComplete() {
 				if(isAutoPaused){
-					MediaPlayerService.this.pause();
-					isAutoPaused = false;
+					MediaPlayerService.this.autoPause();
 				}
 			}
 		});
@@ -301,6 +297,21 @@ public class MediaPlayerService extends Service {
 			
 		}
 	}
+
+	// make the mediaPlayer pause by system action
+	public void autoPause() {
+
+		if (mediaPlayer.isPlaying() && isAutoPaused == false) {
+
+			mediaPlayer.pause();
+			isAutoPaused = true;
+		} else if (isAutoPaused == true) {
+
+			mediaPlayer.start();
+			isAutoPaused = false;
+
+		}
+	}
 	
 	//stop the media player
 	public void stop(){
@@ -431,16 +442,14 @@ public class MediaPlayerService extends Service {
 			case TelephonyManager.CALL_STATE_OFFHOOK:
 			case TelephonyManager.CALL_STATE_RINGING:{
 				if(MediaPlayerService.this.isPlaying()){
-					MediaPlayerService.this.pause();
-					isAutoPaused = true;
+					MediaPlayerService.this.autoPause();
 				}
 				break;
 			}
 			
 			case TelephonyManager.CALL_STATE_IDLE:{
 				if(isAutoPaused){
-					MediaPlayerService.this.pause();
-					isAutoPaused = false;
+					MediaPlayerService.this.autoPause();
 				}
 				break;
 			}

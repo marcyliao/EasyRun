@@ -1,11 +1,13 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
@@ -13,18 +15,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
 import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
-import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.MediaFileDirectoryActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
@@ -33,9 +33,8 @@ public class MusicFragment extends Fragment {
 	private SongArrayAdapter mListAdapter;
 	private MediaPlayerService mediaPlayer;
 	private TextView textViewNoSong;
-	
-	Button musicButton;
-	
+
+	private List<String> songPaths = new ArrayList<String>();
 	
 	private ServiceConnection mediaConnection = new ServiceConnection() {
 		
@@ -49,8 +48,10 @@ public class MusicFragment extends Fragment {
 
 			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
 			mediaPlayer = mediaBinder.getMediaPlayerService();
+			updateMusicUI();
 		}
 	};
+	private Button pauseButton;
 
 	public MusicFragment() {
 		
@@ -61,28 +62,30 @@ public class MusicFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_music, container, false);
 		
-		
-		
-		musicButton = (Button) rootView.findViewById(R.id.MusicButton);
-		Button pauseButton = (Button) rootView.findViewById(R.id.musicPause);
+		pauseButton = (Button) rootView.findViewById(R.id.musicPause);
 		pauseButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				
 				if(mediaPlayer != null && mediaPlayer.isReady())
+				{
 					mediaPlayer.pause();
+					updateMusicUI();
+				}
 				else {
 					startMusicService();
 				}
 					
 			}
 		});
-		
+
+		/*
+		Button musicButton = (Button) rootView.findViewById(R.id.MusicButton);
 		if(MediaPlayerService.isServiceRunning == true){
 			musicButton.setText("stop");
 		}
-		
+
 		musicButton.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -96,16 +99,47 @@ public class MusicFragment extends Fragment {
 				
 			}
 
-			private void stopMusicService() {
-				Intent intent = new Intent(getActivity(), MediaPlayerService.class);
-				mediaPlayer.stop();
-				getActivity().unbindService(mediaConnection);
-				getActivity().stopService(intent);
-				MusicFragment.this.musicButton.setText("start");
-				mediaPlayer = null;
-			}
 
+		});
+		*/
+		Button nextButton = (Button) rootView.findViewById(R.id.buttonNextSong);
+		Button previousButton = (Button) rootView.findViewById(R.id.buttonPrevSong);
+		
+		nextButton.setOnClickListener(new OnClickListener() {
 			
+			@Override
+			public void onClick(View v) {
+				if(!MediaPlayerService.isServiceRunning){
+					startMusicService();
+				}
+				else{
+					if(mediaPlayer != null && mediaPlayer.isReady()) {
+						mediaPlayer.playNext();
+						updateMusicUI();
+					}
+					else {
+						startMusicService();
+					}
+				}
+			}
+		});
+		
+		previousButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(!MediaPlayerService.isServiceRunning){
+					startMusicService();
+				}
+				else{
+					if(mediaPlayer != null && mediaPlayer.isReady()){
+						mediaPlayer.playPrevious();
+						updateMusicUI();
+					}
+					else {
+						startMusicService();
+					}
+				}
+			}
 		});
 		
 	    prepareWidgets(rootView);
@@ -117,22 +151,44 @@ public class MusicFragment extends Fragment {
 		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
 		getActivity().startService(intent);
 		getActivity().bindService(intent, mediaConnection , 0);
-		MusicFragment.this.musicButton.setText("stop");
 	}
 	
+	private void updateMusicUI() {
+		if(mediaPlayer==null || !mediaPlayer.isReady() || mediaPlayer.isPaused())
+			pauseButton.setBackgroundResource(R.drawable.icon_music_play);
+		else
+			pauseButton.setBackgroundResource(R.drawable.icon_music_pause);
+	}
+
+
 	private void startMusicService(String path) {
+		if(songPaths==null && songPaths.isEmpty()) {
+			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
+		}
+		
 		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
 		intent.putExtra(MediaPlayerService.PATH, path);
 		getActivity().startService(intent);
 		getActivity().bindService(intent, mediaConnection , 0);
-		MusicFragment.this.musicButton.setText("stop");
+	}
+	
+	private void stopMusicService() {
+		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
+		mediaPlayer.stop();
+		getActivity().unbindService(mediaConnection);
+		getActivity().stopService(intent);
+		mediaPlayer = null;
 	}
 	
 	@Override
 	public void onPause() {
 		super.onPause();
 		if(MediaPlayerService.isServiceRunning == true){
-			getActivity().unbindService(mediaConnection);
+			if(mediaPlayer.isPaused() == true) {
+				stopMusicService();
+			}
+			else
+				getActivity().unbindService(mediaConnection);
 		}
 	}
 
@@ -185,19 +241,35 @@ public class MusicFragment extends Fragment {
 				}
 			}
 	    });
+	    
+	    updateList();
 	}
 
 
 	public void updateList() {
 		
-		if(mListAdapter != null) {
-			mListAdapter.notifyDataSetChanged();
-		}
+		new AsyncTask<Object,Object,List<String>>(){
+
+			@Override
+			protected void onPostExecute(List<String> result) {
+				if(mListAdapter != null) {
+					songPaths = result;
+					mListAdapter.notifyDataSetChanged();
+				}
+				super.onPostExecute(result);
+			}
+
+			@Override
+			protected List<String> doInBackground(Object... params) {
+				List<String>  records = new MusicUtility().getAllMusicPath();
+				return records;
+			}
+			
+		}.execute();
 	}
 	
 	private class SongArrayAdapter extends BaseAdapter {
 		private final Context context;
-		private List<String> songPaths;
 
 		@Override
 		public void notifyDataSetChanged() {
@@ -212,9 +284,6 @@ public class MusicFragment extends Fragment {
 		public SongArrayAdapter(Context context) {
 			super();
 			this.context = context;
-			
-			songPaths = new MusicUtility().getAllMusicPath();
-			
 			if(songPaths == null || songPaths.size() == 0)
 				textViewNoSong.setVisibility(View.VISIBLE);
 			else

@@ -3,6 +3,7 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import java.util.Locale;
 
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
@@ -111,6 +112,7 @@ public class HomeActivity extends FragmentActivity implements
 				
 				if (activityFragment != null && activityFragment.getView() != null) {
 					activityFragment.updateList();
+					Log.v("activities","home");
 				}
 				
  
@@ -203,9 +205,9 @@ public class HomeActivity extends FragmentActivity implements
 			switch (position) {
 			case 0:
 				return new StartFragment();
-			case 2:
-				return new MusicFragment();
 			case 1:
+				return new MusicFragment();
+			case 2:
 				return new ActivitiesFragment();
 			}
 			return null;
@@ -224,9 +226,9 @@ public class HomeActivity extends FragmentActivity implements
 			switch (position) {
 			case 0:
 				return getString(R.string.title_start).toUpperCase(l);
-			case 2:
-				return getString(R.string.title_music).toUpperCase(l);
 			case 1:
+				return getString(R.string.title_music).toUpperCase(l);
+			case 2:
 				return getString(R.string.title_activities).toUpperCase(l);
 			}
 			return null;
