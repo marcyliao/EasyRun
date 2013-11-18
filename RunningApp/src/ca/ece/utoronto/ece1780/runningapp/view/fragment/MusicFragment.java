@@ -148,6 +148,12 @@ public class MusicFragment extends Fragment {
 	}
 
 	private void startMusicService() {
+		
+		if(songPaths==null || songPaths.isEmpty()) {
+			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
+			return;
+		}
+		
 		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
 		getActivity().startService(intent);
 		getActivity().bindService(intent, mediaConnection , 0);
@@ -162,8 +168,9 @@ public class MusicFragment extends Fragment {
 
 
 	private void startMusicService(String path) {
-		if(songPaths==null && songPaths.isEmpty()) {
+		if(songPaths==null || songPaths.isEmpty()) {
 			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
+			return;
 		}
 		
 		Intent intent = new Intent(getActivity(), MediaPlayerService.class);

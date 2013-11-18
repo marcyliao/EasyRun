@@ -108,7 +108,7 @@ public class HomeActivity extends FragmentActivity implements
 
 				// Update activity fragment
 				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
-						.findFragmentByTag("android:switcher:" + R.id.pager + ":1");
+						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
 				
 				if (activityFragment != null && activityFragment.getView() != null) {
 					activityFragment.updateList();
