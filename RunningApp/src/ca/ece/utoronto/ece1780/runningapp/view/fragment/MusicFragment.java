@@ -37,7 +37,6 @@ public class MusicFragment extends Fragment {
 	private List<String> songPaths = new ArrayList<String>();
 	
 	private ServiceConnection mediaConnection = new ServiceConnection() {
-		
 		@Override
 		public void onServiceDisconnected(ComponentName name) {
 			mediaPlayer = null;	
@@ -45,12 +44,12 @@ public class MusicFragment extends Fragment {
 		
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
-
 			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
 			mediaPlayer = mediaBinder.getMediaPlayerService();
 			updateMusicUI();
 		}
 	};
+	
 	private Button pauseButton;
 
 	public MusicFragment() {
@@ -61,89 +60,8 @@ public class MusicFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_music, container, false);
-		
-		pauseButton = (Button) rootView.findViewById(R.id.musicPause);
-		pauseButton.setOnClickListener(new OnClickListener() {
 			
-			@Override
-			public void onClick(View v) {
-				
-				if(mediaPlayer != null && mediaPlayer.isReady())
-				{
-					mediaPlayer.pause();
-					updateMusicUI();
-				}
-				else {
-					startMusicService();
-				}
-					
-			}
-		});
-
-		/*
-		Button musicButton = (Button) rootView.findViewById(R.id.MusicButton);
-		if(MediaPlayerService.isServiceRunning == true){
-			musicButton.setText("stop");
-		}
-
-		musicButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(!MediaPlayerService.isServiceRunning){
-					startMusicService();
-				}
-				else{
-					stopMusicService();
-				}
-				
-			}
-
-
-		});
-		*/
-		Button nextButton = (Button) rootView.findViewById(R.id.buttonNextSong);
-		Button previousButton = (Button) rootView.findViewById(R.id.buttonPrevSong);
-		
-		nextButton.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				if(!MediaPlayerService.isServiceRunning){
-					startMusicService();
-				}
-				else{
-					if(mediaPlayer != null && mediaPlayer.isReady()) {
-						mediaPlayer.playNext();
-						updateMusicUI();
-					}
-					else {
-						startMusicService();
-					}
-				}
-			}
-		});
-		
-		previousButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if(!MediaPlayerService.isServiceRunning){
-					startMusicService();
-				}
-				else{
-					if(mediaPlayer != null && mediaPlayer.isReady()){
-						mediaPlayer.playPrevious();
-						updateMusicUI();
-					}
-					else {
-						startMusicService();
-					}
-				}
-			}
-		});
-		
-	    prepareWidgets(rootView);
-    
+	    prepareWidgets(rootView);  
 		return rootView;
 	}
 
@@ -159,13 +77,14 @@ public class MusicFragment extends Fragment {
 		getActivity().bindService(intent, mediaConnection , 0);
 	}
 	
+	
+	// Update the user panel according to the media service states
 	private void updateMusicUI() {
 		if(mediaPlayer==null || !mediaPlayer.isReady() || mediaPlayer.isPaused())
 			pauseButton.setBackgroundResource(R.drawable.icon_music_play);
 		else
 			pauseButton.setBackgroundResource(R.drawable.icon_music_pause);
 	}
-
 
 	private void startMusicService(String path) {
 		if(songPaths==null || songPaths.isEmpty()) {
@@ -222,6 +141,85 @@ public class MusicFragment extends Fragment {
 	}
 	
 	private void prepareWidgets(View rootView) {
+		pauseButton = (Button) rootView.findViewById(R.id.musicPause);
+		pauseButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				
+				if(mediaPlayer != null && mediaPlayer.isReady())
+				{
+					mediaPlayer.pause();
+					updateMusicUI();
+				}
+				else {
+					startMusicService();
+				}
+					
+			}
+		});
+
+		/*
+		Button musicButton = (Button) rootView.findViewById(R.id.MusicButton);
+		if(MediaPlayerService.isServiceRunning == true){
+			musicButton.setText("stop");
+		}
+
+		musicButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(!MediaPlayerService.isServiceRunning){
+					startMusicService();
+				}
+				else{
+					stopMusicService();
+				}
+				
+			}
+
+		});
+		*/
+		Button nextButton = (Button) rootView.findViewById(R.id.buttonNextSong);
+		Button previousButton = (Button) rootView.findViewById(R.id.buttonPrevSong);
+		
+		nextButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(!MediaPlayerService.isServiceRunning){
+					startMusicService();
+				}
+				else{
+					if(mediaPlayer != null && mediaPlayer.isReady()) {
+						mediaPlayer.playNext();
+						updateMusicUI();
+					}
+					else {
+						startMusicService();
+					}
+				}
+			}
+		});
+		
+		previousButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if(!MediaPlayerService.isServiceRunning){
+					startMusicService();
+				}
+				else{
+					if(mediaPlayer != null && mediaPlayer.isReady()){
+						mediaPlayer.playPrevious();
+						updateMusicUI();
+					}
+					else {
+						startMusicService();
+					}
+				}
+			}
+		});
+		
 		ListView l = (ListView) rootView.findViewById(R.id.listViewSongs);
 		textViewNoSong = (TextView) rootView.findViewById(R.id.textViewNoSong);
 //		Button addSongs = (Button) rootView.findViewById(R.id.ButtonAddSongs);

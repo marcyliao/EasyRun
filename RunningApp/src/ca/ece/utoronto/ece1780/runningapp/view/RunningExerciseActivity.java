@@ -64,17 +64,12 @@ public class RunningExerciseActivity extends Activity {
 	};
 
 	private void updateMusicUI() {
-		if(mediaPlayer == null) {
+		if(mediaPlayer == null || mediaPlayer.isPaused() || !mediaPlayer.isReady()) {
 			musicButton.setBackgroundResource(R.drawable.icon_music_play);
-			return;
 		}
-		if(mediaPlayer.isPaused() || !mediaPlayer.isReady()) {
-			musicButton.setBackgroundResource(R.drawable.icon_music_play);
-			return;
+		else {
+			musicButton.setBackgroundResource(R.drawable.icon_music_pause);
 		}
-		musicButton.setBackgroundResource(R.drawable.icon_music_pause);
-
-		return;
 	}
 	
 	private ServiceConnection sconnection = new ServiceConnection() {  
@@ -225,7 +220,7 @@ public class RunningExerciseActivity extends Activity {
 				}
 				
 				if(MediaPlayerService.isServiceRunning == false){
-					startMusic();
+					startMusicService();
 				}
 				else{
 					if(mediaPlayer.isPlaying()){
@@ -262,7 +257,7 @@ public class RunningExerciseActivity extends Activity {
 					updateMusicUI();
 				}
 				else
-					startMusic();
+					startMusicService();
 			}
 		});
 		
@@ -282,13 +277,13 @@ public class RunningExerciseActivity extends Activity {
 					updateMusicUI();
 				}
 				else
-					startMusic();
+					startMusicService();
 					
 			}
 		});
 	}
 
-	private void startMusic() {
+	private void startMusicService() {
 		Intent intent = new Intent(RunningExerciseActivity.this, MediaPlayerService.class);
 		startService(intent);
 		bindService(intent, mediaConnection, 0);
