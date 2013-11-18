@@ -74,7 +74,13 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     @Override
     public void onInit(int status) {
-
+    	
+    	// fix a bug
+    	if(mTts == null) {
+            stopSelf();
+            return;
+    	}
+    	
     	Log.d("speak","init");
     	boolean available = false;
         if (status == TextToSpeech.SUCCESS) {
