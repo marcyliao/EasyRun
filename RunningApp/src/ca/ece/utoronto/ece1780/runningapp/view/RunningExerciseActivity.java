@@ -148,6 +148,12 @@ public class RunningExerciseActivity extends Activity {
 		findViewById(R.id.buttonStop).setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
+
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				Intent i = new Intent(RunningExerciseActivity.this, SaveActivityActivity.class);
 				startActivityForResult(i,SAVE_RECORD_REQUEST);
 				// TextToSpeechService.speak(getString(R.string.activity_stopped), RunningExerciseActivity.this);
@@ -159,6 +165,12 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				// Resume activity.
 				if(controllerService != null && controllerService.isActivityGoing())
 					controllerService.resumeActivity();
@@ -206,7 +218,12 @@ public class RunningExerciseActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-
+				
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				if(MediaPlayerService.isServiceRunning == false){
 					startMusic();
 				}
@@ -234,6 +251,12 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				if(mediaPlayer != null && mediaPlayer.isReady()){
 					mediaPlayer.playNext();
 					updateMusicUI();
@@ -248,6 +271,12 @@ public class RunningExerciseActivity extends Activity {
 			
 			@Override
 			public void onClick(View v) {
+				
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
 				if(mediaPlayer != null && mediaPlayer.isReady()) {
 					mediaPlayer.playPrevious();
 					updateMusicUI();
