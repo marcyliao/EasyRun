@@ -77,6 +77,12 @@ public class GestureModeActivity extends Activity {
 		}
 	}
     
+	private void startMusic() {
+		Intent intent = new Intent(this, MediaPlayerService.class);
+		startService(intent);
+		bindService(intent, mediaConnection, 0);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,54 +118,38 @@ public class GestureModeActivity extends Activity {
 			}
 
 			@Override
-			public void twoFingersLeft2Right() {
-				if(mediaPlayer.isReady()){
+			public void oneFingerLeft2Right() {
+				if(mediaPlayer!=null && mediaPlayer.isReady()){
 					mediaPlayer.playNext();
+				}
+				else {
+					startMusic();
 				}
 				super.twoFingersLeft2Right();
 			}
 
 			@Override
-			public void twoFingersRight2Left() {
-				if(mediaPlayer.isReady()){
+			public void oneFingerRight2Left() {
+				if(mediaPlayer!=null &&mediaPlayer.isReady()){
 					mediaPlayer.playPrevious();
 					
+				}
+				else {
+					startMusic();
 				}
 				super.twoFingersRight2Left();
 			}
 
 			@Override
-			public void twoFingersSingleClick() {
-				if(mediaPlayer.isReady()){
+			public void oneFingerLongPress() {
+				if(mediaPlayer != null && mediaPlayer.isReady()){
 					mediaPlayer.pause();
 				}
+				else {
+					startMusic();
+				}
+					
 				super.twoFingersSingleClick();
-			}
-
-			@Override
-			public void twoFingersTop2Bottom() {
-				
-				//set up music service
-				Intent intent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
-				if(MediaPlayerService.isServiceRunning == false){
-				
-					startService(intent);
-				}
-			
-				bindService(intent, mediaConnection, 0);
-				super.twoFingersTop2Bottom();
-			}
-
-			@Override
-			public void twoFingersBottom2Top() {
-				
-				Intent intent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
-				if(mediaPlayer.isPlaying()){
-					mediaPlayer.stop();
-				}
-				unbindService(mediaConnection);
-				stopService(intent);
-				super.twoFingersBottom2Top();
 			}
 
 			@Override
@@ -249,9 +239,11 @@ public class GestureModeActivity extends Activity {
 	public void onResume() {
         Intent startIntent = new Intent(GestureModeActivity.this, ActivityControllerService.class);
         bindService(startIntent, sconnection, Context.BIND_AUTO_CREATE);
-        
-        Intent mediaIntent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
-        bindService(mediaIntent, mediaConnection, 0);
+
+		if(MediaPlayerService.isServiceRunning){
+			Intent mediaIntent = new Intent(GestureModeActivity.this, MediaPlayerService.class);
+			bindService(mediaIntent, mediaConnection, 0);
+		}
 	    //mShaker.resume();
 		super.onResume();
 	}

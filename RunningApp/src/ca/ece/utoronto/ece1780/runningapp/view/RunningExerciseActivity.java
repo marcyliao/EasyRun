@@ -391,6 +391,9 @@ public class RunningExerciseActivity extends Activity {
         if(MediaPlayerService.isServiceRunning){
         	bindService(mediaIntent, mediaConnection, 0);
         }
+        else {
+        	updateMusicUI();
+        }
 		
 		super.onResume();
 	}
