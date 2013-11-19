@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
+import ca.ece.utoronto.ece1780.runningapp.utility.weather.Weather.CurrentCondition;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;
@@ -19,6 +20,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	int circleIndex;
 	final String DEBUG_TAG = "TouchListener";
 	Context context;
+	long lastSingleClickTime;
 	
 	public OnGestureListener(Context context){
 		
@@ -229,7 +231,13 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 				oneFingerLongPress();
 			}
 			else{
-				oneFingerSingleClick();
+				if(primePointer.endTime - lastSingleClickTime < Pointer.TIME_BECHMARK){
+					oneFingerDoubleClick();
+				}
+				else{
+					lastSingleClickTime = primePointer.endTime;
+					oneFingerSingleClick();
+				}
 			}
 		}
 		// if the main movement is from X
@@ -245,7 +253,13 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 				oneFingerLongPress();
 			}
 			else{
-				oneFingerSingleClick();
+				if(primePointer.endTime - lastSingleClickTime < Pointer.TIME_BECHMARK){
+					oneFingerDoubleClick();
+				}
+				else{
+					lastSingleClickTime = primePointer.endTime;
+					oneFingerSingleClick();
+				}
 			}
 		}
 	}
@@ -311,6 +325,8 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 	public void oneFingerRight2Left(){}
 	
 	public void oneFingerSingleClick(){}
+	
+	public void oneFingerDoubleClick(){System.out.println("This is a double click");}
 	
 	public void oneFingerLongPress(){}
 	
@@ -384,6 +400,7 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		static final float DISTANCE_BENCHEMARK = 100f;
 		static final float CLOCK_BENCHMARK     = 300f;
 		static final long  LONGPRESS_BENCHEMARK = 800;
+		static final long  TIME_BECHMARK = 800;
 
 		//set some constant to represent invalid states
 		static final int INVALID_POINTER_ID = -1;
