@@ -107,12 +107,14 @@ public class GestureModeActivity extends Activity {
 				if(controllerService !=null) {
 					controllerService.reportActivity();
 				}
-				super.oneFingerSingleClick();
+				super.oneFingerTop2Bottom();
 			}
 
 			@Override
 			public void oneFingerSingleClick() {
-			
+
+				if(mediaPlayer != null)
+					mediaPlayer.pause();
 				super.oneFingerSingleClick();
 			}
 
