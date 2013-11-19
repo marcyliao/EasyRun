@@ -111,11 +111,11 @@ public class GestureModeActivity extends Activity {
 			}
 
 			@Override
-			public void oneFingerSingleClick() {
+			public void oneFingerDoubleClick() {
 
 				if(mediaPlayer != null)
 					mediaPlayer.pause();
-				super.oneFingerSingleClick();
+				super.oneFingerDoubleClick();
 			}
 
 			@Override
