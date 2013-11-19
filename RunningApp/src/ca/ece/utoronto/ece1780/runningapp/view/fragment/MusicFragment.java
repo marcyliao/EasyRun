@@ -9,18 +9,23 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
@@ -34,33 +39,107 @@ public class MusicFragment extends Fragment {
 	private MediaPlayerService mediaPlayer;
 	private TextView textViewNoSong;
 
+	private TextView textViewSongName;
+	private TextView musicCurrentTime;
+	private TextView musicDuration;
+	private SeekBar processBar;   
+	private Handler musicPlayerHandler;
+	
+
+	
 	private List<String> songPaths = new ArrayList<String>();
 	
-	private ServiceConnection mediaConnection = new ServiceConnection() {
-		@Override
-		public void onServiceDisconnected(ComponentName name) {
-			mediaPlayer = null;	
-		}
-		
-		@Override
-		public void onServiceConnected(ComponentName name, IBinder service) {
-			MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
-			mediaPlayer = mediaBinder.getMediaPlayerService();
-			updateMusicUI();
-		}
-	};
+	private ServiceConnection mediaConnection;
 	
 	private Button pauseButton;
 
 	public MusicFragment() {
 		
 	}
-
 	
+
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		
+		super.onActivityCreated(savedInstanceState);
+
+		musicPlayerHandler  = new Handler(){
+
+			@Override
+			public void handleMessage(Message msg) {
+				
+				
+				if(msg.what == MediaPlayerService.setMusicCurrentTime){
+					
+					Bundle data = msg.getData();
+					int progress = data.getInt("progress");
+					int minutes = progress/60000;
+					int seconds = (progress%60000)/1000;
+					musicCurrentTime.setText((minutes>9?"":"0")+ minutes + ":" + (seconds>9?"":"0")+ seconds);
+					processBar.setProgress(progress);
+				}
+				else if(msg.what == MediaPlayerService.setDuration){
+					
+					Bundle data = msg.getData();
+					int duration = data.getInt("duration");
+					int minutes = duration/60000;
+					int seconds = (duration%60000)/1000;
+					musicDuration.setText((minutes>9?"":"0")+ minutes + ":" + (seconds>9?"":"0")+ seconds);
+					processBar.setMax(duration);
+					String songName = data.getString("songName");
+					textViewSongName.setText(songName);
+				}
+			}
+		};
+		
+		mediaConnection = new ServiceConnection() {
+			
+			@Override
+			public void onServiceDisconnected(ComponentName name) {
+				mediaPlayer = null;	
+			}
+			
+			@Override
+			public void onServiceConnected(ComponentName name, IBinder service) {
+				MediaPlayerService.MediaBinder mediaBinder = (MediaPlayerService.MediaBinder) service; 
+				mediaPlayer = mediaBinder.getMediaPlayerService();
+				mediaBinder.setActivityHandler(musicPlayerHandler);
+				updateMusicUI();
+			}
+		};
+		
+	}
+
+
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_music, container, false);
+		textViewSongName = (TextView)rootView.findViewById(R.id.textViewSongName);
+		musicCurrentTime = (TextView)rootView.findViewById(R.id.textViewMusicCurrentTime);
+		musicDuration    = (TextView)rootView.findViewById(R.id.textViewMusicDuration);
+		processBar       = (SeekBar)rootView.findViewById(R.id.musicProcess);
+		
+		processBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
 			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+
+				if(fromUser == false)
+					return;
+		
+				mediaPlayer.playFrom(progress);
+			}
+		});
+
 	    prepareWidgets(rootView);  
 		return rootView;
 	}
@@ -235,8 +314,8 @@ public class MusicFragment extends Fragment {
 	    l.setOnItemClickListener(new OnItemClickListener(){
 
 			@Override
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
 				String path = mListAdapter.getItem(position);
 
 				if(mediaPlayer != null && mediaPlayer.isReady()) {

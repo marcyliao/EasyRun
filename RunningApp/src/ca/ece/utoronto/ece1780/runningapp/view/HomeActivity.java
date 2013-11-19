@@ -2,13 +2,6 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 
 import java.util.Locale;
 
-import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
-import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
-import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
-
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -24,6 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
+import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
+import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
+import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.TabListener, LocationListener {

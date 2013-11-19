@@ -15,12 +15,16 @@ import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Binder;
+import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
 import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
@@ -45,6 +49,13 @@ public class MediaPlayerService extends Service {
 	private int mediaIndex;
 	//tell whether the service is running or not for other services and activities
 	public static boolean isServiceRunning = false;
+	
+	public static int setMusicCurrentTime = 0x0001;
+	public static int setDuration = 0x0002;
+	
+	Handler activityHandler; 
+	
+	HandlerThread timeCaculator;
 	
 	String Tag = "MediaService_1";
 
@@ -224,6 +235,16 @@ public class MediaPlayerService extends Service {
 		mediaPlayer.reset();
 		try {
 			mediaPlayer.setDataSource(mediaPath);
+			if(!mediaList.get(mediaIndex).equals(mediaPath)){
+				
+				for(int i = 0; i < mediaList.size(); i++){
+					
+					if(mediaList.get(i).equals(mediaPath)){
+						mediaIndex = i;
+					}
+				}
+				
+			}
 			mediaPlayer.prepare();
 		} catch (Exception e) {
 			
@@ -385,6 +406,13 @@ public class MediaPlayerService extends Service {
 			
 			return MediaPlayerService.this;
 		}
+		
+		public void setActivityHandler(Handler handler){
+			
+			activityHandler = handler;
+			
+			System.out.println("activity handler is not null any more");
+		}
 
 	}//end of MediaBinder
 	
@@ -395,33 +423,70 @@ public class MediaPlayerService extends Service {
 			
 			mp.start();
 			
-			Thread timeCaculator = new Thread(){
-				
-				@Override
-				public void run() {
-					
-					int position = -1;
-					int duration = mediaPlayer.getDuration();
-					while( position < duration){
-						
-						try {
-							Thread.sleep(1000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						position = mediaPlayer.getCurrentPosition();
-					}
-							
-				}
-				
-				
-			};	
+			if(timeCaculator != null){
+				timeCaculator.killThread();
+			}
 			
+			timeCaculator = new HandlerThread();			
 			timeCaculator.start();
 		}
 		
 
 	}//end of PreparedListener
+	
+	private class HandlerThread extends Thread{
+
+		boolean live = true;
+		
+		@Override
+		public void run() {
+
+			int position = -1;
+			int duration = mediaPlayer.getDuration();
+
+			while (position < duration && live) {
+
+				if (activityHandler != null) {
+					Message mDuration = new Message();
+					mDuration.what = MediaPlayerService.setDuration;
+					MediaInformationProvider mip = new MediaInformationProvider();
+					String songName = mip.getTitle(mediaList.get(mediaIndex));
+
+					Bundle durationData = new Bundle();
+					durationData.putInt("duration", duration);
+					durationData.putString("songName", songName);
+					mDuration.setData(durationData);
+
+					activityHandler.sendMessage(mDuration);
+				}
+
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				position = mediaPlayer.getCurrentPosition();
+
+				if (activityHandler != null) {
+					Message msg = new Message();
+					msg.what = MediaPlayerService.setMusicCurrentTime;
+
+					Bundle data = new Bundle();
+					data.putInt("progress", position);
+					msg.setData(data);
+
+					activityHandler.sendMessage(msg);
+				}
+			}
+
+		}
+		
+		public void killThread(){
+			
+			live = false;
+		}
+		
+	}
 	
 	public class CompletionListener implements OnCompletionListener{
 
