@@ -51,8 +51,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true"
                 android:textSize="14sp"
-                android:textColor="#FFF"
-                android:text="TextView" />
+                android:textColor="#FFF" />
         </RelativeLayout>
 
         <RelativeLayout

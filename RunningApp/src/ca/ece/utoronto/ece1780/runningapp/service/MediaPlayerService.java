@@ -125,6 +125,12 @@ public class MediaPlayerService extends Service {
 		
 		isServiceRunning = false;
 		Log.d(Tag, "OnDestroy is called.");
+		
+		//fix a bug
+		if(timeCaculator != null){
+			timeCaculator.killThread();
+		}
+		
 		super.onDestroy();
 	}
 

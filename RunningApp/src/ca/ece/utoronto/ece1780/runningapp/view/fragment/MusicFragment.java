@@ -135,7 +135,9 @@ public class MusicFragment extends Fragment {
 
 				if(fromUser == false)
 					return;
-		
+				if(mediaPlayer == null || !mediaPlayer.isReady())
+					return;
+				
 				mediaPlayer.playFrom(progress);
 			}
 		});
