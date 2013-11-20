@@ -349,7 +349,13 @@ public class MusicFragment extends Fragment {
 
 			@Override
 			protected List<String> doInBackground(Object... params) {
-				List<String>  records = new MusicUtility().getAllMusicPath();
+				List<String>  records = new ArrayList<String>();
+
+				if (!MediaPlayerService.isServiceRunning || mediaPlayer == null)
+					records = new MusicUtility().getAllMusicPath();
+				else
+					records = mediaPlayer.getMediaList();
+				
 				return records;
 			}
 			
@@ -389,8 +395,10 @@ public class MusicFragment extends Fragment {
 			
 			MediaInformationProvider provider = new MediaInformationProvider();
 			
-			textViewSongName.setText(provider.getTitle(songPaths.get(position)));
-			textViewSongDesc.setText(provider.getArtist(songPaths.get(position)));
+			MediaInformationProvider.MediaInfo info = provider.getMediaInfo(songPaths.get(position));
+			
+			textViewSongName.setText(info.getTitle());
+			textViewSongDesc.setText(info.getArtist());
 			
 			return rowView;
 		}
