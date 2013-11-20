@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnGestureListener;
 
 public class GestureModeActivity extends Activity {
@@ -87,7 +89,7 @@ public class GestureModeActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_gesture_mode);
 		
-		getActionBar().hide();
+		// getActionBar().hide();
 		
 		// Keep the screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -113,8 +115,11 @@ public class GestureModeActivity extends Activity {
 			@Override
 			public void oneFingerDoubleClick() {
 
-				if(mediaPlayer != null)
+				if(mediaPlayer != null && mediaPlayer.isReady())
 					mediaPlayer.pause();
+				else {
+					startMusic();
+				}
 				super.oneFingerDoubleClick();
 			}
 
@@ -142,18 +147,6 @@ public class GestureModeActivity extends Activity {
 			}
 
 			@Override
-			public void oneFingerLongPress() {
-				if(mediaPlayer != null && mediaPlayer.isReady()){
-					mediaPlayer.pause();
-				}
-				else {
-					startMusic();
-				}
-					
-				super.twoFingersSingleClick();
-			}
-
-			@Override
 			public void twoFingersIncreaseDistance() {
 				
 				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -173,7 +166,7 @@ public class GestureModeActivity extends Activity {
 			public void oneFingerCounterClockCircleComplete() {
 
 				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
 				super.oneFingerCounterClockCircleComplete();
 			}
 
@@ -181,7 +174,7 @@ public class GestureModeActivity extends Activity {
 			public void oneFingerClockCircleComplete() {
 
 				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
 				super.oneFingerClockCircleComplete();
 			}
     	});
@@ -205,15 +198,30 @@ public class GestureModeActivity extends Activity {
 		return true;
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    // Users select other modes.
+		Intent i;
+	    switch (item.getItemId()) {
+	    case R.id.action_help:
+	    	i = new Intent(this, GestureHelpActivity.class);
+	        startActivityForResult(i,0);
+	        return true;
+	    default:
+	        return super.onOptionsItemSelected(item);
+	    }
+	}
+	
 	private RunningDataChangeListener getRecordChangeListener() {
 		return new RunningDataChangeListener(){
 
 			@Override
 			public void onDataChange(ActivityRecord currentRecord) {
+				
 				// When data is updated, update all the relevant UI 
 				// to show users the current activity record
-				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
-				
+				FormatProcessor fp = new FormatProcessor(GestureModeActivity.this);
+				((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(currentRecord.getDistance()));
 			}
 
 			@Override

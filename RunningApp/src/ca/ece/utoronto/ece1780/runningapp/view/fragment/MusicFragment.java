@@ -29,7 +29,6 @@ import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
 import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
-import ca.ece.utoronto.ece1780.runningapp.view.MediaFileDirectoryActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
 public class MusicFragment extends Fragment {
@@ -206,18 +205,6 @@ public class MusicFragment extends Fragment {
 			Intent intent = new Intent(getActivity(), MediaPlayerService.class);
 			getActivity().bindService(intent, mediaConnection, 0);
 		}
-	}
-
-
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	
-		if(resultCode == MediaFileDirectoryActivity.resultCode){
-			
-			String directoryPath = data.getExtras().getString("mediaDirectoryPath");
-			mediaPlayer.addMediaDirectory(directoryPath);
-		}
-		
 	}
 	
 	private void prepareWidgets(View rootView) {

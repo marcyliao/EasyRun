@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import android.graphics.Color;
 
@@ -50,7 +51,6 @@ public class ActivityRecordActivity extends Activity {
 		record = new ActivityRecordDAO(this).getRecord(id);
 		record.prepareToShow();
 		
-		
 		prepareWidgets();
 		prepareMap();
 		
@@ -59,10 +59,19 @@ public class ActivityRecordActivity extends Activity {
 	private void prepareWidgets() {
 		
 		// Prepare number data stuff
-		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",record.getAvgSpeed()));
-		((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(record.getTimeLength()/1000)));
-		((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(record.getCalories()));
-		((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(record.getDistance())/1000));
+
+		FormatProcessor fp = new FormatProcessor(this);
+		
+		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(record.getAvgSpeed()));
+		((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(record.getTimeLength()));
+		((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(record.getCalories()));
+		((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(record.getDistance()));
+
+		if(record.getNote() != null && !record.getNote().equals(""))
+			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
+		
+		// Set title of actionbar to the date of the activity
+		getActionBar().setTitle(fp.getDate(record.getTime()));
 		
 		// Prepare the mood image
 		ImageView imv = (ImageView)findViewById(R.id.imageViewMood);
@@ -78,16 +87,6 @@ public class ActivityRecordActivity extends Activity {
 		else if(record.getMood() == Mood.SAD) {
 			imv.setImageResource(R.drawable.icon_mood_sad);
 		}
-		
-		if(record.getNote() != null && !record.getNote().equals(""))
-			((TextView)findViewById(R.id.TextViewNote)).setText(record.getNote());
-		
-		// Set title of actionbar to the date of the activity
-		Date date = new Date(record.getTime());
-		SimpleDateFormat dateformatYYYYMMDD = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
-		String dateTitle = dateformatYYYYMMDD.format(date);
-		getActionBar().setTitle(dateTitle);
-			
 	}
 
 	@Override

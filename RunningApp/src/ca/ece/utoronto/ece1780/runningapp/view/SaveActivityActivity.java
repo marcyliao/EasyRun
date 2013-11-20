@@ -5,6 +5,7 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -71,11 +72,15 @@ public class SaveActivityActivity extends Activity  {
 		// Get the current activity record to save
 		ActivityRecord record = controllerService.getCurrentRecord();
 		
-		((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",record.getAvgSpeed()));
-		((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(record.getTimeLength()/1000)));
-		((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(record.getCalories()));
-		((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(record.getDistance())/1000));
-		
+		FormatProcessor fp = new FormatProcessor(this);
+        
+        ((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(record.getAvgSpeed()));
+        ((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(record.getTimeLength()));
+        ((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(record.getCalories()));
+        ((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(record.getDistance()));
+        
+        // Set title of actionbar to the date of the activity
+        getActionBar().setTitle(fp.getDate(record.getTime()));
 		// When the save button clicked
 		findViewById(R.id.buttonSave).setOnClickListener(new OnClickListener(){
 			

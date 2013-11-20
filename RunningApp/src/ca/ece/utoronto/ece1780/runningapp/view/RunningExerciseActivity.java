@@ -22,6 +22,7 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 public class RunningExerciseActivity extends Activity {
@@ -293,10 +294,12 @@ public class RunningExerciseActivity extends Activity {
 				
 				// When data is updated, update all the relevant UI 
 				// to show users the current activity record
-				((TextView)findViewById(R.id.TextViewTime)).setText(UtilityCaculator.getFormatStringFromDuration((int)(currentRecord.getTimeLength()/1000)));
-				((TextView)findViewById(R.id.TextViewDistance)).setText(String.format("%.2f",Double.valueOf(currentRecord.getDistance())/1000));
-				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(String.format("%.1f",currentRecord.getAvgSpeed()));
-				((TextView)findViewById(R.id.TextViewCalories)).setText(String.valueOf(currentRecord.getCalories()));
+				FormatProcessor fp = new FormatProcessor(RunningExerciseActivity.this);
+				
+				((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(currentRecord.getTimeLength()));
+				((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(currentRecord.getDistance()));
+				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(currentRecord.getAvgSpeed()));
+				((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(currentRecord.getCalories()));
 				
 				// If goal is set, update the progress bar
 				if(currentRecord.getGoal()!=0) {

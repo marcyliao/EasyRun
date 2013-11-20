@@ -1,2 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+   <item android:id="@+id/action_help"
+          android:icon="@drawable/icon_help"
+          android:title="@string/gesture"
+          android:showAsAction="always"  />
 </menu>

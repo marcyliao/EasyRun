@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import android.support.v4.app.Fragment;
@@ -130,19 +131,20 @@ public class ActivitiesFragment extends Fragment {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			LayoutInflater inflater = (LayoutInflater) context
-					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-			View rowView = inflater.inflate(R.layout.list_view_item_activity, parent, false);
-			
-			TextView textViewDistance = (TextView) rowView.findViewById(R.id.TextViewDistance);
-			TextView textViewTime = (TextView) rowView.findViewById(R.id.TextViewTime);
-			
-			textViewDistance.setText(String.format("%.2f", getRecords().get(position).getDistance()/1000));
-			
-			Date date = new Date(getRecords().get(position).getTime());
-			SimpleDateFormat dateformatYYYYMMDD = new SimpleDateFormat("dd/MM/yyyy HH:mm",Locale.US);
-			textViewTime.setText(dateformatYYYYMMDD.format(date));
-
-			return rowView;
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View rowView = inflater.inflate(R.layout.list_view_item_activity, parent, false);
+            
+            FormatProcessor fp = new FormatProcessor(rowView.getContext());
+            
+            TextView textViewDistance = (TextView) rowView.findViewById(R.id.TextViewDistance);
+            TextView textViewTime = (TextView) rowView.findViewById(R.id.TextViewTime);
+            
+            ActivityRecord record = getRecords().get(position);
+            
+            textViewDistance.setText(fp.getDistance(record.getDistance()));
+            textViewTime.setText(fp.getDate(record.getTime()));
+ 
+            return rowView;
 		}
 		
 		@Override
