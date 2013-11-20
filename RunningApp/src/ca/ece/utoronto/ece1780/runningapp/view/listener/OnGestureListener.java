@@ -14,12 +14,13 @@ import android.view.View;
 
 public abstract class OnGestureListener implements View.OnTouchListener {
 
-	List<Pointer> pointers;
-	List<Point> points;
+	Context context;
 	float clockIndex;
 	int circleIndex;
+	boolean isSingleFingerCircleCompleted;
+	List<Point> points;
+	List<Pointer> pointers;
 	final String DEBUG_TAG = "TouchListener";
-	Context context;
 	long lastSingleClickTime;
 	
 	public OnGestureListener(Context context){
@@ -108,12 +109,14 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 					
 					circleIndex = points.size()-1;
 					clockIndex = 0;
+					isSingleFingerCircleCompleted = true;
 					oneFingerCounterClockCircleComplete();
 				}
 				else if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK && Point.nearBy(points.get(circleIndex), point)){
 					
 					circleIndex = points.size()-1;
 					clockIndex = 0;
+					isSingleFingerCircleCompleted = true;
 					oneFingerClockCircleComplete();
 					
 				}
@@ -140,6 +143,11 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		}
 		
 		case MotionEvent.ACTION_UP: {
+			
+			if(isSingleFingerCircleCompleted){
+				isSingleFingerCircleCompleted = false;
+				return true;
+			}
 			
 			//get the pointer id for the last pointer
 			int pointerId = MotionEventCompat.getPointerId(event, 0);
@@ -212,13 +220,6 @@ public abstract class OnGestureListener implements View.OnTouchListener {
 		float primeDistanceX = primePointer.endX - primePointer.startX;
 		float primeDistanceY = primePointer.endY - primePointer.startY;
 	
-//		if(clockIndex < 0 - Pointer.CLOCK_BENCHMARK){
-//			singleFingerClockCircle();
-//		}
-//		
-//		else if(clockIndex > Pointer.CLOCK_BENCHMARK){
-//			singleFingerCounterClockCircle();
-//		}
 		if( UtilityCaculator.square(primeDistanceX) < UtilityCaculator.square(primeDistanceY)){
 			
 			if(primeDistanceY > Pointer.Y_TRAVEL_BENCHEMARK){
