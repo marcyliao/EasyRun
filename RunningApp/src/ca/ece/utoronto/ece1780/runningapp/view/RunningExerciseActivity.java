@@ -103,10 +103,6 @@ public class RunningExerciseActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		
-
-		TestNu.numActivity++;
-		Log.v("numActivity", TestNu.numActivity+"");
-		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_running_exercise);
 		
@@ -387,8 +383,6 @@ public class RunningExerciseActivity extends Activity {
 
 	@Override
 	public void onDestroy() {
-		TestNu.numActivity--;
-		Log.v("numActivity", TestNu.numActivity+"");
 		super.onDestroy();
 	}
 	

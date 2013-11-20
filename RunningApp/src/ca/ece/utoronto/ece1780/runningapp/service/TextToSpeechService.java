@@ -49,13 +49,14 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
     }
     
     public static void start(Context context){
+
     	if(isServiceRunning != true) {
 	    	boolean userSetting = new UserSetting(context).isSpeechEnabled();
 	    	
 	    	if(userSetting) {
 	    		Intent i = new Intent(context,TextToSpeechService.class);
 	    		context.startService(i);
-		    	isServiceRunning = true;
+	    		isServiceRunning = true;
 	    	}
     	}
     }
@@ -78,8 +79,6 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
             return;
     	}
     	
-    	Log.d("speak","init");
-
     	boolean available = false;
         if (status == TextToSpeech.SUCCESS) {
             int result = mTts.setLanguage(Locale.US);
@@ -129,13 +128,14 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
 
     @Override
     public void onDestroy() {
+    	isServiceRunning = false;
+    	
         if (mTts != null) {
             mTts.stop();
             mTts.shutdown();
             mTts = null;
         }
 
-    	isServiceRunning = false;
     	Log.d("speak","stop");
         super.onDestroy();
     }

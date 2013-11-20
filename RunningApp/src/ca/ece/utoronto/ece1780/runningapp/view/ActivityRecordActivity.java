@@ -54,8 +54,6 @@ public class ActivityRecordActivity extends Activity {
 		prepareWidgets();
 		prepareMap();
 		
-		TestNu.numActivity++;
-		Log.v("numActivity", TestNu.numActivity+"");
 	}
 
 	private void prepareWidgets() {
@@ -95,8 +93,6 @@ public class ActivityRecordActivity extends Activity {
 	@Override
 	protected void onDestroy() {
 		// TODO Auto-generated method stub
-		TestNu.numActivity--;
-		Log.v("numActivity", TestNu.numActivity+"");
 		super.onDestroy();
 	}
 

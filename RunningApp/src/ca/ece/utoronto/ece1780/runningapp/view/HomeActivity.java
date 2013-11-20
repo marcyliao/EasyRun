@@ -32,9 +32,9 @@ public class HomeActivity extends FragmentActivity implements
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-
-		TestNu.numActivity++;
-		Log.v("numActivity", TestNu.numActivity+"");
+		
+		// start the tts service
+		TextToSpeechService.start(this);
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_home);
@@ -80,9 +80,6 @@ public class HomeActivity extends FragmentActivity implements
 					.setTabListener(this));
 		}
 		
-		// start the tts service
-		TextToSpeechService.start(this);
-		
 	}
 
 	@Override
@@ -90,11 +87,10 @@ public class HomeActivity extends FragmentActivity implements
 		// TODO Auto-generated method stub
 		super.onDestroy();
 
-		if(TextToSpeechService.isServiceRunning && !ActivityControllerService.isServiceRunning)
+		if(TextToSpeechService.isServiceRunning && !ActivityControllerService.isServiceRunning) {
 			TextToSpeechService.stop(this);
+		}
 		
-		TestNu.numActivity--;
-		Log.v("numActivity", TestNu.numActivity+"");
 	}
 
 	@Override

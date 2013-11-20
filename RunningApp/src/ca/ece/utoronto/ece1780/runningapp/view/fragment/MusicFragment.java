@@ -17,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -302,7 +301,7 @@ public class MusicFragment extends Fragment {
 		});
 		
 		ListView l = (ListView) rootView.findViewById(R.id.listViewSongs);
-		textViewNoSong = (TextView) rootView.findViewById(R.id.textViewNoSong);
+		textViewNoSong = (TextView) rootView.findViewById(R.id.textViewMusicListMessage);
 //		Button addSongs = (Button) rootView.findViewById(R.id.ButtonAddSongs);
 //		addSongs.setOnClickListener(new OnClickListener() {
 //			
@@ -335,7 +334,7 @@ public class MusicFragment extends Fragment {
 
 
 	public void updateList() {
-		
+		textViewNoSong.setText("Loading...");
 		new AsyncTask<Object,Object,List<String>>(){
 
 			@Override
@@ -369,8 +368,10 @@ public class MusicFragment extends Fragment {
 		public void notifyDataSetChanged() {
 			super.notifyDataSetChanged();
 
-			if(songPaths == null || songPaths.size() == 0)
+			if(songPaths == null || songPaths.size() == 0) {
 				textViewNoSong.setVisibility(View.VISIBLE);
+				textViewNoSong.setText("No Song found..");
+			}
 			else
 				textViewNoSong.setVisibility(View.INVISIBLE);
 		}
@@ -378,10 +379,6 @@ public class MusicFragment extends Fragment {
 		public SongArrayAdapter(Context context) {
 			super();
 			this.context = context;
-			if(songPaths == null || songPaths.size() == 0)
-				textViewNoSong.setVisibility(View.VISIBLE);
-			else
-				textViewNoSong.setVisibility(View.INVISIBLE);
 		}
 
 		@Override
