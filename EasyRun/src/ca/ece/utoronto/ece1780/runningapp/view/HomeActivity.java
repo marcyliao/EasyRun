@@ -5,7 +5,6 @@ import java.util.Locale;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
-import ca.ece.utoronto.ece1780.runningapp.view.fragment.MusicFragment;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 import android.app.ActionBar;
@@ -19,7 +18,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -85,9 +83,9 @@ public class HomeActivity extends FragmentActivity implements
 
 	@Override
 	protected void onDestroy() {
-		// TODO Auto-generated method stub
 		super.onDestroy();
 
+		// If controllerService is not running, tts should be stopped
 		if(TextToSpeechService.isServiceRunning && !ActivityControllerService.isServiceRunning)
 			TextToSpeechService.stop(this);
 	}

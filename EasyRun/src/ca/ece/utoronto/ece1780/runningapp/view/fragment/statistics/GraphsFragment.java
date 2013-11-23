@@ -51,8 +51,8 @@ public class GraphsFragment extends Fragment  {
 		mRenderer.setYAxisMin(0,0);
 		mRenderer.setYAxisMin(0,1);
 		
-		mRenderer.setYTitle("distance (m)",0);
-		mRenderer.setYTitle("speed (km/h)",1);
+		mRenderer.setYTitle("distance"+" ("+"m"+")",0);
+		mRenderer.setYTitle("speed"+" ("+"km/h"+")",1);
 		
 		mRenderer.setYLabelsColor(1, Color.YELLOW);
 		mRenderer.setYLabelsColor(0, Color.GREEN);
@@ -64,10 +64,10 @@ public class GraphsFragment extends Fragment  {
 		
 		mRenderer.setYAxisMax(30,1);
 		
-		mRenderer.setXTitle("time (min)");
+		mRenderer.setXTitle("time" + " (" +"min" +")");
         // create a new series of data
-		XYSeries seriesDistance = new XYSeries("Distance VS Time",0);
-		XYSeries seriesSpeed = new XYSeries("Speed VS Time",1);
+		XYSeries seriesDistance = new XYSeries(getString(R.string._distance_vs_time),0);
+		XYSeries seriesSpeed = new XYSeries(getString(R.string._speed_vs_time),1);
 		
 		
 		double distance = 0;

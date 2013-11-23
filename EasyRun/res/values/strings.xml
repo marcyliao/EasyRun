@@ -117,7 +117,7 @@
     <string name="_avg_speed">AVG Speed</string>
     <string name="_avg_pace">AVG Pace</string>
     <string name="_calories_speed">Calories Speed</string>
-    <string name="_speed_vs_distance">Speed Vs Distance</string>
+    <string name="_speed_vs_time">Speed Vs Time</string>
     <string name="_distance_vs_time">Distance Vs Time</string>
     <string name="_graphs">Graphs</string>
 
