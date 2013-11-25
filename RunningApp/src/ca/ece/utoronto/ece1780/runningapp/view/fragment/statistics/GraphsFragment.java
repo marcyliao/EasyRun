@@ -95,7 +95,9 @@ public class GraphsFragment extends Fragment  {
 			}
 		}
 
-		seriesDistance.add(Float.valueOf(record.getLocationPointsTime().get(size-1).getTime()-record .getTime())/60000, distance);
+		if(record.getLocationPointsTime().size()>0){
+			seriesDistance.add(Float.valueOf(record.getLocationPointsTime().get(size-1).getTime()-record .getTime())/60000, distance);
+		}
 		
 		mDataset.clear();
 		mDataset.addSeries(seriesDistance);

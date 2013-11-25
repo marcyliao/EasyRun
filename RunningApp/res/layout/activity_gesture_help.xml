@@ -27,7 +27,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Up:" 
+	            android:text="@string/swipe_up_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -35,7 +35,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Resume/Pause Activity" 
+	            android:text="@string/resume_pause_activity" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -60,7 +60,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Down:" 
+	            android:text="@string/swipe_down_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -68,7 +68,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Report" 
+	            android:text="@string/report" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -92,7 +92,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Double Tab:" 
+	            android:text="@string/double_tab_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -100,7 +100,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Start/Resume/Pause Music" 
+	            android:text="@string/start_resume_pause_music" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -124,7 +124,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Left:" 
+	            android:text="@string/swipe_left_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -132,7 +132,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Play Previous Song" 
+	            android:text="@string/play_previous_song" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -157,7 +157,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Right:" 
+	            android:text="@string/swipe_right_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -165,7 +165,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Play Next Song" 
+	            android:text="@string/play_next_song" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -190,7 +190,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Clockwise:" 
+	            android:text="@string/swipe_clockwise_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -198,7 +198,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Volume up" 
+	            android:text="Volume Up" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>
@@ -222,7 +222,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Swipe Anticlockwise:" 
+	            android:text="@string/swipe_anticlockwise_" 
 	            android:layout_marginTop="5dp"
 	            android:textColor="#FFF"
 	            android:textSize="18sp"/>
@@ -230,7 +230,7 @@
 	        <TextView
 	            android:layout_width="wrap_content"
 	            android:layout_height="wrap_content"
-	            android:text="Volume down" 
+	            android:text="@string/volume_down" 
 	            android:textColor="#FFF"
 	            android:textSize="15sp"/>
         </LinearLayout>

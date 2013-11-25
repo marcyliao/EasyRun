@@ -116,5 +116,18 @@
     <string name="_distance_vs_time">Distance Vs Time</string>
     <string name="_graphs">Graphs</string>
     <string name="title_activity_gesture_help">Gestures</string>
+    <string name="swipe_up_">Swipe Up:</string>
+    <string name="resume_pause_activity">Resume/Pause Activity</string>
+    <string name="swipe_down_">Swipe Down:</string>
+    <string name="report">Report</string>
+    <string name="double_tab_">Double Tab:</string>
+    <string name="start_resume_pause_music">Start/Resume/Pause Music</string>
+    <string name="swipe_left_">Swipe Left:</string>
+    <string name="play_previous_song">Play Previous Song</string>
+    <string name="swipe_right_">Swipe Right:</string>
+    <string name="play_next_song">Play Next Song</string>
+    <string name="swipe_clockwise_">Swipe Clockwise:</string>
+    <string name="swipe_anticlockwise_">Swipe Anticlockwise:</string>
+    <string name="volume_down">Volume Down</string>
 
 </resources>
