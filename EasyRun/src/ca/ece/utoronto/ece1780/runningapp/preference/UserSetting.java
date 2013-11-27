@@ -36,4 +36,10 @@ public class UserSetting {
 		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
 		return sharedPref.getBoolean(context.getString(R.string.pref_key_enable_speech_report), true);
 	}
+	
+	public void setSpeechEnabled(boolean enable){
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		sharedPref.edit().putBoolean(context.getString(R.string.pref_key_enable_speech_report), enable);
+	}
 }
+

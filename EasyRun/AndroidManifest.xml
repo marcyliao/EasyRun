@@ -101,6 +101,15 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        
+        
+        <activity
+            android:name="ca.ece.utoronto.ece1780.runningapp.view.GestureHelpActivity"
+            android:label="@string/title_activity_gesture_help" 
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

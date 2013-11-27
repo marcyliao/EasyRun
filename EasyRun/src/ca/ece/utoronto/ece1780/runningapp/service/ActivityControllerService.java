@@ -73,7 +73,7 @@ public class ActivityControllerService extends Service implements LocationListen
 	
     @Override  
     public int onStartCommand(Intent intent, int flags, int startId) { 
-    	Log.d("control_service","onStartCommand");
+    	Log.d("control_service","logcs onStartCommand");
     	
     	String MSG = null;
     	if(intent != null)
@@ -100,13 +100,14 @@ public class ActivityControllerService extends Service implements LocationListen
 	
 	@Override  
 	public void onCreate() { 
-    	Log.d("control_service","onCreate");
+    	Log.d("control_service","logcs onCreate");
 		activityGoing = false;
 	}
 	
 	@Override
 	public void onDestroy() {
-    	Log.d("control_service","destory");
+    	Log.d("control_service","logcs destory");
+    	isServiceRunning = false;
     	// TextToSpeechService.stop(getApplicationContext());
 		super.onDestroy();
 	}
@@ -125,7 +126,7 @@ public class ActivityControllerService extends Service implements LocationListen
 
 	// Start activity
 	public void startActivity(float goal){	
-    	Log.d("control_service","start activity");
+    	Log.d("control_service","logcs start activity");
 		
 		// Create a new record
 		currentRecord = new ActivityRecord();
@@ -155,7 +156,7 @@ public class ActivityControllerService extends Service implements LocationListen
 	}
 	
 	public void stopActivity() {
-    	Log.d("control_service","stop activity");
+    	Log.d("control_service","logcs stop activity");
 
  		TextToSpeechService.speak(getString(R.string.activity_stopped), this);
  		
@@ -171,14 +172,14 @@ public class ActivityControllerService extends Service implements LocationListen
 	}
 	
 	public void pauseActivity() {
-    	Log.d("control_service","pause activity");
+    	Log.d("control_service","logcs pause activity");
     	
 		activityPaused = true;
 		TextToSpeechService.speak(getString(R.string.activity_paused), this);
 	}
 	
 	public void resumeActivity() {
-    	Log.d("control_service","resume activity");
+    	Log.d("control_service","logcs resume activity");
     	
 		activityPaused = false;
 		lastUpdateTime = new Date();
@@ -306,7 +307,7 @@ public class ActivityControllerService extends Service implements LocationListen
 		@Override
 		protected void onPostExecute(Object result) {
 
-	    	Log.d("control_service","end of timmer");
+	    	Log.d("control_service","logcs end of timmer");
             stopSelf();
 			super.onPostExecute(result);
 		}
@@ -315,13 +316,13 @@ public class ActivityControllerService extends Service implements LocationListen
 		
 		@Override
 		protected void onPreExecute() {
-	    	Log.d("control_service","start of timmer");
+	    	Log.d("control_service","logcs start of timmer");
 			finish = false;
 			super.onPreExecute();
 		}
 
 		public void finish() {
-	    	Log.d("control_service","finish timmer");
+	    	Log.d("control_service","logcs finish timmer");
 			finish = true;
 		}
 		
@@ -344,7 +345,8 @@ public class ActivityControllerService extends Service implements LocationListen
                     Thread.sleep(MIN_TIME_INTERVAL_FOR_UPDATE);
                     publishProgress();
                 } catch (Exception e) {
-                	Log.e("runners","runners-" + e.getMessage());
+                	Log.e("runners","logcs runners-" + e.getMessage());
+                	break;
                 };
             }
             

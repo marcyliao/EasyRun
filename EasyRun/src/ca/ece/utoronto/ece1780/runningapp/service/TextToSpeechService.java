@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
+import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
@@ -99,8 +100,11 @@ public class TextToSpeechService extends Service implements TextToSpeech.OnInitL
             }
         }
         
-        if(!available)
+        if(!available){
+        	Toast.makeText(this, "Speech report is not supported. Please install Google Text-to-Speech Engine", Toast.LENGTH_LONG).show();
+        	new UserSetting(this).setSpeechEnabled(false);
             stopSelf();
+        }
     }
     
     @Override
