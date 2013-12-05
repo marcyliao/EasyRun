@@ -26,8 +26,8 @@ import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.data.Song;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
-import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
 import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
@@ -45,7 +45,7 @@ public class MusicFragment extends Fragment {
 	
 
 	
-	private List<String> songPaths = new ArrayList<String>();
+	private List<Song> songs = new ArrayList<Song>();
 	
 	private ServiceConnection mediaConnection;
 	
@@ -65,7 +65,6 @@ public class MusicFragment extends Fragment {
 
 			@Override
 			public void handleMessage(Message msg) {
-				
 				
 				if(msg.what == MediaPlayerService.setMusicCurrentTime){
 					
@@ -146,7 +145,7 @@ public class MusicFragment extends Fragment {
 
 	private void startMusicService() {
 		
-		if(songPaths==null || songPaths.isEmpty()) {
+		if(songs==null || songs.isEmpty()) {
 			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -166,7 +165,7 @@ public class MusicFragment extends Fragment {
 	}
 
 	private void startMusicService(String path) {
-		if(songPaths==null || songPaths.isEmpty()) {
+		if(songs==null || songs.isEmpty()) {
 			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
 			return;
 		}
@@ -304,7 +303,7 @@ public class MusicFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-				String path = mListAdapter.getItem(position);
+				String path = mListAdapter.getItem(position).getPath();
 
 				if(mediaPlayer != null && mediaPlayer.isReady()) {
 					mediaPlayer.play(path);
@@ -322,26 +321,21 @@ public class MusicFragment extends Fragment {
 
 	public void updateList() {
 		textViewNoSong.setText("Loading...");
-		new AsyncTask<Object,Object,List<String>>(){
+		new AsyncTask<Object,Object,List<Song>>(){
 
 			@Override
-			protected void onPostExecute(List<String> result) {
+			protected void onPostExecute(List<Song> result) {
 				if(mListAdapter != null) {
-					songPaths = result;
+					songs = result;
 					mListAdapter.notifyDataSetChanged();
 				}
 				super.onPostExecute(result);
 			}
 
 			@Override
-			protected List<String> doInBackground(Object... params) {
-				List<String>  records = new ArrayList<String>();
-
-				if (!MediaPlayerService.isServiceRunning || mediaPlayer == null)
-					records = new MusicUtility().getAllMusicPath();
-				else
-					records = mediaPlayer.getMediaList();
-				
+			protected List<Song> doInBackground(Object... params) {
+				List<Song>  records = new ArrayList<Song>();
+				records = new MusicUtility(getActivity()).getAllSongs();
 				return records;
 			}
 			
@@ -355,7 +349,7 @@ public class MusicFragment extends Fragment {
 		public void notifyDataSetChanged() {
 			super.notifyDataSetChanged();
 
-			if(songPaths == null || songPaths.size() == 0) {
+			if(songs == null || songs.size() == 0) {
 				textViewNoSong.setVisibility(View.VISIBLE);
 				textViewNoSong.setText("No Song found..");
 			}
@@ -377,12 +371,8 @@ public class MusicFragment extends Fragment {
 			TextView textViewSongName = (TextView) rowView.findViewById(R.id.TextViewSongName);
 			TextView textViewSongDesc = (TextView) rowView.findViewById(R.id.TextViewSongDesc);
 			
-			MediaInformationProvider provider = new MediaInformationProvider();
-			
-			MediaInformationProvider.MediaInfo info = provider.getMediaInfo(songPaths.get(position));
-			
-			textViewSongName.setText(info.getTitle());
-			textViewSongDesc.setText(info.getArtist());
+			textViewSongName.setText(songs.get(position).getTitle());
+			textViewSongDesc.setText(songs.get(position).getArtist());
 			
 			return rowView;
 		}
@@ -395,8 +385,8 @@ public class MusicFragment extends Fragment {
 		}
 
 		@Override
-		public String getItem(int position) {
-			return songPaths.get(position);
+		public Song getItem(int position) {
+			return songs.get(position);
 		}
 
 		@Override
@@ -404,8 +394,8 @@ public class MusicFragment extends Fragment {
 			return position;
 		}
 
-		public List<String> getSongPaths() {
-			return songPaths;
+		public List<Song> getSongPaths() {
+			return songs;
 		}
 	}
 }

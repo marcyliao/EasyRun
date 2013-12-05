@@ -1,59 +1,45 @@
 package ca.ece.utoronto.ece1780.runningapp.utility;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.os.Environment;
+import android.content.Context;
+import android.database.Cursor;
+import android.provider.MediaStore;
+import ca.ece.utoronto.ece1780.runningapp.data.Song;
+
 
 public class MusicUtility {
-
-	private List<String> mediaList = new ArrayList<String>();
 	
-	public MusicUtility() {
-		setMediaDirectory();
+	private Context context;
+	
+	public MusicUtility(Context context) {
+		this.context = context;
 	}
 	
-	//the default directory of music is /music of the external storage directory.
-	public boolean setMediaDirectory(){
-		File mediaDirectory = new File(Environment.getExternalStorageDirectory(),"/Music");
-		return setMediaDirectory(mediaDirectory);
-	}
-	
-	public boolean setMediaDirectory(File mediaDirectory){
-		mediaList.clear();
-		return addMediaDirectory(mediaDirectory.getAbsolutePath());
-	}
-	
-	public boolean addMediaDirectory(String directoryPath){
+	public List<Song> getAllSongs(){
+		String[] proj = { MediaStore.Audio.Media._ID,
+				MediaStore.Audio.Media.DATA,
+				MediaStore.Audio.Media.DISPLAY_NAME,
+				MediaStore.Audio.Media.ARTIST,
+				MediaStore.Video.Media.SIZE };
 		
-		File mediaDirectory = new File(directoryPath);
+		Cursor musiccursor = context.getContentResolver().query(
+				MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, proj,
+				 MediaStore.Audio.Media.IS_MUSIC + " != 0", null, null);
 		
-		//if meidaDirectory is not a directory 
-		if(!mediaDirectory.isDirectory())
-			return false;
-
-		//add the absolutePath of all the files end with mp3 and wma under the mediaDirectory into the mediaList		
-		for(File mediaFile : mediaDirectory.listFiles()){
+		ArrayList<Song> songs = new ArrayList<Song>();
+		
+		while (musiccursor.moveToNext()) {
+			Song song = new Song();
+			song.setPath(musiccursor.getString(1));
+			song.setTitle(musiccursor.getString(2));
+			song.setArtist(musiccursor.getString(3));
 			
-			if(mediaFile.isDirectory()){
-				
-				setMediaDirectory(mediaFile);
-				
-			}else if(mediaFile.toString().endsWith(".mp3") || mediaFile.toString().endsWith("wma")){
-					
-				mediaList.add(mediaFile.getAbsolutePath());
-			}
+			songs.add(song);
 		}
-		//check whether mediaList is empty or not
-		if (mediaList.size() == 0)
-			return false;
-		else{
-			return true;
-		}
-	}
-	
-	public List<String> getAllMusicPath() {
-		return mediaList;
+		musiccursor.close();
+		
+		return songs;
 	}
 }

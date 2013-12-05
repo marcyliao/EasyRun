@@ -1,7 +1,5 @@
 package ca.ece.utoronto.ece1780.runningapp.service;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Notification;
@@ -10,13 +8,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.media.MediaMetadataRetriever;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnCompletionListener;
 import android.media.MediaPlayer.OnPreparedListener;
 import android.os.Binder;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
@@ -24,7 +20,8 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.widget.Toast;
-import ca.ece.utoronto.ece1780.runningapp.utility.MediaInformationProvider;
+import ca.ece.utoronto.ece1780.runningapp.data.Song;
+import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
 import ca.ece.utoronto.ece1780.runningapp.view.HomeActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechCompleteListener;
@@ -44,7 +41,7 @@ public class MediaPlayerService extends Service {
 	//sign for whether the media player is paused by auto action or by user
 	private boolean isAutoPaused;
 	//mediaList is used to store all the media files paths 
-	private List<String> mediaList;
+	private List<Song> mediaList;
 	//mediaIndex is used to indicate which song is play on the array list now
 	private int mediaIndex;
 	//tell whether the service is running or not for other services and activities
@@ -65,10 +62,14 @@ public class MediaPlayerService extends Service {
 		super.onCreate();
 		this.context = this.getApplicationContext();
 		mediaBinder = new MediaBinder();
-		mediaPlayer = new MediaPlayer();
-		mediaList = new ArrayList<String>();
 		mediaBinder = new MediaBinder();
-		setMediaDirectory();
+
+		mediaPlayer = new MediaPlayer();
+		
+		mediaList = new MusicUtility(this).getAllSongs();
+		//check whether mediaList is empty or not
+		if (mediaList.size() != 0)
+			mediaIndex = 0;
 		
 		TelephonyManager phoneManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
 		phoneManager.listen(new MediaPhoneStateListener(), PhoneStateListener.LISTEN_CALL_STATE);
@@ -147,17 +148,13 @@ public class MediaPlayerService extends Service {
 		mediaList.clear();
 	}
 	
-	public List<String> getMediaList(){
+	public List<Song> getMediaList(){
 		
 		return mediaList;
 	}
 	
 	public String getArtist(int index){
-		
-		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(mediaList.get(index));
-		String artist = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST);
-		
+		String artist = mediaList.get(index).getArtist();
 		return artist;	
 	}
 	
@@ -168,9 +165,7 @@ public class MediaPlayerService extends Service {
 	
 	public String getSongName(int index){
 		
-		MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-		mmr.setDataSource(mediaList.get(index));
-		String songName = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE);
+		String songName = mediaList.get(index).getTitle();
 		
 		return songName;
 	}
@@ -180,49 +175,7 @@ public class MediaPlayerService extends Service {
 		return getSongName(mediaIndex);
 	}
 
-	public boolean addMediaDirectory(String directoryPath){
-		
-		File mediaDirectory = new File(directoryPath);
-		
-		//if meidaDirectory is not a directory 
-		if(!mediaDirectory.isDirectory())
-			return false;
 
-		//add the absolutePath of all the files end with mp3 and wma under the mediaDirectory into the mediaList		
-		for(File mediaFile : mediaDirectory.listFiles()){
-			
-			if(mediaFile.isDirectory()){
-				
-				setMediaDirectory(mediaFile);
-				
-			}else if(mediaFile.toString().endsWith(".mp3") || mediaFile.toString().endsWith("wma")){
-					
-				mediaList.add(mediaFile.getAbsolutePath());
-			}
-		}
-		//check whether mediaList is empty or not
-		if (mediaList.size() == 0)
-			return false;
-		else{
-			mediaIndex = 0;
-			return true;
-		}
-		
-	}
-	
-	//the default directory of music is /music of the external storage directory.
-	public boolean setMediaDirectory(){
-		
-		File mediaDirectory = new File(Environment.getExternalStorageDirectory(),"/Music");
-
-		return setMediaDirectory(mediaDirectory);
-	}
-	
-	public boolean setMediaDirectory(File mediaDirectory){
-
-			mediaList.clear();
-			return addMediaDirectory(mediaDirectory.getAbsolutePath());
-	}
 	
 	//return how many songs are in the media list	
 	public int getMediaAmount(){
@@ -266,7 +219,7 @@ public class MediaPlayerService extends Service {
 	//begin to play the song which mdianIndex is pointed
 	public void play(int mediaIndex){
 		
-		String mediaPath = mediaList.get(mediaIndex);
+		String mediaPath = mediaList.get(mediaIndex).getPath();
 		this.play(mediaPath);
 	}
 	
@@ -455,8 +408,7 @@ public class MediaPlayerService extends Service {
 				if (activityHandler != null) {
 					Message mDuration = new Message();
 					mDuration.what = MediaPlayerService.setDuration;
-					MediaInformationProvider mip = new MediaInformationProvider();
-					String songName = mip.getTitle(mediaList.get(mediaIndex));
+					String songName = mediaList.get(mediaIndex).getTitle();
 
 					Bundle durationData = new Bundle();
 					durationData.putInt("duration", duration);
