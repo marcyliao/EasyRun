@@ -186,6 +186,21 @@ public class RunningExerciseActivity extends Activity {
 					((ImageButton)v).setImageResource(R.drawable.icon_unlock);
 			}
 		});
+		
+		// when click the panel, report the data by speech
+		findViewById(R.id.data_panel).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				if(screenLock) {
+					Toast.makeText(RunningExerciseActivity.this, R.string.screen_is_locked, Toast.LENGTH_SHORT).show();
+					return;
+				}
+				
+				if(controllerService != null && controllerService.isActivityGoing())
+					controllerService.reportActivity();
+			}
+		});
 
 		// if the controllerService is not running, start a new running activity
 		if(!ActivityControllerService.isServiceRunning) {
@@ -316,7 +331,6 @@ public class RunningExerciseActivity extends Activity {
 
 			@Override
 			public void onGoalAchieved() {
-				Toast.makeText(RunningExerciseActivity.this, R.string.target_achieved, Toast.LENGTH_SHORT).show();
 			}
 		};
 	}

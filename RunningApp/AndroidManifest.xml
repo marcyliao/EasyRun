@@ -52,6 +52,7 @@
         <activity
             android:name="ca.ece.utoronto.ece1780.runningapp.view.GestureModeActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/gesture_mode" 
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>

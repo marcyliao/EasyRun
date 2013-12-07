@@ -18,7 +18,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.data.Song;
 import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
@@ -29,7 +28,7 @@ import ca.ece.utoronto.ece1780.runningapp.view.listener.OnSpeechListener;
 
 public class MediaPlayerService extends Service {
 	
-	public static final String PATH = "path";
+	public static final String MEDIA_INDEX = "music index";
 	//used to get the system services such as AudioManager.
 	Context context;
 	//used to communicate with activity
@@ -94,7 +93,6 @@ public class MediaPlayerService extends Service {
 			}
 		});
 		
-		Log.d(Tag, "OnCreate is called.");
 	}
 
 	
@@ -110,14 +108,13 @@ public class MediaPlayerService extends Service {
         startForeground(234, notification);
         
         if(this.isReady()){
-        	String path = intent.getStringExtra(PATH);
-        	if(path != null)
-        		this.play(path);
+        	int index = intent.getIntExtra(MEDIA_INDEX,-1);
+        	if(index != -1)
+        		this.play(index);
         	else
         		this.play();
         }
 
-        Log.d(Tag, "OnStartCommand is called.");
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -125,7 +122,6 @@ public class MediaPlayerService extends Service {
 	public void onDestroy() {
 		
 		isServiceRunning = false;
-		Log.d(Tag, "OnDestroy is called.");
 		
 		//fix a bug
 		if(timeCaculator != null){
@@ -206,8 +202,6 @@ public class MediaPlayerService extends Service {
 			}
 			mediaPlayer.prepare();
 		} catch (Exception e) {
-			
-			Log.d("Multi_Media", "Exception in MediaPlayer.Play");
 			e.printStackTrace();
 		}
 		mediaPlayer.setOnPreparedListener(new PreparedListener());
@@ -219,6 +213,7 @@ public class MediaPlayerService extends Service {
 	//begin to play the song which mdianIndex is pointed
 	public void play(int mediaIndex){
 		
+		this.mediaIndex = mediaIndex;
 		String mediaPath = mediaList.get(mediaIndex).getPath();
 		this.play(mediaPath);
 	}
@@ -369,8 +364,6 @@ public class MediaPlayerService extends Service {
 		public void setActivityHandler(Handler handler){
 			
 			activityHandler = handler;
-			
-			System.out.println("activity handler is not null any more");
 		}
 
 	}//end of MediaBinder

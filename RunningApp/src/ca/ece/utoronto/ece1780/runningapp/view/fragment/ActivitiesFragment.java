@@ -1,10 +1,7 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
@@ -15,7 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,18 +80,13 @@ public class ActivitiesFragment extends Fragment {
 					records = result;
 					mListAdapter.notifyDataSetChanged();
 
-					Log.v("activities","finish");
 				}
 				super.onPostExecute(result);
 			}
 
 			@Override
 			protected List<ActivityRecord> doInBackground(Object... params) {
-
-				Log.v("activities","before load");
 				List<ActivityRecord> records = new ActivityRecordDAO(getActivity().getApplicationContext()).getAllRecords();
-
-				Log.v("activities","after load");
 				return records;
 			}
 			

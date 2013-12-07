@@ -12,6 +12,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
@@ -87,7 +88,7 @@ public class GestureModeActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_gesture_mode);
+		setContentView(R.layout.activity_running_exercise_gesture);
 		
 		// getActionBar().hide();
 		
@@ -221,7 +222,18 @@ public class GestureModeActivity extends Activity {
 				// When data is updated, update all the relevant UI 
 				// to show users the current activity record
 				FormatProcessor fp = new FormatProcessor(GestureModeActivity.this);
+				
+				((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(currentRecord.getTimeLength()));
 				((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(currentRecord.getDistance()));
+				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(currentRecord.getAvgSpeed()));
+				((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(currentRecord.getCalories()));
+				
+				// If goal is set, update the progress bar
+				if(currentRecord.getGoal()!=0) {
+					ProgressBar pb = (ProgressBar) findViewById(R.id.progressBar);
+					pb.setMax(100);
+					pb.setProgress((int) (100*(currentRecord.getDistance()/1000/currentRecord.getGoal())));
+				}
 			}
 
 			@Override

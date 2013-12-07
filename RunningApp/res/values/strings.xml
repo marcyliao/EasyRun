@@ -27,7 +27,7 @@
     <string name="map">map</string>
     <string name="gesture">gesture</string>
     <string name="title_activity_gesture_mode">GestureModeActivity</string>
-    <string name="gesture_mode">Gesture Mode</string>
+    <string name="gesture_mode">Control through Gestures</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="map_mode">Map Mode</string>
     <string name="title_activity_save_activity">SaveActivityActivity</string>
@@ -95,8 +95,8 @@
     <string name="notification_msg">We are tracking your activity</string>
 
     <!-- gesture mode -->
-    <string name="pause">pause</string>
-    <string name="tracking">tracking</string>
+    <string name="pause">Pause</string>
+    <string name="tracking">Tracking</string>
 
     <!-- cue msg -->
     <string name="activity_started">activity started</string>
@@ -129,5 +129,7 @@
     <string name="swipe_clockwise_">Swipe Clockwise:</string>
     <string name="swipe_anticlockwise_">Swipe Anticlockwise:</string>
     <string name="volume_down">Volume Down</string>
+    
+    <string name="goal_complete_msg">Well done! You just completed your target</string>
 
 </resources>

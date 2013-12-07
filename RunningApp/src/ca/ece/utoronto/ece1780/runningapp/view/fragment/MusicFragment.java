@@ -164,14 +164,14 @@ public class MusicFragment extends Fragment {
 			pauseButton.setBackgroundResource(R.drawable.icon_music_pause);
 	}
 
-	private void startMusicService(String path) {
+	private void startMusicService(int mediaIndex) {
 		if(songs==null || songs.isEmpty()) {
 			Toast.makeText(getActivity(), "no song found", Toast.LENGTH_SHORT).show();
 			return;
 		}
 		
 		Intent intent = new Intent(getActivity(), MediaPlayerService.class);
-		intent.putExtra(MediaPlayerService.PATH, path);
+		intent.putExtra(MediaPlayerService.MEDIA_INDEX, mediaIndex);
 		getActivity().startService(intent);
 		getActivity().bindService(intent, mediaConnection , 0);
 	}
@@ -305,12 +305,13 @@ public class MusicFragment extends Fragment {
 
 				String path = mListAdapter.getItem(position).getPath();
 
+				int mediaIndex = position;
 				if(mediaPlayer != null && mediaPlayer.isReady()) {
-					mediaPlayer.play(path);
+					mediaPlayer.play(mediaIndex);
 					updateMusicUI();
 				}
 				else {
-					startMusicService(path);
+					startMusicService(mediaIndex);
 				}
 			}
 	    });
