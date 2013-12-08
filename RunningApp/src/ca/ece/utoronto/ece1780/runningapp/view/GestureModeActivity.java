@@ -8,6 +8,7 @@ import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -115,9 +116,9 @@ public class GestureModeActivity extends Activity {
 
 			@Override
 			public void oneFingerDoubleClick() {
-
+				Log.d("double click ss", "double click");
 				if(mediaPlayer != null && mediaPlayer.isReady())
-					mediaPlayer.pause();
+					mediaPlayer.pause(); 
 				else {
 					startMusic();
 				}
@@ -167,7 +168,7 @@ public class GestureModeActivity extends Activity {
 			public void oneFingerCounterClockCircleComplete() {
 
 				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, 0);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_SHOW_UI);
 				super.oneFingerCounterClockCircleComplete();
 			}
 
@@ -175,7 +176,7 @@ public class GestureModeActivity extends Activity {
 			public void oneFingerClockCircleComplete() {
 
 				AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, 0);
+				audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_SHOW_UI);
 				super.oneFingerClockCircleComplete();
 			}
     	});
