@@ -12,7 +12,10 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.RunningDataChangeListener;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.app.Activity;
@@ -21,13 +24,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.view.Menu;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 public class MapModeActivity extends Activity {
 
 	// Controller
 	
 	private Marker endMarker;
+	GoogleMap map;
 
 	private ActivityControllerService controllerService;
 	private ServiceConnection sconnection = new ServiceConnection() {  
@@ -61,7 +69,7 @@ public class MapModeActivity extends Activity {
 	private void prepareMap() {
 		ActivityRecord record = controllerService.getCurrentRecord();
 		
-		GoogleMap map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map))
 		        .getMap();
 		map.clear();
 		
@@ -107,6 +115,19 @@ public class MapModeActivity extends Activity {
 			}
 			map.addPolyline(options);
 		}
+		
+		findViewById(R.id.ButtonRelocate).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				Location loc = controllerService.getLocationManager().getLastKnownLocation(LocationManager.GPS_PROVIDER);
+				if(loc != null) {
+					LatLng currentLocation = getLatLngFromLocation(loc);
+					map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 15));
+				}
+			}
+			
+		});
 	}
 
 	private LatLng getLatLngFromLocation(ActivityRecord.Location startLocation) {
@@ -114,6 +135,11 @@ public class MapModeActivity extends Activity {
 				startLocation.getLongitude());
 	}
 
+	private LatLng getLatLngFromLocation(Location startLocation) {
+		return new LatLng(startLocation.getLatitude(),
+				startLocation.getLongitude());
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -126,7 +152,14 @@ public class MapModeActivity extends Activity {
 
 			@Override
 			public void onDataChange(ActivityRecord currentRecord) {
+				// When data is updated, update all the relevant UI 
+				// to show users the current activity record
+				FormatProcessor fp = new FormatProcessor(MapModeActivity.this);
 				
+				((TextView)findViewById(R.id.TextViewTime)).setText(fp.getDuration(currentRecord.getTimeLength()));
+				((TextView)findViewById(R.id.TextViewDistance)).setText(fp.getDistance(currentRecord.getDistance()));
+				((TextView)findViewById(R.id.TextViewAVGSpeed)).setText(fp.getSpeed(currentRecord.getAvgSpeed()));
+				((TextView)findViewById(R.id.TextViewCalories)).setText(fp.getCalories(currentRecord.getCalories()));
 			}
 
 			@Override

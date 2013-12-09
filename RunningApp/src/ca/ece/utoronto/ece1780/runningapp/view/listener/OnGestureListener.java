@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
-import ca.ece.utoronto.ece1780.runningapp.utility.weather.Weather.CurrentCondition;
 
 import android.content.Context;
 import android.support.v4.view.MotionEventCompat;

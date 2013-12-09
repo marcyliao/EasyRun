@@ -393,4 +393,8 @@ public class ActivityControllerService extends Service implements LocationListen
 		return msg;
 	}
 	
+	public LocationManager getLocationManager() {
+		return locationManager;
+	}
+	
 }
