@@ -65,6 +65,10 @@ public class ActivityRecordDAO {
 	}
 
 	public List<ActivityRecord> getAllRecords() {
+		return getAllRecords(false);
+	}
+	
+	public List<ActivityRecord> getAllRecords(boolean loadPoints) {
 		this.open();
 		List<ActivityRecord> Records = new ArrayList<ActivityRecord>();
 
@@ -73,7 +77,7 @@ public class ActivityRecordDAO {
 
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
-			ActivityRecord f = cursorToRecord(cursor,false);
+			ActivityRecord f = cursorToRecord(cursor,loadPoints);
 			Records.add(f);
 			cursor.moveToNext();
 		}

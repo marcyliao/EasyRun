@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    
+    <string-array name="pref_array_genders">
+        <item>Keep it secret</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+    <string-array name="pref_array_values_genders">
+        <item>notset</item>
+        <item>male</item>
+        <item>female</item>
+    </string-array>
+    
+    <string-array name="pref_array_distance_unit">
+        <item>Kilometre</item>
+        <item>Mile</item>
+    </string-array>
+    <string-array name="pref_array_values_distance_unit">
+        <item>kilometre</item>
+        <item>mile</item>
+    </string-array>
+</resources>

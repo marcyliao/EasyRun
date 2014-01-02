@@ -128,6 +128,14 @@ public class MapModeActivity extends Activity {
 			}
 			
 		});
+		
+		prepareDistanceUnitWidget(this);
+	}
+	
+	private void prepareDistanceUnitWidget(Context context) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	private LatLng getLatLngFromLocation(ActivityRecord.Location startLocation) {

@@ -31,4 +31,16 @@
         	android:defaultValue="true" />
         
    </PreferenceCategory>
+  	<PreferenceCategory 
+        android:title="@string/setting_catagory_others"
+        android:key="pref_speech_other_settings">
+         	
+        <ListPreference 
+            android:key="@string/pref_key_distance_unit"
+            android:title="@string/pref_title_distance_unit"
+            android:dialogTitle="@string/pref_dialog_title_distance_unit"
+        	android:entries="@array/pref_array_distance_unit"
+        	android:entryValues="@array/pref_array_values_distance_unit"/>
+        
+   </PreferenceCategory>
 </PreferenceScreen>

@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.google.gson.annotations.Expose;
+
 import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
@@ -19,15 +21,19 @@ public class ActivityRecord implements Serializable {
 	private Long id;
 
 	// time and date of the activity
+	@Expose
 	private Long time;
 
 	// Total distance (current distance while recording). Unit: km
+	@Expose
 	private Double distance;
 	
 	// Average speed. Unit: km/h
+	@Expose
 	private Float avgSpeed;
 	
 	// Total calories (burned calories so far while recording).
+	@Expose
 	private Integer calories;
 
 	// All the location points of the route of the activity. Record a point every 5 s
@@ -35,6 +41,7 @@ public class ActivityRecord implements Serializable {
 	
 	// Converted from the location points in order to store in database
 	// Format: x1,y1,x2,y2,x3,y3 .... xn,yn
+	@Expose
 	private String locationPointsStr;
 	
 	// Time of all the location points
@@ -42,27 +49,35 @@ public class ActivityRecord implements Serializable {
 	
 	// Converted from the location points time in order to store in database
 	// Format: t1,t2,t3,...,tn
+	@Expose
 	private String locationPointsTimeStr;
 	
 	// Weather of the day
+	@Expose
 	private Integer weather;
 	
 	// Temperature of the day. Unit: degree centigrade
+	@Expose
 	private Integer temperature;
 	
 	// Time length since the start of the activity
+	@Expose
 	private Long timeLength;
 	
 	// Heart rate
+	@Expose
 	private Integer heartRate;
 
 	// Mood
+	@Expose
 	private Integer mood;
 	
 	// Note
+	@Expose
 	private String note;
 	
 	// Goal
+	@Expose
 	private float goal;
 	
 	// Speed records

@@ -76,7 +76,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/distance_unit"
+                android:id="@+id/textViewDistanceUnit"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -117,7 +117,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/speed_unit"
+                android:id="@+id/textViewSpeedUnit"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
@@ -158,7 +158,7 @@
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/pace_unit"
+                android:id="@+id/textViewPaceUnit"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"

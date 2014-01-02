@@ -6,6 +6,7 @@ import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
+import ca.ece.utoronto.ece1780.runningapp.utility.ShareUtility;
 import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -66,6 +67,7 @@ public class SaveActivityActivity extends Activity  {
         public void onServiceDisconnected(ComponentName name) {
         }    
     };
+	private GoogleMap map;
 	
 	private void prepareWidgets() {
 
@@ -112,16 +114,35 @@ public class SaveActivityActivity extends Activity  {
 			}
 		});
 		
+		// When the share button is clicked
+		findViewById(R.id.buttonShare).setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View arg0) {
+				String content = "I just had a wonderful run with #EasyRun !";
+				new ShareUtility().share(SaveActivityActivity.this, content, findViewById(R.id.activityRecordWindow),map);
+			}
+			
+		});
+		
 		// Prepare mood spinner
 		Spinner moodSpinner = (Spinner)findViewById(R.id.spinnerMood);
 		moodSpinner.setAdapter(new MyAdapter(SaveActivityActivity.this, R.layout.mood_spinner_row, new String[]{"Happy","Nice","Avg","Sad"}));
 		
+		// deal with distance units
+		prepareDistanceUnitWidget(this);
+		
+	}
 	
+	private void prepareDistanceUnitWidget(Context context) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	private void prepareMap() {
 		MapFragment fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-		GoogleMap map = fragment.getMap();
+		map = fragment.getMap();
 		
 		// Just for fixing the black box bug
 	    setMapTransparent((ViewGroup)fragment.getView());

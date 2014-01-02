@@ -181,7 +181,7 @@ public class GestureModeActivity extends Activity {
 			}
     	});
     	
-    	
+    	prepareDistanceUnitWidget(this);
     	// Prepare shake listener
     	/*
 		mShaker = new ShakeListener(this);
@@ -191,6 +191,12 @@ public class GestureModeActivity extends Activity {
 			}
 		});
 		*/
+	}
+	
+	private void prepareDistanceUnitWidget(Context context) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	@Override

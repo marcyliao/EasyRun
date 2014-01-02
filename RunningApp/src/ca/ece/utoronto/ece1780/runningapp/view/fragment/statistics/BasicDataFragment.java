@@ -1,5 +1,6 @@
 package ca.ece.utoronto.ece1780.runningapp.view.fragment.statistics;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
 public class BasicDataFragment extends Fragment {
@@ -44,5 +44,15 @@ public class BasicDataFragment extends Fragment {
 		textViewAVGPace.setText(fp.getPace(record.getAvgPace()));
 		textViewCalories.setText(fp.getCalories(record.getCalories()));
 		textViewCaloriesSpeed.setText(fp.getCaloriesSpeed(record.getCaloriesSpeed()));
+		
+		// deal with distance units
+		prepareDistanceUnitWidget(getActivity(),rootView);
+	}
+	
+	private void prepareDistanceUnitWidget(Context context, View rootView) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)rootView.findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)rootView.findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
+		((TextView)rootView.findViewById(R.id.textViewPaceUnit)).setText(fp.getPaceUnit());
 	}
 }

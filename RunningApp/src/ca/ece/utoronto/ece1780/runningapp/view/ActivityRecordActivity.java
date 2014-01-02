@@ -1,8 +1,5 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -16,16 +13,16 @@ import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
 import ca.ece.utoronto.ece1780.runningapp.data.Mood;
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
-import ca.ece.utoronto.ece1780.runningapp.utility.UtilityCaculator;
+import ca.ece.utoronto.ece1780.runningapp.utility.ShareUtility;
 import android.graphics.Color;
 
 
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SurfaceView;
@@ -38,6 +35,8 @@ public class ActivityRecordActivity extends Activity {
 
 	public final static int DUMP_RECORD = 979;
 	ActivityRecord record;
+	
+	GoogleMap map;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +86,14 @@ public class ActivityRecordActivity extends Activity {
 		else if(record.getMood() == Mood.SAD) {
 			imv.setImageResource(R.drawable.icon_mood_sad);
 		}
+		
+		prepareDistanceUnitWidget(this);
+	}
+
+	private void prepareDistanceUnitWidget(Context context) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	@Override
@@ -97,7 +104,7 @@ public class ActivityRecordActivity extends Activity {
 
 	private void prepareMap() {
 		MapFragment fragment = (MapFragment) getFragmentManager().findFragmentById(R.id.map);
-		GoogleMap map = fragment.getMap();
+		map = fragment.getMap();
 		
 		// Just for fixing the black box bug
 	    setMapTransparent((ViewGroup)fragment.getView());
@@ -230,12 +237,15 @@ public class ActivityRecordActivity extends Activity {
 		        
 		    case R.id.action_statistics:
 		    	Intent i = new Intent(this, StatisticActivity.class);
-		    	
 		    	Bundle b = new Bundle();
 		    	b.putSerializable("record", record);
 		    	i.putExtras(b);
 		    	startActivity(i);
 		    	return true;
+		    	
+		    case R.id.action_share:
+		    	String content = "I just had a wonderful run with #EasyRun !";
+		    	new ShareUtility().share(this, content, findViewById(R.id.activityRecordWindow),map);
 		    	
 		    default:
 		        return super.onOptionsItemSelected(item);

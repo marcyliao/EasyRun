@@ -9,7 +9,7 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "runningapp.db";
 	
 	// Increase version to call onUpdate. 
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 5;
 	
 	private static final String DATABASE_CREATE_ACTIVITY_RECORD = "create table activity_record (_id integer primary key not null,"
 			+ " time integer not null,"
@@ -41,8 +41,8 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase database, int oldVersion,
 			int newVersion) {
-		database.execSQL(DATABASE_DROP_ACTIVITY_RECORD);
-		onCreate(database);
+		//database.execSQL(DATABASE_DROP_ACTIVITY_RECORD);
+		//onCreate(database);
 	}
 
 }

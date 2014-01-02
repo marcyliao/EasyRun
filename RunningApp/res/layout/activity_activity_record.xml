@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activityRecordWindow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ActivityRecordActivity" >
@@ -9,7 +10,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:padding="10dp">
+        android:padding="10dp" >
 
         <TextView
             android:id="@+id/TextViewNote"
@@ -17,11 +18,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/TextView01"
-            android:layout_toRightOf="@+id/imageViewMood"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="#CCC"
+            android:layout_toRightOf="@+id/imageViewMood"
             android:text="@string/no_note"
+            android:textColor="#CCC"
             android:textSize="13sp" />
 
         <TextView
@@ -29,12 +30,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_toRightOf="@+id/imageViewMood"
             android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/imageViewMood"
             android:text="@string/Note"
             android:textColor="#FFF"
-            android:textSize="15sp" 
-            android:textStyle="bold"/>
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/imageViewMood"
@@ -43,10 +44,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:background="#333" />
-
     </RelativeLayout>
-
-    
 
     <LinearLayout
         android:id="@+id/linearLayout1"
@@ -54,8 +52,8 @@
         android:layout_height="55dp"
         android:layout_above="@+id/relativeLayout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true" 
-        android:baselineAligned="false">
+        android:layout_alignParentRight="true"
+        android:baselineAligned="false" >
 
         <LinearLayout
             android:layout_width="0dp"
@@ -80,8 +78,8 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight = "3dp"
                         android:layout_gravity="center_vertical"
+                        android:layout_marginRight="3dp"
                         android:src="@drawable/icon_run" />
 
                     <TextView
@@ -94,7 +92,7 @@
                         android:textSize="17sp" />
 
                     <TextView
-                        android:id="@+id/TextView05"
+                        android:id="@+id/textViewSpeedUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -143,8 +141,8 @@
                     <ImageView
                         android:layout_width="20dp"
                         android:layout_height="20dp"
-                        android:layout_marginRight = "3dp"
                         android:layout_gravity="center"
+                        android:layout_marginRight="3dp"
                         android:src="@drawable/icon_speed" />
 
                     <TextView
@@ -155,7 +153,6 @@
                         android:text="0:00:00"
                         android:textColor="#FFF"
                         android:textSize="17sp" />
-
                 </LinearLayout>
             </RelativeLayout>
 
@@ -244,13 +241,12 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             class="com.google.android.gms.maps.MapFragment" />
-
     </RelativeLayout>
-    
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="#CC505050">
+        android:background="#CC505050" >
 
         <TextView
             android:id="@+id/TextViewDistance"
@@ -263,7 +259,7 @@
             android:textSize="30sp" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/textViewDistanceUnit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignBaseline="@+id/TextViewDistance"
@@ -273,7 +269,6 @@
             android:text="@string/unit_distance"
             android:textColor="#FFF"
             android:textSize="15sp" />
-
     </RelativeLayout>
 
 </RelativeLayout>

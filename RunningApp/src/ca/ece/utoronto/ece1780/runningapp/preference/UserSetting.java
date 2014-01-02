@@ -29,7 +29,13 @@ public class UserSetting {
 		String weight = sharedPref.getString(context.getString(R.string.pref_key_weight), "");
 		if(weight != null && !weight.equals(""))
 			return Integer.valueOf(weight);
-		return 60;
+		return 65;
+	}
+	
+	public String getDistanceUnit(){
+		SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+		String unit = sharedPref.getString(context.getString(R.string.pref_key_distance_unit), "kilometre");
+		return unit;
 	}
 	
 	public boolean isSpeechEnabled(){

@@ -1,9 +1,13 @@
 package ca.ece.utoronto.ece1780.runningapp.view;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.app.FragmentTransaction;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,10 +17,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
+import ca.ece.utoronto.ece1780.runningapp.file.HistoryFileService;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
 import ca.ece.utoronto.ece1780.runningapp.service.TextToSpeechService;
 import ca.ece.utoronto.ece1780.runningapp.view.fragment.ActivitiesFragment;
@@ -25,7 +31,11 @@ import ca.ece.utoronto.ece1780.runningapp.view.fragment.StartFragment;
 
 public class HomeActivity extends FragmentActivity implements
 		ActionBar.TabListener, LocationListener {
-	
+
+    private static final int PICK_HISTORY_FILE_RESULT_CODE = 52;
+
+	private static final int SETTING_REQUEST = 18;
+    
 	// Page view control
 	private SectionsPagerAdapter mSectionsPagerAdapter;
 	private ViewPager mViewPager;
@@ -101,33 +111,60 @@ public class HomeActivity extends FragmentActivity implements
 						.show();
 
 				// Update activity fragment
-				ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
-						.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
-				
-				if (activityFragment != null && activityFragment.getView() != null) {
-					activityFragment.updateList();
-					Log.v("activities","home");
-				}
-				
- 
-				StartFragment fragment = (StartFragment) getSupportFragmentManager()
-						.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
-				if (fragment != null && activityFragment.getView() != null) {
-					fragment.prepareWidgets();
-				}
+				updateActivitiyList();
+				updateStartFragment();
 			}
 		}
+		
+		else if (requestCode == PICK_HISTORY_FILE_RESULT_CODE) {
+			if (resultCode == RESULT_OK) {
+				List<ActivityRecord> history = new HistoryFileService()
+						.loadHistoryFile(this, data.getData());
+
+				ActivityRecordDAO dao = new ActivityRecordDAO(this);
+				for (ActivityRecord record : history) {
+					dao.insertRecord(record);
+				}
+				Toast.makeText(this, "loading histoty is completed!",
+						Toast.LENGTH_SHORT).show();
+
+				updateActivitiyList();
+				updateStartFragment();
+			}
+		}
+		
+		else if (requestCode == SETTING_REQUEST) {
+			updateActivitiyList();
+			updateStartFragment();
+		}
 		super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	private void updateStartFragment() {
+		StartFragment startFragment = (StartFragment) getSupportFragmentManager()
+				.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
+		if (startFragment != null && startFragment.getView() != null) {
+			startFragment.prepareWidgets();
+		}
+	}
+
+	private void updateActivitiyList() {
+		ActivitiesFragment activityFragment = (ActivitiesFragment) getSupportFragmentManager()
+				.findFragmentByTag("android:switcher:" + R.id.pager + ":2");
+		
+		if (activityFragment != null && activityFragment.getView() != null) {
+			activityFragment.updateList();
+		}
 	}
 	
 	@Override
 	protected void onResume() {
 		
 		// Force to re-evaluate the GPS accuracy
-		StartFragment fragment = (StartFragment) getSupportFragmentManager()
+		StartFragment startFragment = (StartFragment) getSupportFragmentManager()
 				.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
-		if (fragment != null && fragment.getView() != null) {
-			fragment.retestLocationAccuracy();
+		if (startFragment != null && startFragment.getView() != null) {
+			startFragment.retestLocationAccuracy();
 		}
 		super.onResume();
 	}
@@ -150,17 +187,17 @@ public class HomeActivity extends FragmentActivity implements
 		// Start tracking location when start fragment is on, otherwise stop it
 		// to save battery
 		if(0 == tab.getPosition()) {
-			StartFragment fragment = (StartFragment) getSupportFragmentManager()
+			StartFragment startFragment = (StartFragment) getSupportFragmentManager()
 					.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
-			if (fragment != null && fragment.getView() != null) {
-				fragment.startUpateLocation();
+			if (startFragment != null && startFragment.getView() != null) {
+				startFragment.startUpateLocation();
 			}
 		}
 		else {
-			StartFragment fragment = (StartFragment) getSupportFragmentManager()
+			StartFragment startFragment = (StartFragment) getSupportFragmentManager()
 					.findFragmentByTag("android:switcher:" + R.id.pager + ":0");
-			if (fragment != null && fragment.getView() != null) {
-				fragment.stopUpateLocation();
+			if (startFragment != null && startFragment.getView() != null) {
+				startFragment.stopUpateLocation();
 			}
 		}
 	}
@@ -180,11 +217,66 @@ public class HomeActivity extends FragmentActivity implements
 	    switch (item.getItemId()) {
 	    case R.id.action_settings:
 	    	i = new Intent(this, SettingActivity.class);
-	        startActivityForResult(i,0);
+	        startActivityForResult(i,SETTING_REQUEST);
 	        return true;
+	    case R.id.action_load_history_file:
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+			// set title
+			alertDialogBuilder.setTitle("Alert");
+
+			alertDialogBuilder
+					.setMessage("Are you sure to add all records in file?")
+					.setCancelable(false)
+					.setPositiveButton("Yes",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									selectHistoryFile();
+								}
+
+							})
+					.setNegativeButton("No",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,
+										int id) {
+									dialog.cancel();
+								}
+							});
+
+			// create alert dialog
+			AlertDialog alertDialog = alertDialogBuilder.create();
+
+			// show it
+			alertDialog.show();
+	    	
+	    	return true;
+	    case R.id.action_store_history_file:
+	    	List<ActivityRecord> records = new ActivityRecordDAO(this).getAllRecords(true);
+	    	String path = new HistoryFileService().storeHistoryFile(this, records);
+	    	if(path != null)
+	    		Toast.makeText(this, "Backup file created! The file was saved at "+path, Toast.LENGTH_LONG).show();
+	    	else
+	    		Toast.makeText(this, "Unable to create the file, please check the file system of your phone", Toast.LENGTH_LONG).show();
+	    	return true;
 	    default:
 	        return super.onOptionsItemSelected(item);
 	    }
+	}
+	
+	private void selectHistoryFile() {
+		try {
+			Intent intent = new Intent(
+					Intent.ACTION_GET_CONTENT);
+			intent.setType("*/*");
+			startActivityForResult(intent,
+					PICK_HISTORY_FILE_RESULT_CODE);
+		} catch (ActivityNotFoundException exp) {
+			Toast.makeText(
+					getBaseContext(),
+					"No File (Manager / Explorer)etc Found In Your Device",
+					Toast.LENGTH_SHORT).show();
+		}
 	}
 	
 	// Adapter for the tab bar and action bar

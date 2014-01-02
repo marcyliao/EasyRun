@@ -293,6 +293,15 @@ public class RunningExerciseActivity extends Activity {
 					
 			}
 		});
+		
+		// deal with different distance units
+		prepareDistanceUnitWidget(this);
+	}
+	
+	private void prepareDistanceUnitWidget(Context context) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	private void startMusicService() {

@@ -13,6 +13,7 @@ public class SettingsFragment extends PreferenceFragment {
 	
 	private EditTextPreference namePref;
 	private ListPreference genderPref;
+	private ListPreference distanceUnitPref;
 	private WeightPickerPreference weightPref;
 	
 	@Override
@@ -59,6 +60,24 @@ public class SettingsFragment extends PreferenceFragment {
 			}
         });
         
+        // Set distance unit preference
+        distanceUnitPref = (ListPreference)findPreference(getString(R.string.pref_key_distance_unit));
+        CharSequence currentDistanceUnit = distanceUnitPref.getEntry();
+        if(currentGender != null && currentGender != "")
+        	distanceUnitPref.setSummary(currentDistanceUnit);
+        else
+        	distanceUnitPref.setSummary("Kilometre");
+        
+        distanceUnitPref.setOnPreferenceChangeListener(new OnPreferenceChangeListener(){
+			@Override
+			public boolean onPreferenceChange(Preference pref, Object val) {
+		        int index = distanceUnitPref.findIndexOfValue((String) val);
+		        CharSequence entry = distanceUnitPref.getEntries()[index];
+		        distanceUnitPref.setSummary(entry);
+		        	
+				return true;
+			}
+        });
         // Set weight
         weightPref = (WeightPickerPreference)findPreference(getString(R.string.pref_key_weight));
         String currentWeight = weightPref.getWeight();

@@ -72,16 +72,7 @@
     <string name="pref_key_gender">pref_gender</string>
     <string name="pref_title_gender">Gender</string>
 
-    <string-array name="pref_array_genders">
-        <item>Keep it secret</item>
-        <item>Male</item>
-        <item>Female</item>
-    </string-array>
-    <string-array name="pref_array_values_genders">
-        <item>notset</item>
-        <item>male</item>
-        <item>female</item>
-    </string-array>
+
 
     <string name="pref_dialog_title_gender">Select Gender</string>
     <string name="pref_key_weight">pref_weight</string>
@@ -90,6 +81,12 @@
     <string name="setting_catagory_speech_report">SPEECH REPORT SETTING</string>
     <string name="pref_key_enable_speech_report">pref_key_enable_speech_report</string>
     <string name="pref_title_enable_speech_report">Enable speech report</string>
+    
+    <string name="setting_catagory_others">OTHER SETTING</string>
+    
+    <string name="pref_key_distance_unit">pref_distance_unit</string>
+    <string name="pref_title_distance_unit">Distance Unit</string>
+    <string name="pref_dialog_title_distance_unit">Select Distance Unit</string>
 
     <!-- notification -->
     <string name="notification_msg">We are tracking your activity</string>
@@ -131,5 +128,7 @@
     <string name="volume_down">Volume Down</string>
     
     <string name="goal_complete_msg">Well done! You just completed your target</string>
+    
+    <string name="share">Share</string>
 
 </resources>

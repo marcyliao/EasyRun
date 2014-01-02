@@ -8,6 +8,7 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYSeriesRenderer;
 
 import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
@@ -51,8 +52,10 @@ public class GraphsFragment extends Fragment  {
 		mRenderer.setYAxisMin(0,0);
 		mRenderer.setYAxisMin(0,1);
 		
-		mRenderer.setYTitle("distance (m)",0);
-		mRenderer.setYTitle("speed (km/h)",1);
+		FormatProcessor fp = new FormatProcessor(getActivity());
+		
+		mRenderer.setYTitle("distance ("+fp.getDistanceUnit()+")",0);
+		mRenderer.setYTitle("speed ("+fp.getSpeedUnit()+")",1);
 		
 		mRenderer.setYLabelsColor(1, Color.YELLOW);
 		mRenderer.setYLabelsColor(0, Color.GREEN);
@@ -62,7 +65,7 @@ public class GraphsFragment extends Fragment  {
 		mRenderer.setYAxisAlign(Align.RIGHT, 0);
 		mRenderer.setYAxisAlign(Align.LEFT, 1);
 		
-		mRenderer.setYAxisMax(30,1);
+		mRenderer.setYAxisMax(25,1);
 		
 		mRenderer.setXTitle("time (min)");
         // create a new series of data
@@ -82,7 +85,7 @@ public class GraphsFragment extends Fragment  {
 			distance += (record.getLocationPoints().get(i+1).distanceTo(record.getLocationPoints().get(i)));
 			
 			if(i%10 == 0) {
-				seriesDistance.add(Float.valueOf(currentTime)/60000, distance);
+				seriesDistance.add(Float.valueOf(currentTime)/60000, fp.getDistanceValue(distance));
 			}
 			
 			if(i%10 == 0) {
@@ -96,7 +99,7 @@ public class GraphsFragment extends Fragment  {
 		}
 
 		if(record.getLocationPointsTime().size()>0){
-			seriesDistance.add(Float.valueOf(record.getLocationPointsTime().get(size-1).getTime()-record .getTime())/60000, distance);
+			seriesDistance.add(Float.valueOf(record.getLocationPointsTime().get(size-1).getTime()-record .getTime())/60000, fp.getDistanceValue(distance));
 		}
 		
 		mDataset.clear();

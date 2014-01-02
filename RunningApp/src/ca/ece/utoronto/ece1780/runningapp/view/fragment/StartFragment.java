@@ -108,6 +108,15 @@ public class StartFragment extends Fragment implements LocationListener {
 		
 		initStartButton(rootView);
 		
+		// deal with different distance units
+		prepareDistanceUnitWidget(getActivity(),rootView);
+		
+	}
+	
+	private void prepareDistanceUnitWidget(Context context, View rootView) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)rootView.findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+		((TextView)rootView.findViewById(R.id.textViewSpeedUnit)).setText(fp.getSpeedUnit());
 	}
 
 	// Initialize button according to whether gps is enabled or not

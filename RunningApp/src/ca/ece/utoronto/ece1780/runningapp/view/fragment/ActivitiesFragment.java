@@ -7,12 +7,16 @@ import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
+import ca.ece.utoronto.ece1780.runningapp.view.SettingActivity;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -20,6 +24,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ActivitiesFragment extends Fragment {
 
@@ -29,8 +34,17 @@ public class ActivitiesFragment extends Fragment {
 	private TextView textViewNoActivity;
 	private List<ActivityRecord> records = new ArrayList<ActivityRecord>();
 	
+
+	
 	public ActivitiesFragment() {
 	}
+
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -134,8 +148,14 @@ public class ActivitiesFragment extends Fragment {
             
             textViewDistance.setText(fp.getDistance(record.getDistance()));
             textViewTime.setText(fp.getDate(record.getTime()));
+            
+            prepareDistanceUnitWidget(fp, rowView);
  
             return rowView;
+		}
+		
+		private void prepareDistanceUnitWidget(FormatProcessor fp, View rootView) {
+			((TextView)rootView.findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
 		}
 		
 		@Override
@@ -159,4 +179,5 @@ public class ActivitiesFragment extends Fragment {
 			return records;
 		}
 	}
+
 }

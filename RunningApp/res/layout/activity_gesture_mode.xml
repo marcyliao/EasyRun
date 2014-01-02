@@ -22,7 +22,7 @@
             android:layout_centerVertical="true" >
 
             <TextView
-                android:id="@+id/TextView02"
+                android:id="@+id/textViewDistanceUnit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@+id/TextViewDistance"

@@ -1,10 +1,12 @@
 package ca.ece.utoronto.ece1780.runningapp.view.dialog;
 
 import ca.ece.utoronto.ece1780.runningapp.preference.UserSetting;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 import ca.ece.utoronto.ece1780.runningapp.view.RunningExerciseActivity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.NumberPicker;
+import android.widget.TextView;
 
 public class SettingGoalDialogFragment extends DialogFragment {
 	
@@ -34,6 +37,9 @@ public class SettingGoalDialogFragment extends DialogFragment {
 	    np1.setValue(np1Value);
 	    np2.setValue(np2Value);	
 	    
+	    // deal with different units
+	    prepareDistanceUnitWidget(getActivity(), root);
+	    
 	    // Initialize dialog
 	    builder.setView(root);
 		builder.setTitle(R.string.whats_your_target_distance)
@@ -46,7 +52,9 @@ public class SettingGoalDialogFragment extends DialogFragment {
 						
 						// Start running activity
 						Intent i = new Intent(getActivity(),RunningExerciseActivity.class);
-						i.putExtra("goal", goal);
+
+						FormatProcessor fp = new FormatProcessor(getActivity());
+						i.putExtra("goal", fp.getGoalFromUserInput(goal));
 						getActivity().startActivity(i);
 						getActivity().finish();
 					}
@@ -63,4 +71,9 @@ public class SettingGoalDialogFragment extends DialogFragment {
 		// Create the AlertDialog object and return it
 		return builder.create();
 	}	
+	
+	private void prepareDistanceUnitWidget(Context context, View rootView) {
+		FormatProcessor fp = new FormatProcessor(context);
+		((TextView)rootView.findViewById(R.id.textViewDistanceUnit)).setText(fp.getDistanceUnit());
+	}
 }

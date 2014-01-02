@@ -65,7 +65,7 @@
                                 android:textSize="17sp" />
 
                             <TextView
-                                android:id="@+id/TextView05"
+                                android:id="@+id/textViewSpeedUnit"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center_vertical"
@@ -192,7 +192,7 @@
                         android:textStyle="bold" />
 
                     <TextView
-                        android:id="@+id/TextView02"
+                        android:id="@+id/textViewDistanceUnit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignBaseline="@+id/TextViewDistance"
