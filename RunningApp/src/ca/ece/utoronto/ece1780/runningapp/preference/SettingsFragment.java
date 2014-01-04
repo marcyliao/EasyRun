@@ -63,7 +63,7 @@ public class SettingsFragment extends PreferenceFragment {
         // Set distance unit preference
         distanceUnitPref = (ListPreference)findPreference(getString(R.string.pref_key_distance_unit));
         CharSequence currentDistanceUnit = distanceUnitPref.getEntry();
-        if(currentGender != null && currentGender != "")
+        if(currentDistanceUnit != null && currentDistanceUnit != "")
         	distanceUnitPref.setSummary(currentDistanceUnit);
         else
         	distanceUnitPref.setSummary("Kilometre");
