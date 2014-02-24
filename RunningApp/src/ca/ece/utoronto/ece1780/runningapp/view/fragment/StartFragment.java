@@ -6,6 +6,7 @@ import org.json.JSONException;
 
 import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
 import ca.ece.utoronto.ece1780.runningapp.service.ActivityControllerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.AsyTaskUtility;
 import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
 import ca.ece.utoronto.ece1780.runningapp.utility.weather.JSONWeatherParser;
 import ca.ece.utoronto.ece1780.runningapp.utility.weather.Weather;
@@ -217,7 +218,7 @@ public class StartFragment extends Fragment implements LocationListener {
 
 	private void prepareWeatherInfo(double lat, double lng) {
 		JSONWeatherTask task = new JSONWeatherTask();
-		task.execute(new String[]{"lat="+lat+"&lon="+lng});
+		AsyTaskUtility.executeAsyncTask(task,new String[]{"lat="+lat+"&lon="+lng});
 	}
 	
 	private class JSONWeatherTask extends AsyncTask<String, Void, Weather> {

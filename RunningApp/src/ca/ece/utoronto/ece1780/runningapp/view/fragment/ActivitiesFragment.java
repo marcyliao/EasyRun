@@ -2,21 +2,13 @@ package ca.ece.utoronto.ece1780.runningapp.view.fragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
-import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
-import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
-import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
-import ca.ece.utoronto.ece1780.runningapp.view.R;
-import ca.ece.utoronto.ece1780.runningapp.view.SettingActivity;
-import android.support.v4.app.Fragment;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -24,7 +16,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+import ca.ece.utoronto.ece1780.runningapp.data.ActivityRecord;
+import ca.ece.utoronto.ece1780.runningapp.database.ActivityRecordDAO;
+import ca.ece.utoronto.ece1780.runningapp.utility.AsyTaskUtility;
+import ca.ece.utoronto.ece1780.runningapp.utility.FormatProcessor;
+import ca.ece.utoronto.ece1780.runningapp.view.ActivityRecordActivity;
+import ca.ece.utoronto.ece1780.runningapp.view.R;
 
 public class ActivitiesFragment extends Fragment {
 
@@ -86,7 +83,7 @@ public class ActivitiesFragment extends Fragment {
 
 	public void updateList() {
 		
-		new AsyncTask<Object,Object,List<ActivityRecord>>(){
+		AsyTaskUtility.executeAsyncTask(new AsyncTask<Object,Object,List<ActivityRecord>>(){
 
 			@Override
 			protected void onPostExecute(List<ActivityRecord> result) {
@@ -104,7 +101,7 @@ public class ActivitiesFragment extends Fragment {
 				return records;
 			}
 			
-		}.execute();
+		});
 		
 	}
 	

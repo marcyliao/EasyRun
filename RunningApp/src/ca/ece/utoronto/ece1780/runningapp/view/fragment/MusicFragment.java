@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import ca.ece.utoronto.ece1780.runningapp.data.Song;
 import ca.ece.utoronto.ece1780.runningapp.service.MediaPlayerService;
+import ca.ece.utoronto.ece1780.runningapp.utility.AsyTaskUtility;
 import ca.ece.utoronto.ece1780.runningapp.utility.MusicUtility;
 import ca.ece.utoronto.ece1780.runningapp.view.R;
 
@@ -322,7 +323,7 @@ public class MusicFragment extends Fragment {
 
 	public void updateList() {
 		textViewNoSong.setText("Loading...");
-		new AsyncTask<Object,Object,List<Song>>(){
+		AsyTaskUtility.executeAsyncTask(new AsyncTask<Object,Object,List<Song>>(){
 
 			@Override
 			protected void onPostExecute(List<Song> result) {
@@ -340,7 +341,7 @@ public class MusicFragment extends Fragment {
 				return records;
 			}
 			
-		}.execute();
+		});
 	}
 	
 	private class SongArrayAdapter extends BaseAdapter {
