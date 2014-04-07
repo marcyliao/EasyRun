@@ -143,7 +143,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" >
+                    android:layout_weight="0.8" >
 
                     <TextView
                         android:id="@+id/TextView06"
@@ -208,7 +208,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" >
+                    android:layout_weight="0.8" >
 
                     <TextView
                         android:id="@+id/textView1"
@@ -262,7 +262,7 @@
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1" >
+                    android:layout_weight="0.8" >
 
                     <TextView
                         android:id="@+id/TextView03"

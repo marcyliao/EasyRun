@@ -315,7 +315,9 @@ public class StartFragment extends Fragment implements LocationListener {
 	public void startUpateLocation() { 
 		if(locationManager != null) {
 			initStartButton(rootView);
-			locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
+			if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+				locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME_INTERVAL_FOR_UPDATE, 0, this);
+			}
 		}
 	}
 	
