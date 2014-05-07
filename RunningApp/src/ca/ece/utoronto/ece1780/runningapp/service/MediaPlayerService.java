@@ -107,7 +107,7 @@ public class MediaPlayerService extends Service {
         notification.setLatestEventInfo(this, getText(R.string.app_name),"music is playing", pendingIntent);
         startForeground(234, notification);
         
-        if(this.isReady()){
+        if(this.isReady() && intent!=null){
         	int index = intent.getIntExtra(MEDIA_INDEX,-1);
         	if(index != -1)
         		this.play(index);

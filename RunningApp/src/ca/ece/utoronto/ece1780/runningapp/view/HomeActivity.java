@@ -3,6 +3,8 @@ package ca.ece.utoronto.ece1780.runningapp.view;
 import java.util.List;
 import java.util.Locale;
 
+import com.appbrain.AppBrain;
+
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -17,6 +19,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -341,6 +344,16 @@ public class HomeActivity extends FragmentActivity implements
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void onBackPressed() {
+		double seed = Math.random();
+		if (seed < 0.5d) {
+			AppBrain.getAds().showInterstitial(this);
+		}
+
+		finish();
 	}
 
 }
