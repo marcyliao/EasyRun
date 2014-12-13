@@ -348,11 +348,7 @@ public class HomeActivity extends FragmentActivity implements
 	
 	@Override
 	public void onBackPressed() {
-		double seed = Math.random();
-		if (seed < 0.5d) {
-			AppBrain.getAds().showInterstitial(this);
-		}
-
+		AppBrain.getAds().showInterstitial(this);
 		finish();
 	}
 

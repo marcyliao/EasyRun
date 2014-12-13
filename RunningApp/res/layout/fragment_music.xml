@@ -26,11 +26,11 @@
         android:id="@+id/layoutMusicPanel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/ad"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:orientation="vertical"
-        android:background="#000" >
+        android:background="#000" 
+        android:layout_alignParentBottom="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -115,9 +115,5 @@
             android:layout_marginBottom="5dp"/>
 
     </LinearLayout>
-    <com.appbrain.AppBrainBanner 
-        android:layout_alignParentBottom="true"
-            android:id="@+id/ad"
-  			android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 
 </RelativeLayout>

@@ -268,19 +268,13 @@
         android:id="@+id/buttonStart"
         android:layout_width="fill_parent"
         android:layout_height="75dp"
-        android:layout_above="@+id/ad"
         android:layout_alignParentRight="true"
         android:background="@drawable/xml_button_basic"
         android:text="@string/button_start"
         android:textColor="#FFF"
         android:textSize="30sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_alignParentBottom="true" />
     
-    
-
-     <com.appbrain.AppBrainBanner 
-        android:layout_alignParentBottom="true"
-            android:id="@+id/ad"
-  			android:layout_width="fill_parent" android:layout_height="wrap_content"/>
 
 </RelativeLayout>
