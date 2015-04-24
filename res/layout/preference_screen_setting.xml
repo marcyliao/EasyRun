@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory 
+        android:title="@string/setting_catagory_profile"
+        android:key="pref_profile_settings">
+        
+        <EditTextPreference 
+            android:key="@string/pref_key_name"
+            android:title="@string/pref_title_name"/>
+        
+        <ListPreference 
+            android:key="@string/pref_key_gender"
+            android:title="@string/pref_title_gender"
+            android:dialogTitle="@string/pref_dialog_title_gender"
+        	android:entries="@array/pref_array_genders"
+        	android:entryValues="@array/pref_array_values_genders"/>
+        
+        <ca.ece.utoronto.ece1780.runningapp.preference.WeightPickerPreference
+            android:key="@string/pref_key_weight"
+            android:title="@string/pref_title_weight"
+            android:dialogTitle="@string/pref_dialog_title_weight"/>
+        
+   </PreferenceCategory>
+   <PreferenceCategory 
+        android:title="@string/setting_catagory_speech_report"
+        android:key="pref_speech_report_settings">
+        
+      	<CheckBoxPreference
+        	android:key="@string/pref_key_enable_speech_report"
+        	android:title="@string/pref_title_enable_speech_report"
+        	android:defaultValue="true" />
+        
+   </PreferenceCategory>
+  	<PreferenceCategory 
+        android:title="@string/setting_catagory_others"
+        android:key="pref_speech_other_settings">
+         	
+        <ListPreference 
+            android:key="@string/pref_key_distance_unit"
+            android:title="@string/pref_title_distance_unit"
+            android:dialogTitle="@string/pref_dialog_title_distance_unit"
+        	android:entries="@array/pref_array_distance_unit"
+        	android:entryValues="@array/pref_array_values_distance_unit"/>
+        
+   </PreferenceCategory>
+</PreferenceScreen>

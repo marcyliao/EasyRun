@@ -1,0 +1,24 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+
+   
+   <item android:id="@+id/action_statistics"
+          android:icon="@drawable/icon_statistics"
+          android:title="@string/statistics"
+          android:showAsAction="always"  />
+   
+   <item android:id="@+id/action_share"
+          android:icon="@drawable/icon_share_small"
+          android:title="@string/share"
+          android:showAsAction="always"  />
+   
+   <item android:id="@+id/action_dump"
+          android:icon="@drawable/icon_trash"
+          android:title="@string/trash"
+          android:showAsAction="always"  />
+   
+   
+   
+
+</menu>
+

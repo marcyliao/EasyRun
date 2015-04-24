@@ -1,0 +1,239 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context=".GestureHelpActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+            android:padding="5dp">
+
+        <ImageView
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_up_swipe" />
+		
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_up_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/resume_pause_activity" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+            android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_down_swipe" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_down_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/report" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+            android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_double_click" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/double_tab_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/start_resume_pause_music" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+            android:padding="5dp">
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_left_swipe" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_left_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/play_previous_song" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_right_swipe" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_right_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/play_next_song" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/ImageView02"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_right_circle" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_clockwise_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="Volume Up" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+            android:padding="5dp" >
+
+        <ImageView
+            android:id="@+id/imageView1"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:src="@drawable/icon_left_circle" />
+        <LinearLayout 
+        	android:layout_width="match_parent"
+        	android:layout_height="wrap_content" 
+        	android:orientation="vertical"
+        	android:layout_marginLeft="5dp">
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/swipe_anticlockwise_" 
+	            android:layout_marginTop="5dp"
+	            android:textColor="#FFF"
+	            android:textSize="18sp"/>
+	
+	        <TextView
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:text="@string/volume_down" 
+	            android:textColor="#FFF"
+	            android:textSize="15sp"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
